@@ -5,16 +5,15 @@
     // todo - update for multiple letter shenanigans
     if ($store.solution[index] === letter) {
       return "correct";
-    } else if ($store.solution.indexOf(letter) !== -1) {
-      return "present";
-    } else {
-      return "absent";
     }
+    if ($store.solution.indexOf(letter) !== -1) {
+      return "present";
+    }
+    return "absent";
   }
 </script>
 
 <div class="board">
-  <!-- previous guesses -->
   {#each $store.guesses as guess, i}
     <div class="row" class:completed={i < $store.guessIdx}>
       <!-- make sure each col is rendered by padding '' to '      '-->
@@ -27,10 +26,10 @@
 
 <style>
   .board {
-    max-width: 800px;
     font-size: 1.8rem;
     font-weight: bold;
-    margin: auto;
+    margin-inline: auto;
+    width: max-content;
   }
   .row {
     display: flex;
