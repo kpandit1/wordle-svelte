@@ -5,7 +5,7 @@
 
 <main>
   <h1>Wordle</h1>
-  <Guesses class="board"/>
+  <Guesses />
   <Keyboard />
 </main>
 
@@ -13,28 +13,13 @@
   main {
     width: min(100% - 2rem, 600px);
     margin-inline: auto;
+    display: block;
+    text-align: center;
   }
-  /* h1 {
+  h1 {
     margin: 20px 20px 20px 0;
-    
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: 2rem;
+    text-transform: uppercase;
   }
-  main {
-		text-align: center;
-		padding: 1em;
-		max-width: 240px;
-		margin: 0 auto;
-	}
-
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
-	} */
-
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
-	}
 </style>
