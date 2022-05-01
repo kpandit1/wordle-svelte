@@ -1,16 +1,7 @@
 <script>
+  import { getLetterType } from "../lib/helpers.js";
   import store from "./store/index.js";
-  // total 6 guesses
-  function getLetterType(letter, index, guess) {
-    // todo - update for multiple letter shenanigans
-    if ($store.solution[index] === letter) {
-      return "correct";
-    }
-    if ($store.solution.indexOf(letter) !== -1) {
-      return "present";
-    }
-    return "absent";
-  }
+  import { solution } from "../lib/constants";
 </script>
 
 <div class="board">
@@ -18,7 +9,9 @@
     <div class="row" class:completed={i < $store.guessIdx}>
       <!-- make sure each col is rendered by padding '' to '      '-->
       {#each guess.padEnd(5, " ") as letter, i}
-        <div class={`cell ${getLetterType(letter, i, guess)}`}>{letter}</div>
+        <div class={`cell ${getLetterType(solution, guess, letter, i)}`}>
+          {letter}
+        </div>
       {/each}
     </div>
   {/each}
@@ -42,18 +35,19 @@
     aspect-ratio: 1;
     display: grid;
     place-items: center;
+    text-transform: uppercase;
   }
   .completed > * {
     color: white;
     border: 0;
   }
   .completed > .correct {
-    background-color: #6aa964;
+    background-color: var(--clr-correct);
   }
   .completed > .present {
-    background-color: #c9b458;
+    background-color: var(--clr-present)
   }
   .completed > .absent {
-    background-color: #787c7e;
+    background-color: var(--clr-absent)
   }
 </style>
