@@ -1,18 +1,39 @@
 :root {
-  --clr-correct: #6aa964;
-  --clr-present: #c9b458;
-  --clr-absent: #787c7e;
-  --clr-absent-key: #787c7e;
-  --clr-key-bg: #d3d6da;
-  --clr-text: black;
+
+  --clr-correct-lt: #6aa964;
+  --clr-present-lt: #c9b458;
+  --clr-absent-lt: #787c7e;
+  --clr-absent-key-lt: #787c7e;
+  --clr-key-bg-lt: #d3d6da;
+  --clr-text-lt: black;
+
+  --clr-absent-dk: #3a3a3c;
+  --clr-correct-dk: #538d4e;
+  --clr-present-dk: #b59f3b;
+  --clr-text-dk: white;
+  --clr-key-bg-dk: #787c7e;
+
 }
 
+.contrast {
+  --orange: #f5793a;
+  --blue: #85c0f9;
+
+  --clr-correct-lt: var(--orange);
+  --clr-correct-dk: var(--orange);
+
+  --clr-present-lt: var(--blue);
+  --clr-present-dk: var(--blue);
+}
+
+
 .darkmode {
-  --clr-absent: #3a3a3c;
-  --clr-correct: #538d4e;
-  --clr-present: #b59f3b;
-  --clr-text: white;
-  --clr-key-bg: #787c7e;
+  --clr-correct: var(--clr-correct-dk);
+  --clr-present:var(--clr-present-dk);
+  --clr-absent: var(--clr-absent-dk);
+  --clr-absent-key: var(--clr-absent-key-dk);
+  --clr-key-bg: var(--clr-key-bg-dk);
+  --clr-text: var(--clr-text-dk);
   background-color: rgb(32, 32, 32);
 }
 
@@ -21,12 +42,18 @@ body {
   position: relative;
   width: 100%;
   height: 100%;
-  color: var(--clr-text);
 }
 
 body {
   margin: 0;
   padding: 8px;
+  color: var(--clr-text);
+  --clr-correct: var(--clr-correct-lt);
+  --clr-present:var(--clr-present-lt);
+  --clr-absent: var(--clr-absent-lt);
+  --clr-absent-key: var(--clr-absent-key-lt);
+  --clr-key-bg: var(--clr-key-bg-lt);
+  --clr-text: var(--clr-text-lt);
   box-sizing: border-box;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;

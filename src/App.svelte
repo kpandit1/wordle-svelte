@@ -1,17 +1,16 @@
 <script>
   import Guesses from "./Guesses.svelte";
   import Keyboard from "./Keyboard.svelte";
+  import settings from "../src/store/settings";
 </script>
-
-<svelte:head>
-  <script src="./darkmode.js"></script>
-</svelte:head>
 
 <main>
   <div class="container">
     <header>
       <h1>Wordle</h1>
-      <button id="dark-mode-toggle">☀️</button>
+      <button on:click={settings.toggleDarkMode}>☀️</button>
+      <button on:click={settings.toggleContrast}>🌈</button>
+      <!-- <button on:click={toggleHardMode}></button> -->
     </header>
     <Guesses />
     <Keyboard />
@@ -30,6 +29,7 @@
   header {
     display: flex;
     justify-content: center;
+    gap: 10px;
   }
 
   .container {
@@ -47,7 +47,6 @@
   }
 
   h1 {
-    /* margin: 12px 12px 12px 0; */
     font-size: 2rem;
     text-transform: uppercase;
   }

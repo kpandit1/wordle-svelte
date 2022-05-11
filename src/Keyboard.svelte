@@ -8,10 +8,7 @@
 
   function handleSubmit() {
     if (isValidWord(currentGuess)) {
-      store.update((state) => {
-        state.guessIdx += 1;
-        return state;
-      });
+      store.guessNextWord();
     }
   }
 
@@ -48,61 +45,34 @@
       handleSubmit();
     }
   }
-
-  // utility function for now
-  function clearState() {
-    store.update((state) => ({
-      ...state,
-      guesses: [...Array(6)].fill(""),
-      guessIdx: 0,
-    }));
-  }
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
 <div class="keyboard">
-  <div class="row">
-    {#each ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"] as letter}
-      <button
-        on:mousedown={(e) => handleKeydown({ ...e, key: letter })}
-        class={getKeyColor(
-          letter.toLowerCase(),
-          solution,
-          $store.guesses.slice(0, $store.guessIdx)
-        )}
-        type="button">{letter}</button
-      >
-    {/each}
-  </div>
-  <div class="row">
-    {#each ["A", "S", "D", "F", "G", "H", "J", "K", "L"] as letter}
-      <button
-        on:mousedown={(e) => handleKeydown({ ...e, key: letter })}
-        class={getKeyColor(
-          letter.toLowerCase(),
-          solution,
-          $store.guesses.slice(0, $store.guessIdx)
-        )}
-        type="button">{letter}</button
-      >
-    {/each}
-  </div>
-  <div class="row">
-    {#each ["Z", "X", "C", "V", "B", "N", "M"] as letter}
-      <button
-        on:mousedown={(e) => handleKeydown({ ...e, key: letter })}
-        class={getKeyColor(
-          letter.toLowerCase(),
-          solution,
-          $store.guesses.slice(0, $store.guessIdx)
-        )}
-        type="button">{letter}</button
-      >
-    {/each}
-  </div>
-  <div>
-    <button on:mousedown={clearState} type="button">CLEAR STATE</button>
-  </div>
+  <!--prettier-ignore-->
+  {#each [ 
+    ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
+    ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
+    ["Z", "X", "C", "V", "B", "N", "M"]]
+    as row
+  }
+    <div class="row">
+      {#each row as letter}
+        <button
+          on:mousedown={(e) => handleKeydown({ ...e, key: letter })}
+          class={getKeyColor(
+            letter.toLowerCase(),
+            solution,
+            $store.guesses.slice(0, $store.guessIdx)
+          )}
+          type="button">{letter}</button
+        >
+      {/each}
+    </div>
+  {/each}
+
+
+  <button on:mousedown={store.clearState} type="button">CLEAR STATE</button>
 </div>
 
 <style>

@@ -37,6 +37,32 @@
     place-items: center;
     text-transform: uppercase;
   }
+  .cell:hover {
+    animation: Shake 4s;
+    animation-iteration-count: infinite;
+  }
+
+  @keyframes Shake {
+    0% {
+      transform: translate(0, -2px);
+    }
+    10% {
+      transform: translate(-2px, 0);
+    }
+    
+    20% {
+      transform: translate(0, -2px);
+    }
+
+    30% {
+      transform: translate(0, 0);
+    }
+
+    40% {
+      transform: translate(0, 0);
+    }
+  }
+
   .completed > * {
     color: white;
     border: 0;
