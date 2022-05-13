@@ -1,15 +1,65 @@
 <script>
   import store from "./store/index.js";
+  import settings from "./store/settings";
 
-  import { getKeyColor, isValidWord } from "../lib/helpers";
+  import { getKeyColor, getLetterType, isValidWord } from "../lib/helpers";
   import { solution } from "../lib/constants/solutions.js";
 
   $: currentGuess = $store.guesses[$store.guessIdx];
 
   function handleSubmit() {
-    if (isValidWord(currentGuess)) {
-      store.guessNextWord();
+    // only consider valid words
+    if (!isValidWord(currentGuess)) {
+      console.log("not in word list");
+      return;
     }
+
+    // if not hard mode, since the word is valid, move on to the next guess
+    if (!$settings.hardMode) {
+      store.guessNextWord();
+      return;
+    }
+
+    // if hard mode, there are 2 rules
+    // all previous 'present' letters must be reused
+    // all previous 'correct' letters must be correct again
+
+    // get all previous 'present' and 'found' letters
+    let presentLetters = new Set();
+    let correctLetters = [];
+
+    $store.guesses.forEach((guess) => {
+      guess.split("").forEach((letter, i) => {
+        if (getLetterType(solution, currentGuess, letter, i) === "present") {
+          presentLetters.add(letter);
+        } else if (getLetterType(solution, currentGuess, letter, i) === "correct") {
+          correctLetters.push({ letter: letter, idx: i });
+        }
+      });
+    });
+
+    // check if all previous 'correct' letters are correct
+    for (let i = 0; i < correctLetters.length; i++) {
+      const l = correctLetters[i];
+      if (currentGuess[l.idx] !== l.letter) {
+        // TODO: fix the number suffix (1st, 2nd, 3rd)
+        console.log(l.idx + 1 + 'th letter must be ' + l.letter);
+        return;
+      }
+    }
+
+    // check all previously 'present' letters are used in the current guess
+    for (const letter of presentLetters) {
+      if (!currentGuess.includes(letter)) {
+        console.log("guess must contain " + letter);
+        return;
+      }
+    }
+    store.guessNextWord();
+
+    // if (isValidWord(currentGuess)) {
+    //   store.guessNextWord();
+    // }
   }
 
   function handleKeydown(e) {
@@ -70,7 +120,6 @@
       {/each}
     </div>
   {/each}
-
 
   <button on:mousedown={store.clearState} type="button">CLEAR STATE</button>
 </div>

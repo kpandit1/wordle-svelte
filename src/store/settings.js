@@ -10,21 +10,15 @@ function createStore() {
   );
 
   function toggleDarkMode() {
-    update((state) => {
-      if (!state.darkMode) {
-        return { ...state, darkMode: true };
-      }
-      return { ...state, darkMode: false };
-    });
+    update((state) => ({ ...state, darkMode: !state.darkMode }));
   }
 
   function toggleContrast() {
-    update((state) => {
-      if (!state.highContrast) {
-        return { ...state, highContrast: true };
-      }
-      return { ...state, highContrast: false };
-    });
+    update((state) => ({ ...state, highContrast: !state.highContrast }));
+  }
+
+  function toggleHardMode() {
+    update((state) => ({ ...state, hardMode: !state.hardMode }));
   }
 
   return {
@@ -33,12 +27,13 @@ function createStore() {
     update,
     toggleDarkMode,
     toggleContrast,
+    toggleHardMode,
   };
 }
 
 const settings = createStore();
 settings.subscribe((val) => {
-  // make sure things are correct on load
+  // set up classes for dark and high contrast on load
   if (val.darkMode) {
     document.body.classList.add("darkmode");
   } else {
@@ -49,6 +44,8 @@ settings.subscribe((val) => {
   } else {
     document.body.classList.remove("contrast");
   }
+
+  // sync with localstorage
   localStorage.setItem("settings", JSON.stringify(val));
 });
 

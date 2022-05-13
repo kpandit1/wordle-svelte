@@ -10,7 +10,9 @@
       <h1>Wordle</h1>
       <button on:click={settings.toggleDarkMode}>☀️</button>
       <button on:click={settings.toggleContrast}>🌈</button>
-      <!-- <button on:click={toggleHardMode}></button> -->
+      <button on:click={settings.toggleHardMode}>
+        hard mode: {$settings.hardMode}
+      </button>
     </header>
     <Guesses />
     <Keyboard />
