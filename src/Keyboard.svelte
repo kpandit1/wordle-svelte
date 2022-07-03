@@ -32,7 +32,9 @@
       guess.split("").forEach((letter, i) => {
         if (getLetterType(solution, currentGuess, letter, i) === "present") {
           presentLetters.add(letter);
-        } else if (getLetterType(solution, currentGuess, letter, i) === "correct") {
+        } else if (
+          getLetterType(solution, currentGuess, letter, i) === "correct"
+        ) {
           correctLetters.push({ letter: letter, idx: i });
         }
       });
@@ -43,7 +45,7 @@
       const l = correctLetters[i];
       if (currentGuess[l.idx] !== l.letter) {
         // TODO: fix the number suffix (1st, 2nd, 3rd)
-        console.log(l.idx + 1 + 'th letter must be ' + l.letter);
+        console.log(l.idx + 1 + "th letter must be " + l.letter);
         return;
       }
     }
@@ -87,7 +89,7 @@
     if (e.key === "Backspace") {
       store.update((state) => {
         // prettier-ignore
-        state.guesses[state.guessIdx] = state.guesses[state.guessIdx].slice( 0, -1);
+        state.guesses[state.guessIdx] = state.guesses[state.guessIdx].slice(0, -1);
         return state;
       });
     }
@@ -103,7 +105,7 @@
   {#each [ 
     ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
     ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
-    ["Z", "X", "C", "V", "B", "N", "M"]]
+    ["ENTER", "Z", "X", "C", "V", "B", "N", "M", "<-"]]
     as row
   }
     <div class="row">
@@ -135,14 +137,21 @@
   }
   .row > button {
     touch-action: manipulation;
-    padding: 0.7rem;
+    /* padding: 0.7rem; */
     font-size: 1rem;
     width: min(9vw, 50px);
+    width: "200px";
     height: 60px;
     cursor: pointer;
     font-weight: bold;
     color: var(--clr-text);
   }
+  /* media query  */
+  /* @media (max-width: 600px) {
+    .row > button {
+    }
+  } */
+
   .not-guessed {
     background-color: var(--clr-key-bg);
   }
