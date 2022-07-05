@@ -11,6 +11,8 @@
   --clr-present-dk: #b59f3b;
   --clr-text-dk: white;
   --clr-key-bg-dk: #787c7e;
+  --clr-text: black;
+  --clr-background: white;
 }
 
 .contrast {
@@ -31,7 +33,7 @@
   --clr-absent-key: var(--clr-absent-key-dk);
   --clr-key-bg: var(--clr-key-bg-dk);
   --clr-text: var(--clr-text-dk);
-  background-color: rgb(32, 32, 32);
+  --clr-background: black;
 }
 
 html,
@@ -53,6 +55,7 @@ body {
   --clr-text: var(--clr-text-lt);
   box-sizing: border-box;
   font-family: "Nunito", sans-serif;
+  background-color: var(--clr-background);
   /* font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif; */
 }

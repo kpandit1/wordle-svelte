@@ -4,13 +4,14 @@
 
   import { getKeyColor, getLetterType, isValidWord } from "../lib/helpers";
   import { solution } from "../lib/constants/solutions.js";
+  import toast from "../src/store/toast";
 
   $: currentGuess = $store.guesses[$store.guessIdx];
 
   function handleSubmit() {
     // only consider valid words
     if (!isValidWord(currentGuess)) {
-      console.log("not in word list");
+      toast.setToast("Not in word list");
       return;
     }
 
@@ -45,7 +46,7 @@
       const l = correctLetters[i];
       if (currentGuess[l.idx] !== l.letter) {
         // TODO: fix the number suffix (1st, 2nd, 3rd)
-        console.log(l.idx + 1 + "th letter must be " + l.letter);
+        toast.setToast(l.idx + 1 + "th letter must be " + l.letter);
         return;
       }
     }
@@ -53,7 +54,7 @@
     // check all previously 'present' letters are used in the current guess
     for (const letter of presentLetters) {
       if (!currentGuess.includes(letter)) {
-        console.log("guess must contain " + letter);
+        toast.setToast("guess must contain " + letter);
         return;
       }
     }
@@ -123,7 +124,9 @@
     </div>
   {/each}
 
-  <button on:mousedown={store.clearState} type="button">CLEAR STATE</button>
+  {#if !process.env.production}
+    <button on:mousedown={store.clearState} type="button">CLEAR STATE</button>
+  {/if}
 </div>
 
 <style>
