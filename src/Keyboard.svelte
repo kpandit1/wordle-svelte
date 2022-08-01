@@ -87,7 +87,7 @@
       });
     }
 
-    if (e.key === "Backspace") {
+    if (e.key === "Backspace" || e.key === "<-") {
       store.update((state) => {
         // prettier-ignore
         state.guesses[state.guessIdx] = state.guesses[state.guessIdx].slice(0, -1);
@@ -106,7 +106,7 @@
   {#each [ 
     ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
     ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
-    ["ENTER", "Z", "X", "C", "V", "B", "N", "M", "<-"]]
+    ["Enter", "Z", "X", "C", "V", "B", "N", "M", "<-"]]
     as row
   }
     <div class="row">
@@ -148,6 +148,7 @@
     cursor: pointer;
     font-weight: bold;
     color: var(--clr-text);
+    text-transform: uppercase;
   }
   /* media query  */
   /* @media (max-width: 600px) {
