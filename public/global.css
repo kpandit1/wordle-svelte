@@ -5,10 +5,14 @@
   --clr-absent-key-lt: #787c7e;
   --clr-key-bg-lt: #d3d6da;
   --clr-text-lt: black;
+  --opacity-50-lt: rgba(255, 255, 255, 0.5);
 
   --clr-absent-dk: #3a3a3c;
   --clr-correct-dk: #538d4e;
   --clr-present-dk: #b59f3b;
+  --clr-bg-modal-content-dk: rgb(18, 18, 19);
+  --opacity-50-dk: rgba(0, 0, 0, 0.5);
+
   --clr-text-dk: white;
   --clr-key-bg-dk: #787c7e;
   --clr-text: black;
@@ -34,6 +38,7 @@
   --clr-key-bg: var(--clr-key-bg-dk);
   --clr-text: var(--clr-text-dk);
   --clr-background: black;
+  --opacity-50: var(--opacity-50-dk);
 }
 
 html,
@@ -53,6 +58,7 @@ body {
   --clr-absent-key: var(--clr-absent-key-lt);
   --clr-key-bg: var(--clr-key-bg-lt);
   --clr-text: var(--clr-text-lt);
+  --opacity-50: var(--opacity-50-lt);
   box-sizing: border-box;
   font-family: "Nunito", sans-serif;
   background-color: var(--clr-background);
@@ -108,4 +114,8 @@ button:disabled {
 
 button:not(:disabled):active {
   background-color: #ddd;
+}
+
+button:not(:disabled):hover {
+  cursor: pointer;
 }
