@@ -11,6 +11,7 @@
   type="button"
   aria-label={label}
   class="switch"
+  class:disabled={disabled}
   on:click={onClick}
   disabled={disabled}
 >
@@ -44,5 +45,8 @@
   }
   [aria-checked="true"] > .knob {
     transform: translateX(calc(100% - 4px));
+  }
+  .disabled {
+    opacity: 0.5;
   }
 </style>
