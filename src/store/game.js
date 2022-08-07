@@ -7,6 +7,11 @@ function getStoredGuesses() {
 }
 
 export const guesses = writable(getStoredGuesses());
+
+guesses.subscribe((val) =>
+  localStorage.setItem("guesses", JSON.stringify(val))
+);
+
 export const currentGuess = writable("");
 
 export const guessNextWord = (word) => {
@@ -61,9 +66,3 @@ export const followsHardMode = (currGuess) => {
   }
   return [true, ""];
 };
-
-guesses.subscribe((val) =>
-  localStorage.setItem("guesses", JSON.stringify(val))
-);
-
-// export default store;

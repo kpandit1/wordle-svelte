@@ -46,13 +46,6 @@
         onClick={settings.toggleContrast}
       />
     </div>
-    <!-- <button on:click={settings.toggleDarkMode}>☀️</button>
-    <button on:click={settings.toggleContrast}>🌈</button>
-    <button on:click={settings.toggleHardMode} disabled={$store.guessIdx > 0}>
-      hard mode: {$settings.hardMode}
-    </button>
-    <ToggleSwitch checked={false}/>
-    <ToggleSwitch checked={true}/> -->
   </div>
 </SvelteA11yDialog>
 

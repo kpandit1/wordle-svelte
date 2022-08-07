@@ -1,6 +1,5 @@
 <script>
   import { getLetterType } from "../lib/helpers.js";
-  import store from "./store/index.js";
   import { guesses, currentGuess } from "./store/game.js";
   import { solution, NUM_GUESSES, WORD_LENGTH } from "../lib/constants";
 
@@ -28,25 +27,13 @@
     </div>
   {/if}
 
-  {#each Array(numRemainingGuesses).fill("") as blank}
+  {#each Array(numRemainingGuesses).fill("") as _}
     <div class="row">
-      {#each $currentGuess.padEnd(WORD_LENGTH) as letter}
-        <div class="cell">
-          {blank}
-        </div>
+      {#each $currentGuess.padEnd(WORD_LENGTH) as __}
+        <div class="cell"/>
       {/each}
     </div>
   {/each}
-
-  <!-- {#each Array(NUM_GUESSES) as _, i}
-    <div class="row" class:completed={i < $guesses.length}>
-      {#each getRow(i) as letter, j}
-        <div class={`cell ${cellClass(i, letter)}`}>
-          {letter}
-        </div>
-      {/each}
-    </div>
-  {/each} -->
 </div>
 
 <style>
