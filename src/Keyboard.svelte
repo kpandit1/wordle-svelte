@@ -1,100 +1,57 @@
 <script>
-  import store from "./store/index.js";
+  import {
+    currentGuess,
+    guesses,
+    submitGuess,
+    followsHardMode,
+    clearState,
+  } from "./store/game.js";
   import settings from "./store/settings";
 
-  import { getKeyColor, getLetterType, isValidWord } from "../lib/helpers";
+  import { getKeyColor, isValidWord } from "../lib/helpers";
   import { solution } from "../lib/constants/solutions.js";
   import toast from "../src/store/toast";
+  import { WORD_LENGTH } from "../lib/constants/gameConstants.js";
 
-  $: currentGuess = $store.guesses[$store.guessIdx];
-
-  const backspaceKey = "\u232b";
+  const BACKSPACE_KEY = "\u232b";
 
   function handleSubmit() {
     // only consider valid words
-    if (!isValidWord(currentGuess)) {
+    if (!isValidWord($currentGuess)) {
       toast.setToast("Not in word list");
       return;
     }
 
-    // if not hard mode, since the word is valid, move on to the next guess
-    if (!$settings.hardMode) {
-      store.guessNextWord();
-      return;
-    }
+    if ($settings.hardMode) {
+      const [isValid, errorMessage] = followsHardMode($currentGuess);
 
-    // if hard mode, there are 2 rules
-    // all previous 'present' letters must be reused
-    // all previous 'correct' letters must be correct again
-
-    // get all previous 'present' and 'found' letters
-    let presentLetters = new Set();
-    let correctLetters = [];
-
-    $store.guesses.forEach((guess) => {
-      guess.split("").forEach((letter, i) => {
-        if (getLetterType(solution, currentGuess, letter, i) === "present") {
-          presentLetters.add(letter);
-        } else if (
-          getLetterType(solution, currentGuess, letter, i) === "correct"
-        ) {
-          correctLetters.push({ letter: letter, idx: i });
-        }
-      });
-    });
-
-    // check if all previous 'correct' letters are correct
-    for (let i = 0; i < correctLetters.length; i++) {
-      const l = correctLetters[i];
-      if (currentGuess[l.idx] !== l.letter) {
-        // TODO: fix the number suffix (1st, 2nd, 3rd)
-        toast.setToast(l.idx + 1 + "th letter must be " + l.letter);
-        return;
+      if (isValid) {
+        submitGuess();
+      } else {
+        toast.setToast(errorMessage);
       }
+    } else {
+      // no hard mode, just submit
+      submitGuess();
     }
-
-    // check all previously 'present' letters are used in the current guess
-    for (const letter of presentLetters) {
-      if (!currentGuess.includes(letter)) {
-        toast.setToast("guess must contain " + letter);
-        return;
-      }
-    }
-    store.guessNextWord();
-
-    // if (isValidWord(currentGuess)) {
-    //   store.guessNextWord();
-    // }
   }
 
   function handleKeydown(e) {
-    if (
-      $store.guessIdx >= 6 ||
-      $store.guesses[$store.guessIdx - 1] === solution
-    ) {
+    if ($guesses.length >= 6 || $guesses[$guesses.length - 1] === solution) {
       // no more typing after 6 guesses or if the last guess was correct
       return;
     }
 
-    // check if key is a letter and max length is 5
     if (
       e.key.length === 1 &&
-      e.key.match(/[A-Za-z]/) &&
-      currentGuess.length < 5
+      e.key.match(/[A-Za-z]/) && // should be a letter
+      $currentGuess.length < WORD_LENGTH // shouldn't be able to type a word longer than 5 letters
     ) {
-      store.update((state) => {
-        const newGuess = state.guesses[state.guessIdx] + e.key.toLowerCase();
-        state.guesses[state.guessIdx] = newGuess;
-        return state;
-      });
+      currentGuess.update((prevGuess) => prevGuess + e.key);
     }
 
-    if (e.key === "Backspace" || e.key === backspaceKey) {
-      store.update((state) => {
-        // prettier-ignore
-        state.guesses[state.guessIdx] = state.guesses[state.guessIdx].slice(0, -1);
-        return state;
-      });
+    if (e.key === "Backspace" || e.key === BACKSPACE_KEY) {
+      currentGuess.update((prevGuess) => prevGuess.slice(0, -1));
     }
     if (e.key === "Enter") {
       handleSubmit();
@@ -108,7 +65,7 @@
   {#each [ 
     ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
     ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
-    ["Enter", "Z", "X", "C", "V", "B", "N", "M", backspaceKey]]
+    ["Enter", "Z", "X", "C", "V", "B", "N", "M", BACKSPACE_KEY]]
     as row
   }
     <div class="row">
@@ -118,7 +75,7 @@
           class={getKeyColor(
             letter.toLowerCase(),
             solution,
-            $store.guesses.slice(0, $store.guessIdx)
+            $guesses
           )}
           type="button">{letter}</button
         >
@@ -127,7 +84,7 @@
   {/each}
 
   {#if !process.env.production}
-    <button on:mousedown={store.clearState} type="button">CLEAR STATE</button>
+    <button on:mousedown={clearState} type="button">CLEAR STATE</button>
   {/if}
 </div>
 

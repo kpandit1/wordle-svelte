@@ -1,7 +1,7 @@
 <script>
   import ToggleSwitch from "./components/ToggleSwitch.svelte";
   import SvelteA11yDialog from "svelte-a11y-dialog";
-  import store from "./store/index.js";
+  import { guesses } from "./store/game.js";
   import settings from "./store/settings";
 </script>
 
@@ -24,7 +24,7 @@
       <ToggleSwitch
         checked={$settings.hardMode}
         onClick={settings.toggleHardMode}
-        disabled={$store.guessIdx > 0}
+        disabled={$guesses.length > 0}
       />
     </div>
     <div class="option">
@@ -39,9 +39,7 @@
     <div class="option">
       <div class="option-label">
         <p class="title">High Contrast Mode</p>
-        <p class="subtitle">
-          For improved colour vision
-        </p>
+        <p class="subtitle">For improved colour vision</p>
       </div>
       <ToggleSwitch
         checked={$settings.highContrast}
