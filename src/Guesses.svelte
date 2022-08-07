@@ -10,8 +10,8 @@
 <div class="board">
   {#each $guesses as guess, i}
     <div class="row completed">
-      {#each guess as letter}
-        <div class={`cell ${getLetterType(solution, guess, letter, i)}`}>
+      {#each guess as letter, j}
+        <div class={`cell ${getLetterType(solution, guess, letter, j)}`}>
           {letter}
         </div>
       {/each}
