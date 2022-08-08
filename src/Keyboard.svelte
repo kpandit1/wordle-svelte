@@ -16,6 +16,11 @@
   const BACKSPACE_KEY = "\u232b";
 
   function handleSubmit() {
+    if ($currentGuess.length < WORD_LENGTH) {
+      toast.setToast("Not enough letters");
+      return;
+    }
+
     // only consider valid words
     if (!isValidWord($currentGuess)) {
       toast.setToast("Not in word list");
