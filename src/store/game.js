@@ -1,15 +1,33 @@
 import { get, writable } from "svelte/store";
 import { getLetterType } from "../../lib/helpers";
-import { solution } from "../../lib/constants";
+import { GAME_STATES, solution, NUM_GUESSES } from "../../lib/constants";
 
 function getStoredGuesses() {
   return JSON.parse(localStorage.getItem("guesses")) || [];
 }
 
-export const guesses = writable(getStoredGuesses());
+function getStoredGameState() {
+  return (
+    JSON.parse(localStorage.getItem("gameState")) || GAME_STATES.IN_PROGRESS
+  );
+}
 
-guesses.subscribe((val) =>
-  localStorage.setItem("guesses", JSON.stringify(val))
+export const guesses = writable(getStoredGuesses());
+export const gameState = writable(getStoredGameState());
+
+guesses.subscribe((val) => {
+  localStorage.setItem("guesses", JSON.stringify(val));
+  if (val.includes(solution)) {
+    gameState.set(GAME_STATES.WON);
+  } else if (val.length === NUM_GUESSES) {
+    gameState.set(GAME_STATES.LOST);
+  } else {
+    gameState.set(GAME_STATES.IN_PROGRESS);
+  }
+});
+
+gameState.subscribe((val) =>
+  localStorage.setItem("gameState", JSON.stringify(val))
 );
 
 export const currentGuess = writable("");

@@ -1,9 +1,11 @@
 <script>
-	import { dayNumber } from './../lib/constants/solutions.js';
+  import { GAME_STATES, dayNumber } from "./../lib/constants";
   import Guesses from "./Guesses.svelte";
   import Keyboard from "./Keyboard.svelte";
   import Toast from "./Toast.svelte";
   import Settings from "./Settings.svelte";
+  import { gameState } from "./store/game.js";
+  import GameEndDialog from "./GameEndDialog.svelte";
 </script>
 
 <main>
@@ -12,12 +14,16 @@
       <h1>Wordle #{dayNumber}</h1>
       <button type="button" data-a11y-dialog-show="settings-dialog">⚙️</button>
     </header>
+    <GameEndDialog
+      show={[GAME_STATES.WON || GAME_STATES.LOST].includes($gameState)}
+      state={$gameState}
+    />
 
     <div class="game">
       <Toast />
       <Guesses />
       <Keyboard />
-      <Settings/>
+      <Settings />
     </div>
   </div>
 </main>
