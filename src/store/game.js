@@ -1,4 +1,4 @@
-import { get, writable } from "svelte/store";
+import { get, writable, derived } from "svelte/store";
 import { getLetterType } from "../../lib/helpers";
 import { GAME_STATES, solution, NUM_GUESSES } from "../../lib/constants";
 
@@ -6,29 +6,21 @@ function getStoredGuesses() {
   return JSON.parse(localStorage.getItem("guesses")) || [];
 }
 
-function getStoredGameState() {
-  return (
-    JSON.parse(localStorage.getItem("gameState")) || GAME_STATES.IN_PROGRESS
-  );
-}
-
 export const guesses = writable(getStoredGuesses());
-export const gameState = writable(getStoredGameState());
 
 guesses.subscribe((val) => {
   localStorage.setItem("guesses", JSON.stringify(val));
-  if (val.includes(solution)) {
-    gameState.set(GAME_STATES.WON);
-  } else if (val.length === NUM_GUESSES) {
-    gameState.set(GAME_STATES.LOST);
-  } else {
-    gameState.set(GAME_STATES.IN_PROGRESS);
-  }
 });
 
-gameState.subscribe((val) =>
-  localStorage.setItem("gameState", JSON.stringify(val))
-);
+export const gameState = derived(guesses, ($guesses) => {
+  if ($guesses.includes(solution)) {
+    return GAME_STATES.WON;
+  } else if ($guesses.length === NUM_GUESSES) {
+    return GAME_STATES.LOST;
+  } else {
+    return GAME_STATES.IN_PROGRESS;
+  }
+});
 
 export const currentGuess = writable("");
 
