@@ -1,6 +1,5 @@
 <script>
   import SvelteA11yDialog from "svelte-a11y-dialog";
-  export let show;
   export let state;
 </script>
 
@@ -14,7 +13,6 @@
   on:instance
 >
   <div class="options-list">
-    <div>{show}</div>
     <div>{state}</div>
   </div>
 </SvelteA11yDialog>
