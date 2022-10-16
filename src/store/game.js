@@ -33,8 +33,12 @@ export const clearState = () => {
 };
 
 export const submitGuess = () => {
+  // submit guess and return feedback of the game state - whether won, lost or still going
+
   guesses.update((prevGuesses) => [...prevGuesses, get(currentGuess)]);
   currentGuess.set("");
+
+  return get(gameState);
 };
 
 // returns [status: boolean, errorMessage: string]

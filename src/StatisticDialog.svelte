@@ -1,5 +1,6 @@
 <script>
   import SvelteA11yDialog from "svelte-a11y-dialog";
+  import statsStore, {numPlayed, numWins} from "./store/stats";
   export let state;
 </script>
 
@@ -7,13 +8,18 @@
   id="game-end-dialog"
   dialogRoot="#dialog-root"
   closeButtonPosition="first"
-  title="Game End Dialog"
+  title="Statistics"
   titleId="dialog-title"
   role="dialog"
   on:instance
 >
   <div class="options-list">
     <div>{state}</div>
+    <div>num played: {$numPlayed}</div>
+    <div>num wins: {$numWins}</div>
+    <div>
+      <pre>{JSON.stringify($statsStore, null, 2)}</pre>
+    </div>
   </div>
 </SvelteA11yDialog>
 

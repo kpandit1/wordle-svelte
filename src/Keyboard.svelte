@@ -1,4 +1,6 @@
 <script>
+  import { addWin, addLoss } from "./store/stats.js";
+  import { GAME_STATES } from "./../lib/constants/gameConstants.js";
   import {
     currentGuess,
     guesses,
@@ -27,17 +29,26 @@
       return;
     }
 
+    let gameState = GAME_STATES.IN_PROGRESS;
+
     if ($settings.hardMode) {
       const [isValid, errorMessage] = followsHardMode($currentGuess);
 
       if (isValid) {
-        submitGuess();
+        gameState = submitGuess();
       } else {
         toast.setToast(errorMessage);
       }
     } else {
       // no hard mode, just submit
-      submitGuess();
+      gameState = submitGuess();
+    }
+
+    if (gameState === GAME_STATES.WON) {
+      addWin($guesses.length);
+    }
+    if (gameState === GAME_STATES.LOST) {
+      addLoss();
     }
   }
 
@@ -107,7 +118,6 @@
     /* padding: 0.7rem; */
     font-size: 1rem;
     width: min(9vw, 50px);
-    width: "200px";
     height: 60px;
     cursor: pointer;
     font-weight: bold;
