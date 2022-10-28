@@ -1,58 +1,73 @@
 <script>
-  import SvelteA11yDialog from "svelte-a11y-dialog";
-  import statsStore, {numPlayed, numWins} from "./store/stats";
-  export let state;
+  import Dialog from "./Dialog.svelte";
+  import statsStore, { numPlayed, numWins } from "./store/stats";
+
+  $: maxCount = Math.max(
+    ...Object.keys($statsStore)
+      .filter((k) => k !== "fail")
+      .map((k) => $statsStore[k])
+  );
 </script>
 
-<SvelteA11yDialog
-  id="game-end-dialog"
-  dialogRoot="#dialog-root"
-  closeButtonPosition="first"
-  title="Statistics"
-  titleId="dialog-title"
-  role="dialog"
-  on:instance
->
+<Dialog id="stats-dialog" title="Statistics" titleId="statistic-dialog-title" on:instance>
   <div class="options-list">
-    <div>{state}</div>
-    <div>num played: {$numPlayed}</div>
-    <div>num wins: {$numWins}</div>
-    <div>
-      <pre>{JSON.stringify($statsStore, null, 2)}</pre>
+    <div>Played: {$numPlayed}</div>
+    <div>Win %: {Math.floor(($numWins * 100) / $numPlayed)}</div>
+    <div class="guess-distribution">
+      <p>Guess distribution</p>
+      <ul class="distributions" role="list">
+        {#each Object.entries($statsStore) as [guesses, count]}
+          {#if guesses !== "fail"}
+            <li>
+              <span class="guesses">{guesses}</span>
+              <div class="bar-container">
+                <div class="bar" style={`width:${(100 * count) / maxCount}%`}>
+                  <span class="count">{count}</span>
+                </div>
+              </div>
+            </li>
+          {/if}
+        {/each}
+      </ul>
     </div>
   </div>
-</SvelteA11yDialog>
+</Dialog>
 
 <style>
-  :global(#game-end-dialog > .dialog-content) {
-    width: min(100% - 2rem, 500px);
-    position: relative;
-    padding: 8px;
-    margin-inline: auto;
-    height: 100%;
-    background-color: var(--clr-background);
-    display: flex;
-    flex-direction: column;
-  }
-  :global(#game-end-dialog > .dialog-overlay) {
-    background-color: var(--clr-background);
-  }
-  :global(#game-end-dialog .dialog-close) {
-    font-size: 1.5rem;
-    margin-left: auto;
-    min-width: 50px;
-    background-color: transparent;
-  }
-  :global(#game-end-dialog .dialog-title) {
-    font-size: 1.4rem;
-    font-weight: 700;
-    text-align: center;
-  }
   .options-list {
     display: flex;
     margin-top: 1.8rem;
     /* gap: 1.2rem; */
     flex-direction: column;
     height: 100%;
+  }
+  .guess-distribution {
+    /* padding-inline: 30px; */
+  }
+
+  .distributions {
+    list-style: none;
+    display: grid;
+    gap: 4px;
+    padding-inline: 0;
+  }
+  .guesses {
+    margin-right: 4px;
+  }
+  .distributions > li {
+    display: flex;
+    font-size: 0.8rem;
+    font-weight: bold;
+  }
+  .distributions .bar-container {
+    flex-grow: 1;
+  }
+  .distributions .bar {
+    background-color: var(--clr-absent);
+    color: white;
+    min-width: 20px;
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 8px;
   }
 </style>

@@ -1,17 +1,14 @@
 <script>
   import ToggleSwitch from "./components/ToggleSwitch.svelte";
-  import SvelteA11yDialog from "svelte-a11y-dialog";
+  import Dialog from "./Dialog.svelte";
   import { guesses } from "./store/game.js";
   import settings from "./store/settings";
 </script>
 
-<SvelteA11yDialog
+<Dialog
   id="settings-dialog"
-  dialogRoot="#dialog-root"
-  closeButtonPosition="first"
   title="Settings"
-  titleId="dialog-title"
-  role="dialog"
+  titleId="settings-dialog-title"
 >
   <div class="options-list">
     <div class="option">
@@ -47,33 +44,9 @@
       />
     </div>
   </div>
-</SvelteA11yDialog>
+</Dialog>
 
 <style>
-  :global(#settings-dialog > .dialog-content) {
-    width: min(100% - 2rem, 500px);
-    position: relative;
-    padding: 8px;
-    margin-inline: auto;
-    height: 100%;
-    background-color: var(--clr-background);
-    display: flex;
-    flex-direction: column;
-  }
-  :global(#settings-dialog > .dialog-overlay) {
-    background-color: var(--clr-background);
-  }
-  :global(#settings-dialog .dialog-close) {
-    font-size: 1.5rem;
-    margin-left: auto;
-    min-width: 50px;
-    background-color: transparent;
-  }
-  :global(#settings-dialog .dialog-title) {
-    font-size: 1.4rem;
-    font-weight: 700;
-    text-align: center;
-  }
   .options-list {
     display: flex;
     margin-top: 1.8rem;
@@ -85,9 +58,13 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid var(--clr-key-bg);
     padding-block: 12px;
   }
+  .option:last-child {
+    border-bottom: none;
+  }
+
   .option-label > .title {
     font-size: 1.1rem;
     font-weight: 700;
