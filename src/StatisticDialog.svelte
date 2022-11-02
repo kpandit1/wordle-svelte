@@ -2,31 +2,33 @@
   import Dialog from "./Dialog.svelte";
   import statsStore, { numPlayed, numWins } from "./store/stats";
 
-  $: maxCount = Math.max(
-    ...Object.keys($statsStore)
-      .filter((k) => k !== "fail")
-      .map((k) => $statsStore[k])
-  );
+  $: maxCount = Math.max(...Object.values($statsStore.wins));
 </script>
 
-<Dialog id="stats-dialog" title="Statistics" titleId="statistic-dialog-title" on:instance>
+<Dialog
+  id="stats-dialog"
+  title="Statistics"
+  titleId="statistic-dialog-title"
+  on:instance
+>
   <div class="options-list">
     <div>Played: {$numPlayed}</div>
     <div>Win %: {Math.floor(($numWins * 100) / $numPlayed)}</div>
+    <div>Current streak: {$statsStore.currStreak}</div>
+    <div>Max streak: {$statsStore.maxStreak}</div>
+
     <div class="guess-distribution">
       <p>Guess distribution</p>
-      <ul class="distributions" role="list">
-        {#each Object.entries($statsStore) as [guesses, count]}
-          {#if guesses !== "fail"}
-            <li>
-              <span class="guesses">{guesses}</span>
-              <div class="bar-container">
-                <div class="bar" style={`width:${(100 * count) / maxCount}%`}>
-                  <span class="count">{count}</span>
-                </div>
+      <ul class="distributions">
+        {#each Object.entries($statsStore.wins) as [guesses, count]}
+          <li>
+            <span class="guesses">{guesses}</span>
+            <div class="bar-container">
+              <div class="bar" style={`width:${(100 * count) / maxCount}%`}>
+                <span class="count">{count}</span>
               </div>
-            </li>
-          {/if}
+            </div>
+          </li>
         {/each}
       </ul>
     </div>
@@ -41,7 +43,8 @@
     flex-direction: column;
     height: 100%;
   }
-  .guess-distribution {
+  .guess-distribution > p {
+    text-align: center;
     /* padding-inline: 30px; */
   }
 
