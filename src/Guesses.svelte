@@ -10,7 +10,7 @@
   {#each $guesses as guess, i}
     <div class="row completed">
       {#each guess as letter, j}
-        <div class={`cell ${getLetterType(solution, guess, letter, j)}`}>
+        <div class={`cell ${getLetterType(solution, guess, letter, j)}`} style="animation-delay: {j * 250}ms;">
           {letter}
         </div>
       {/each}
@@ -50,49 +50,65 @@
   }
   .cell {
     border: 1px solid rgb(124, 118, 118);
-    width: 60px;
+    width: 55px;
     aspect-ratio: 1;
     display: grid;
     place-items: center;
     text-transform: uppercase;
   }
-  .cell:hover {
-    animation: Shake 4s;
-    animation-iteration-count: infinite;
-  }
 
-  @keyframes Shake {
+  @keyframes tile-flip-in-out-correct {
     0% {
-      transform: translate(0, -2px);
+      transform: rotateX(0);
     }
-    10% {
-      transform: translate(-2px, 0);
+    50% {
+      transform: rotateX(-90deg);
     }
-
-    20% {
-      transform: translate(0, -2px);
-    }
-
-    30% {
-      transform: translate(2px, 0);
-    }
-
-    40% {
-      transform: translate(0, 0);
+    100% {
+      transform: rotateX(0);
+      background-color: var(--clr-correct);
+      color: white;
+      border: 0;
     }
   }
 
-  .completed > * {
-    color: white;
-    border: 0;
+  @keyframes tile-flip-in-out-present {
+    0% {
+      transform: rotateX(0);
+    }
+    50% {
+      transform: rotateX(-90deg);
+    }
+    100% {
+      transform: rotateX(0);
+      background-color: var(--clr-present);
+      color: white;
+      border: 0;
+    }
   }
+
+  @keyframes tile-flip-in-out-absent {
+    0% {
+      transform: rotateX(0);
+    }
+    50% {
+      transform: rotateX(-90deg);
+    }
+    100% {
+      transform: rotateX(0);
+      background-color: var(--clr-absent);
+      color: white;
+      border: 0;
+    }
+  }
+
   .completed > .correct {
-    background-color: var(--clr-correct);
+    animation: tile-flip-in-out-correct 1s forwards;
   }
   .completed > .present {
-    background-color: var(--clr-present);
+    animation: tile-flip-in-out-present 1s forwards;
   }
   .completed > .absent {
-    background-color: var(--clr-absent);
+    animation: tile-flip-in-out-absent 1s forwards;
   }
 </style>
