@@ -27,10 +27,9 @@
   <div class="container">
     <header>
       <h1>Wordle #{dayNumber}</h1>
-      <button type="button" data-a11y-dialog-show="settings-dialog">⚙️</button>
-      <button type="button" data-a11y-dialog-show="game-end-dialog">
-        📊
-      </button>
+      <!-- Prevent button in focus from being clicked by keypress events  -->
+      <button type="button" data-a11y-dialog-show="settings-dialog" on:keypress|preventDefault>⚙️</button>
+      <button type="button" data-a11y-dialog-show="stats-dialog" on:keypress|preventDefault>📊</button>
     </header>
 
     <div class="game">
@@ -82,8 +81,8 @@
   .game {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
-    gap: 2.5rem;
+    justify-content: space-around;
+    gap: 1.5rem;
     position: relative;
     height: 100%;
   }

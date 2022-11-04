@@ -63,7 +63,7 @@
       e.key.match(/[A-Za-z]/) && // should be a letter
       $currentGuess.length < WORD_LENGTH // shouldn't be able to type a word longer than 5 letters
     ) {
-      currentGuess.update((prevGuess) => prevGuess + e.key);
+      currentGuess.update((prevGuess) => prevGuess + e.key.toLowerCase());
     }
 
     if (e.key === "Backspace" || e.key === BACKSPACE_KEY) {
@@ -93,6 +93,7 @@
             solution,
             $guesses
           )}
+          data-key={letter === BACKSPACE_KEY ? "Backspace" : letter}
           type="button">{letter}</button
         >
       {/each}
@@ -117,12 +118,21 @@
     touch-action: manipulation;
     /* padding: 0.7rem; */
     font-size: 1rem;
-    width: min(9vw, 50px);
+    min-width: max-content;
+    flex: 1;
+    max-width: 40px;
     height: 60px;
     cursor: pointer;
     font-weight: bold;
     color: var(--clr-text);
     text-transform: uppercase;
+  }
+
+  .row > button[data-key="Enter"] {
+    font-size: 0.9rem;
+  }
+  .row > button[data-key="Backspace"] {
+    flex: 2.5;
   }
   /* media query  */
   /* @media (max-width: 600px) {
@@ -130,7 +140,7 @@
     }
   } */
 
-  .not-guessed {
+  button.not-guessed {
     background-color: var(--clr-key-bg);
   }
   button.correct {

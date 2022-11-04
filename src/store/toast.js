@@ -9,6 +9,7 @@ function createStore() {
     set(message);
     // clear message after TOAST_DURATION
     setTimeout(() => set(""), duration);
+    // TODO: when/how does the timeout need to be cleared?
   };
 
   return {
