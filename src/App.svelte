@@ -18,7 +18,7 @@
       dialogInstance &&
       ($gameState === GAME_STATES.WON || $gameState === GAME_STATES.LOST)
     ) {
-      dialogInstance.show();
+      setTimeout(() => dialogInstance.show(), 2000);
     }
   }
 </script>
@@ -28,8 +28,16 @@
     <header>
       <h1>Wordle #{dayNumber}</h1>
       <!-- Prevent button in focus from being clicked by keypress events  -->
-      <button type="button" data-a11y-dialog-show="settings-dialog" on:keypress|preventDefault>⚙️</button>
-      <button type="button" data-a11y-dialog-show="stats-dialog" on:keypress|preventDefault>📊</button>
+      <button
+        type="button"
+        data-a11y-dialog-show="settings-dialog"
+        on:keypress|preventDefault>⚙️</button
+      >
+      <button
+        type="button"
+        data-a11y-dialog-show="stats-dialog"
+        on:keypress|preventDefault>📊</button
+      >
     </header>
 
     <div class="game">
@@ -38,7 +46,7 @@
       <Keyboard />
     </div>
     <Settings />
-    <StatisticDialog state={$gameState} on:instance={assignDialogInstance} />
+    <StatisticDialog on:instance={assignDialogInstance} />
   </div>
 </main>
 

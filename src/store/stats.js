@@ -12,6 +12,7 @@ const initialStats = {
   fails: 0,
   currStreak: 0,
   maxStreak: 0,
+  lastCompletedDate: 0,
 };
 
 function getStoredStats() {
@@ -34,9 +35,14 @@ export const addWin = (numGuesses) => {
     newStats.wins[numGuesses] = prevStats.wins[numGuesses] + 1;
     newStats.currStreak = prevStats.currStreak + 1;
     newStats.maxStreak = Math.max(newStats.currStreak, newStats.maxStreak);
+    newStats.lastCompletedDate = new Date().getTime();
 
     return newStats;
   });
+};
+
+export const resetStreak = () => {
+  statsStore.update((prevStats) => ({ ...prevStats, currStreak: 0 }));
 };
 
 export const addLoss = () => {
@@ -44,6 +50,7 @@ export const addLoss = () => {
     const newStats = { ...prevStats };
     newStats.fails = prevStats.fails + 1;
     newStats.currStreak = 0;
+    newStats.lastCompletedDate = new Date().getTime();
 
     return newStats;
   });

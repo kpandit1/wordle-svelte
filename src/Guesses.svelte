@@ -57,7 +57,7 @@
     text-transform: uppercase;
   }
 
-  @keyframes tile-flip-in-out-correct {
+  @keyframes tile-flip-in-out {
     0% {
       transform: rotateX(0);
     }
@@ -66,49 +66,23 @@
     }
     100% {
       transform: rotateX(0);
-      background-color: var(--clr-correct);
+      background-color: var(--tile-bg-clr);
       color: white;
       border: 0;
     }
   }
 
-  @keyframes tile-flip-in-out-present {
-    0% {
-      transform: rotateX(0);
-    }
-    50% {
-      transform: rotateX(-90deg);
-    }
-    100% {
-      transform: rotateX(0);
-      background-color: var(--clr-present);
-      color: white;
-      border: 0;
-    }
-  }
-
-  @keyframes tile-flip-in-out-absent {
-    0% {
-      transform: rotateX(0);
-    }
-    50% {
-      transform: rotateX(-90deg);
-    }
-    100% {
-      transform: rotateX(0);
-      background-color: var(--clr-absent);
-      color: white;
-      border: 0;
-    }
+  .completed > .cell {
+    animation: tile-flip-in-out 800ms forwards;
   }
 
   .completed > .correct {
-    animation: tile-flip-in-out-correct 1s forwards;
+    --tile-bg-clr: var(--clr-correct);
   }
   .completed > .present {
-    animation: tile-flip-in-out-present 1s forwards;
+    --tile-bg-clr: var(--clr-present);
   }
   .completed > .absent {
-    animation: tile-flip-in-out-absent 1s forwards;
+    --tile-bg-clr: var(--clr-absent);
   }
 </style>

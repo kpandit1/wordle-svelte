@@ -1,12 +1,34 @@
 import { get, writable, derived } from "svelte/store";
 import { getLetterType } from "../../lib/helpers";
 import { GAME_STATES, solution, NUM_GUESSES } from "../../lib/constants";
+import statsStore, { resetStreak } from "./stats";
 
 function getStoredGuesses() {
   return JSON.parse(localStorage.getItem("guesses")) || [];
 }
 
 export const guesses = writable(getStoredGuesses());
+
+export const clearState = () => {
+  guesses.set([]);
+};
+
+const lastCompletedDate = get(statsStore).lastCompletedDate;
+const startOfToday = new Date().setHours(0, 0, 0, 0);
+
+// if the last time a game was played(won?) was before the start of current date,
+// reset the guesses to start a new game
+if (lastCompletedDate < startOfToday) {
+  // clearState();
+}
+
+// number of milliseconds in one day
+const ONE_DAY_MS = 86400 * 1000;
+
+// TODO: confirm this logic
+if (lastCompletedDate + ONE_DAY_MS < startOfToday) {
+  resetStreak();
+}
 
 guesses.subscribe((val) => {
   localStorage.setItem("guesses", JSON.stringify(val));
@@ -26,10 +48,6 @@ export const currentGuess = writable("");
 
 export const guessNextWord = (word) => {
   guesses.update((prevGuesses) => [...prevGuesses, word]);
-};
-
-export const clearState = () => {
-  guesses.set([]);
 };
 
 export const submitGuess = () => {
