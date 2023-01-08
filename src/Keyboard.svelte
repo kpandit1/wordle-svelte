@@ -100,7 +100,7 @@
     </div>
   {/each}
 
-  {#if !process.env.production}
+  {#if import.meta.env.MODE === "development"}
     <button on:mousedown={clearState} type="button">CLEAR STATE</button>
   {/if}
 </div>
