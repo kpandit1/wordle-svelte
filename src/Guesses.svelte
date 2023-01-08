@@ -10,7 +10,10 @@
   {#each $guesses as guess, i}
     <div class="row completed">
       {#each guess as letter, j}
-        <div class={`cell ${getLetterType(solution, guess, letter, j)}`} style="animation-delay: {j * 250}ms;">
+        <div
+          class={`cell ${getLetterType(solution, guess, letter, j)}`}
+          style="animation-delay: {j * 250}ms;"
+        >
           {letter}
         </div>
       {/each}
@@ -30,7 +33,7 @@
   {#each Array(numRemainingGuesses).fill("") as _}
     <div class="row">
       {#each $currentGuess.padEnd(WORD_LENGTH) as __}
-        <div class="cell"/>
+        <div class="cell" />
       {/each}
     </div>
   {/each}
@@ -39,9 +42,11 @@
 <style>
   .board {
     font-size: 1.8rem;
-    font-weight: bold;
+    font-weight: 950;
     margin-inline: auto;
     width: max-content;
+    user-select: none;
+    -webkit-user-select: none;
   }
   .row {
     display: flex;
@@ -51,38 +56,41 @@
   .cell {
     border: 1px solid rgb(124, 118, 118);
     width: 55px;
+    height: 55px;
     aspect-ratio: 1;
     display: grid;
     place-items: center;
     text-transform: uppercase;
+    font-weight: bold;
   }
 
   @keyframes tile-flip-in-out {
+    /* using custom props in here causes bugs in Safari */
     0% {
       transform: rotateX(0);
+      background-color: unset;
     }
     50% {
       transform: rotateX(-90deg);
     }
     100% {
       transform: rotateX(0);
-      background-color: var(--tile-bg-clr);
       color: white;
       border: 0;
     }
   }
 
   .completed > .cell {
-    animation: tile-flip-in-out 800ms forwards;
+    animation: tile-flip-in-out 800ms both ease-in-out;
   }
 
   .completed > .correct {
-    --tile-bg-clr: var(--clr-correct);
+    background-color: var(--clr-correct);
   }
   .completed > .present {
-    --tile-bg-clr: var(--clr-present);
+    background-color: var(--clr-present);
   }
   .completed > .absent {
-    --tile-bg-clr: var(--clr-absent);
+    background-color: var(--clr-absent);
   }
 </style>
