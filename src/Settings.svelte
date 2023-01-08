@@ -7,7 +7,7 @@
 
 <Dialog
   id="settings-dialog"
-  title="Settings"
+  title="⚙️ Settings"
   titleId="settings-dialog-title"
 >
   <div class="options-list">

@@ -117,10 +117,10 @@
   .row > button {
     touch-action: manipulation;
     /* padding: 0.7rem; */
-    font-size: 1rem;
+    font-size: 0.8rem;
     min-width: max-content;
     flex: 1;
-    max-width: 40px;
+    max-width: 45px;
     height: 60px;
     cursor: pointer;
     font-weight: bold;
@@ -129,10 +129,18 @@
   }
 
   .row > button[data-key="Enter"] {
-    font-size: 0.9rem;
+    font-size: 0.7rem;
   }
   .row > button[data-key="Backspace"] {
-    flex: 2.5;
+    font-size: 0.9rem;
+    flex: 1.6;
+    font-family: "Lucida Sans Unicode", "Arial Unicode MS";
+  }
+  .row > button[data-key="A"] {
+    margin-left: 13px;
+  }
+  .row > button[data-key="L"] {
+    margin-right: 13px;
   }
   /* media query  */
   /* @media (max-width: 600px) {
