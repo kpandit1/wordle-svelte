@@ -1,11 +1,11 @@
 <script>
   import toast from "../src/store/toast";
-  import { fade } from 'svelte/transition';
+  import { fade } from "svelte/transition";
 </script>
 
 <div class="toast-container">
   {#if $toast}
-    <div class="toast" transition:fade={{duration: 300}}>
+    <div class="toast" transition:fade={{ duration: 300 }}>
       <span class="toast-text">{$toast}</span>
     </div>
   {/if}
