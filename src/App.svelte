@@ -48,7 +48,7 @@
   <StatisticDialog on:instance={assignDialogInstance} />
 </main>
 
-<style>
+<style lang="postcss">
   main {
     width: min(100% - 1rem, 600px);
     margin-inline: auto;
@@ -84,5 +84,11 @@
     position: relative;
     height: 100%;
     /* overflow: hidden; */
+  }
+
+  @media (min-width: 641px) {
+    #game {
+      justify-content: space-around;
+    }
   }
 </style>

@@ -39,7 +39,7 @@
   {/each}
 </div>
 
-<style>
+<style lang="postcss">
   .board {
     font-size: 1.8rem;
     font-weight: 950;
