@@ -14,6 +14,7 @@
   import { solution } from "../lib/constants/solutions.js";
   import toast from "../src/store/toast";
   import { WORD_LENGTH } from "../lib/constants/gameConstants.js";
+  import BackspaceSvg from "./components/BackspaceSVG.svelte";
 
   const BACKSPACE_KEY = "\u232b";
 
@@ -94,7 +95,13 @@
             $guesses
           )}
           data-key={letter === BACKSPACE_KEY ? "Backspace" : letter}
-          type="button">{letter}</button
+          type="button">
+            {#if letter === BACKSPACE_KEY} 
+              <BackspaceSvg />
+            {:else}
+              {letter}
+            {/if}
+          </button
         >
       {/each}
     </div>
@@ -129,13 +136,11 @@
   }
 
   .row > button[data-key="Enter"] {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
   }
   .row > button[data-key="Backspace"] {
-    font-size: 0.9rem;
-    flex: 1.6;
-    font-family: "Lucida Sans Unicode", "Arial Unicode MS";
   }
+
   .row > button[data-key="A"] {
     margin-left: 13px;
   }
