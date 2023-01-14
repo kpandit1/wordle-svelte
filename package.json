@@ -17,8 +17,11 @@
     "eslint": "^8.21.0",
     "eslint-plugin-svelte3": "^4.0.0",
     "jest": "^27.5.1",
+    "postcss-load-config": "^4.0.1",
+    "postcss-preset-env": "^7.8.3",
     "svelte": "^3.48.0",
-    "svelte-jester": "^2.3.2"
+    "svelte-jester": "^2.3.2",
+    "svelte-preprocess": "^5.0.0"
   },
   "dependencies": {
     "svelte-a11y-dialog": "^0.2.0",
