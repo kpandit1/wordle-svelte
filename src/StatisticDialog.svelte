@@ -14,8 +14,8 @@
   <div class="options-list">
     <div>Played: {$numPlayed}</div>
     <div>Win %: {Math.floor(($numWins * 100) / $numPlayed)}</div>
-    <div>Current streak: {$statsStore.currStreak}</div>
-    <div>Max streak: {$statsStore.maxStreak}</div>
+    <!-- <div>Current streak: {$statsStore.currStreak}</div>
+    <div>Max streak: {$statsStore.maxStreak}</div> -->
 
     <div class="guess-distribution">
       <p>Guess distribution</p>
