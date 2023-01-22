@@ -1,6 +1,6 @@
 import { get, writable, derived } from "svelte/store";
 import { getLetterType } from "../../lib/helpers";
-import { GAME_STATES, solution, NUM_GUESSES } from "../../lib/constants";
+import { GAME_STATES, NUM_GUESSES, solution } from "../../lib/constants";
 import statsStore, { resetStreak } from "./stats";
 
 function getStoredGuesses() {

@@ -1,6 +1,6 @@
 <script>
   import { addWin, addLoss } from "./store/stats.js";
-  import { GAME_STATES } from "./../lib/constants/gameConstants.js";
+  import { GAME_STATES, solution } from "./../lib/constants/gameConstants.js";
   import {
     currentGuess,
     guesses,
@@ -11,7 +11,6 @@
   import settings from "./store/settings";
 
   import { getKeyColor, isValidWord } from "../lib/helpers";
-  import { solution } from "../lib/constants/solutions.js";
   import toast from "../src/store/toast";
   import { WORD_LENGTH } from "../lib/constants/gameConstants.js";
   import BackspaceSvg from "./components/BackspaceSVG.svelte";
@@ -46,9 +45,11 @@
     }
 
     if (gameState === GAME_STATES.WON) {
+      toast.setToast("Nice!");
       addWin($guesses.length);
     }
     if (gameState === GAME_STATES.LOST) {
+      toast.setToast(solution.toUpperCase(), 7200 * 1000);
       addLoss();
     }
   }
