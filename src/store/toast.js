@@ -1,15 +1,19 @@
+import { onDestroy } from "svelte";
 import { writable } from "svelte/store";
 
 const TOAST_DURATION = 1500;
 
-function createStore() {
+function toastStore() {
   const { subscribe, set } = writable("");
+  let timeoutId;
+  onDestroy(() => {
+    clearTimeout(timeoutId);
+  });
 
   const setToast = (message, duration = TOAST_DURATION) => {
     set(message);
-    // clear message after TOAST_DURATION
-    setTimeout(() => set(""), duration);
-    // TODO: when/how does the timeout need to be cleared?
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => set(""), duration);
   };
 
   return {
@@ -18,6 +22,4 @@ function createStore() {
   };
 }
 
-const toast = createStore();
-
-export default toast;
+export default toastStore;
