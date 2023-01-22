@@ -98,3 +98,26 @@ export const followsHardMode = (currGuess) => {
   }
   return [true, ""];
 };
+
+export const emojifiedGuesses = derived(guesses, ($guesses) => {
+  const emojiGuessesList = $guesses.map((guess) => {
+    const emojiGuessList = guess.split("").map((letter, i) => {
+      const letterType = getLetterType(solution, guess, letter, i);
+
+      if (letterType === "correct") {
+        return "🟩";
+      } else if (letterType === "present") {
+        return "🟨";
+      } else if (letterType === "absent") {
+        return "⬛️";
+      } else {
+        console.warn("unexpected letter type");
+        return "X";
+      }
+    });
+    const emojiGuessStr = emojiGuessList.join("");
+    return emojiGuessStr;
+  });
+
+  return emojiGuessesList.join("\n");
+});
