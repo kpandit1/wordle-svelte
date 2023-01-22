@@ -11,11 +11,14 @@
   import settings from "./store/settings";
 
   import { getKeyColor, isValidWord } from "../lib/helpers";
-  import toast from "../src/store/toast";
+  // import toastStore from "../src/store/toast";
+  import toast from "./store/toast.js";
   import { WORD_LENGTH } from "../lib/constants/gameConstants.js";
   import BackspaceSvg from "./components/BackspaceSVG.svelte";
 
   const BACKSPACE_KEY = "\u232b";
+
+  // $: console.log("toast keyboard", $toast);
 
   function handleSubmit() {
     if ($currentGuess.length < WORD_LENGTH) {
