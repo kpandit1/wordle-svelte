@@ -27,6 +27,6 @@
     color: var(--clr-background);
     border-radius: 4px;
     font-size: 11pt;
-    font-weight: 500;
+    font-weight: bold;
   }
 </style>
