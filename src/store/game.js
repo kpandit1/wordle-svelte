@@ -1,7 +1,12 @@
 import { get, writable, derived } from "svelte/store";
 import { getLetterType } from "../../lib/helpers";
-import { GAME_STATES, NUM_GUESSES, solution } from "../../lib/constants";
-import statsStore, { resetStreak } from "./stats";
+import {
+  dayNumber,
+  GAME_STATES,
+  NUM_GUESSES,
+  solution,
+} from "../../lib/constants";
+// import statsStore, { resetStreak } from "./stats";
 
 function getStoredGuesses() {
   return JSON.parse(localStorage.getItem("guesses")) || [];
@@ -13,22 +18,22 @@ export const clearState = () => {
   guesses.set([]);
 };
 
-const lastCompletedDate = get(statsStore).lastCompletedDate;
-const startOfToday = new Date().setHours(0, 0, 0, 0);
+// const lastCompletedDate = get(statsStore).lastCompletedDate;
+// const startOfToday = new Date().setHours(0, 0, 0, 0);
 
 // if the last time a game was played(won?) was before the start of current date,
 // reset the guesses to start a new game
-if (lastCompletedDate < startOfToday) {
-  // clearState();
-}
+// if (lastCompletedDate < startOfToday) {
+// clearState();
+// }
 
 // number of milliseconds in one day
-const ONE_DAY_MS = 86400 * 1000;
+// const ONE_DAY_MS = 86400 * 1000;
 
 // TODO: confirm this logic
-if (lastCompletedDate + ONE_DAY_MS < startOfToday) {
-  resetStreak();
-}
+// if (lastCompletedDate + ONE_DAY_MS < startOfToday) {
+//   resetStreak();
+// }
 
 guesses.subscribe((val) => {
   localStorage.setItem("guesses", JSON.stringify(val));
@@ -55,6 +60,7 @@ export const submitGuess = () => {
 
   guesses.update((prevGuesses) => [...prevGuesses, get(currentGuess)]);
   currentGuess.set("");
+  lastPlayedDayNumber.set(dayNumber);
 
   return get(gameState);
 };
@@ -121,3 +127,17 @@ export const emojifiedGuesses = derived(guesses, ($guesses) => {
 
   return emojiGuessesList.join("\n");
 });
+
+function getStoredDayNumber() {
+  return JSON.parse(localStorage.getItem("lastPlayedDayNumber")) || 999999;
+}
+const lastPlayedDayNumber = writable(getStoredDayNumber());
+
+lastPlayedDayNumber.subscribe((val) => {
+  localStorage.setItem("lastPlayedDayNumber", Number(JSON.stringify(val)));
+});
+
+if (get(lastPlayedDayNumber) !== dayNumber) {
+  // this ensures that previous guesses are reset between days
+  clearState();
+}
