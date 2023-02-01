@@ -7,12 +7,16 @@
     "dev": "vite",
     "build": "vite build",
     "start": "vite preview",
-    "test": "jest"
+    "test": "jest",
+    "check": "svelte-check --tsconfig ./tsconfig.json"
   },
   "devDependencies": {
     "@babel/core": "^7.17.9",
     "@babel/preset-env": "^7.18.2",
     "@sveltejs/vite-plugin-svelte": "^2.0.2",
+    "@tsconfig/svelte": "^3.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.49.0",
+    "@typescript-eslint/parser": "^5.49.0",
     "babel-jest": "^27.5.1",
     "eslint": "^8.21.0",
     "eslint-plugin-svelte3": "^4.0.0",
@@ -20,12 +24,15 @@
     "postcss-load-config": "^4.0.1",
     "postcss-preset-env": "^7.8.3",
     "svelte": "^3.48.0",
+    "svelte-check": "^2.10.0",
     "svelte-jester": "^2.3.2",
-    "svelte-preprocess": "^5.0.0"
+    "svelte-preprocess": "^5.0.0",
+    "tslib": "^2.5.0",
+    "typescript": "^4.9.4",
+    "vite": "^4.0.4"
   },
   "dependencies": {
-    "svelte-a11y-dialog": "^0.2.0",
-    "vite": "^4.0.4"
+    "svelte-a11y-dialog": "^0.2.0"
   },
   "jest": {
     "bail": false,

@@ -1,4 +1,5 @@
 <script>
+  // @ts-nocheck
   export let id;
   export let title;
   export let titleId;
