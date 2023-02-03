@@ -1,26 +1,29 @@
-<script>
-  import { GAME_STATES } from "./../lib/constants/gameConstants.js";
-  import { dayNumber } from "./../lib/constants";
+<script lang="ts">
+  import { gameStatus } from "./domain/game";
+  import { dayNumber } from "../lib/constants";
   import Guesses from "./Guesses.svelte";
   import Keyboard from "./Keyboard.svelte";
   import Toast from "./Toast.svelte";
   import Settings from "./Settings.svelte";
-  import { gameState } from "./store/game.js";
   import StatisticDialog from "./StatisticDialog.svelte";
-  let dialogInstance;
+  import { GameStatus } from "./global-enums";
 
-  const assignDialogInstance = (ev) => {
+  let dialogInstance: any;
+
+  const assignDialogInstance = (ev: any) => {
     dialogInstance = ev.detail.instance;
   };
 
   $: {
     if (
       dialogInstance &&
-      ($gameState === GAME_STATES.WON || $gameState === GAME_STATES.LOST)
+      ($gameStatus === GameStatus.WON || $gameStatus === GameStatus.LOST)
     ) {
       setTimeout(() => dialogInstance.show(), 3000);
     }
   }
+
+  let currentGuess: Word = "";
 </script>
 
 <main>
@@ -41,8 +44,8 @@
 
   <div id="game">
     <Toast />
-    <Guesses />
-    <Keyboard />
+    <Guesses {currentGuess} />
+    <Keyboard bind:currentGuess />
   </div>
   <Settings />
   <StatisticDialog on:instance={assignDialogInstance} />

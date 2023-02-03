@@ -1,83 +1,93 @@
-<script>
-  import { addWin, addLoss } from "./store/stats.js";
-  import { GAME_STATES, solution } from "./../lib/constants/gameConstants.js";
+<script lang="ts">
   import {
-    currentGuess,
-    guesses,
-    submitGuess,
-    followsHardMode,
     clearState,
-  } from "./store/game.js";
+    followsHardMode,
+    gameStatus,
+    guesses,
+    keyboardLetterPlacements,
+    submitGuess,
+  } from "./domain/game";
+  import { addWin, addLoss } from "./store/stats.js";
   import settings from "./store/settings";
 
   import { getKeyColor, isValidWord } from "../lib/helpers";
-  // import toastStore from "../src/store/toast";
   import toast from "./store/toast.js";
   import { WORD_LENGTH } from "../lib/constants/gameConstants.js";
   import BackspaceSvg from "./components/BackspaceSVG.svelte";
+  import { GameStatus } from "./global-enums";
+  import { lastPlayedDayNumber } from "./domain/usage";
+  import { dayNumber } from "../lib/constants";
 
-  const BACKSPACE_KEY = "\u232b";
-
-  // $: console.log("toast keyboard", $toast);
+  export let currentGuess: Word;
 
   function handleSubmit() {
-    if ($currentGuess.length < WORD_LENGTH) {
+    if (currentGuess.length < WORD_LENGTH) {
       toast.setToast("Not enough letters");
       return;
     }
+    if (currentGuess === "danby") {
+      toast.setToast("😍");
+    }
 
     // only consider valid words
-    if (!isValidWord($currentGuess)) {
+    else if (!isValidWord(currentGuess)) {
       toast.setToast("Not in word list");
       return;
     }
 
-    let gameState = GAME_STATES.IN_PROGRESS;
+    let gameStatus = GameStatus.IN_PROGRESS;
 
     if ($settings.hardMode) {
-      const [isValid, errorMessage] = followsHardMode($currentGuess);
+      const res = followsHardMode($guesses, currentGuess);
 
-      if (isValid) {
-        gameState = submitGuess();
+      if (res.ok) {
+        gameStatus = submitGuess(currentGuess);
       } else {
-        toast.setToast(errorMessage);
+        toast.setToast(res.errorMessage);
+        return;
       }
     } else {
       // no hard mode, just submit
-      gameState = submitGuess();
+      gameStatus = submitGuess(currentGuess);
     }
 
-    if (gameState === GAME_STATES.WON) {
+    if (gameStatus === GameStatus.WON) {
       toast.setToast("Nice!");
       addWin($guesses.length);
     }
-    if (gameState === GAME_STATES.LOST) {
-      toast.setToast(solution.toUpperCase(), 7200 * 1000);
+    if (gameStatus === GameStatus.LOST) {
+      // toast.setToast(solution.toUpperCase(), 7200 * 1000);
       addLoss();
     }
+
+    // Reset guess
+    currentGuess = "";
+    // Update usage
+    lastPlayedDayNumber.set(dayNumber);
   }
 
-  function handleKeydown(e) {
-    if ($guesses.length >= 6 || $guesses[$guesses.length - 1] === solution) {
-      // no more typing after 6 guesses or if the last guess was correct
+  function handleKeydown(e: { key: string }) {
+    if ($gameStatus !== GameStatus.IN_PROGRESS) {
       return;
     }
 
     if (
       e.key.length === 1 &&
       e.key.match(/[A-Za-z]/) && // should be a letter
-      $currentGuess.length < WORD_LENGTH // shouldn't be able to type a word longer than 5 letters
+      currentGuess.length < WORD_LENGTH // limit to word length
     ) {
-      currentGuess.update((prevGuess) => prevGuess + e.key.toLowerCase());
+      currentGuess += e.key.toLowerCase();
     }
 
-    if (e.key === "Backspace" || e.key === BACKSPACE_KEY) {
-      currentGuess.update((prevGuess) => prevGuess.slice(0, -1));
+    if (e.key === "Backspace") {
+      currentGuess = currentGuess.slice(0, -1);
     }
     if (e.key === "Enter") {
       handleSubmit();
     }
   }
+
+  const isDev = import.meta.env.MODE === "development";
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
@@ -86,21 +96,17 @@
   {#each [ 
     ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
     ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
-    ["Enter", "Z", "X", "C", "V", "B", "N", "M", BACKSPACE_KEY]]
+    ["Enter", "Z", "X", "C", "V", "B", "N", "M", "Backspace"]]
     as row
   }
     <div class="row">
       {#each row as letter}
         <button
           on:mousedown={(e) => handleKeydown({ ...e, key: letter })}
-          class={getKeyColor(
-            letter.toLowerCase(),
-            solution,
-            $guesses
-          )}
-          data-key={letter === BACKSPACE_KEY ? "Backspace" : letter}
+          class={$keyboardLetterPlacements[letter.toLowerCase()]}
+          data-key={letter}
           type="button">
-            {#if letter === BACKSPACE_KEY} 
+            {#if letter === "Backspace"} 
               <BackspaceSvg />
             {:else}
               {letter}
@@ -111,7 +117,7 @@
     </div>
   {/each}
 
-  {#if import.meta.env.MODE === "development"}
+  {#if isDev}
     <button on:mousedown={clearState} type="button">CLEAR STATE</button>
   {/if}
 </div>
@@ -142,8 +148,6 @@
   .row > button[data-key="Enter"] {
     font-size: 0.75rem;
   }
-  .row > button[data-key="Backspace"] {
-  }
 
   .row > button[data-key="A"] {
     margin-left: 13px;
@@ -151,11 +155,6 @@
   .row > button[data-key="L"] {
     margin-right: 13px;
   }
-  /* media query  */
-  /* @media (max-width: 600px) {
-    .row > button {
-    }
-  } */
 
   button.not-guessed {
     background-color: var(--clr-key-bg);

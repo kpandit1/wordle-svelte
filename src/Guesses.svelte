@@ -1,7 +1,8 @@
-<script>
-  import { getLetterType } from "../lib/helpers.js";
-  import { guesses, currentGuess } from "./store/game.js";
-  import { solution, NUM_GUESSES, WORD_LENGTH } from "../lib/constants";
+<script lang="ts">
+  import { NUM_GUESSES, WORD_LENGTH } from "../lib/constants";
+  import { guesses, guessPlacements } from "./domain/game";
+
+  export let currentGuess: string;
 
   $: numRemainingGuesses = Math.max(NUM_GUESSES - $guesses.length - 1, 0);
 </script>
@@ -10,8 +11,9 @@
   {#each $guesses as guess, i}
     <div class="row completed">
       {#each guess as letter, j}
+        {@const placements = $guessPlacements[i]}
         <div
-          class={`cell ${getLetterType(solution, guess, letter, j)}`}
+          class={`cell ${placements[j]}`}
           style="animation-delay: {j * 250}ms;"
         >
           {letter}
@@ -22,7 +24,7 @@
 
   {#if $guesses.length !== NUM_GUESSES}
     <div class="row">
-      {#each $currentGuess.padEnd(WORD_LENGTH) as letter}
+      {#each currentGuess.padEnd(WORD_LENGTH) as letter}
         <div class="cell">
           {letter}
         </div>
@@ -32,7 +34,7 @@
 
   {#each Array(numRemainingGuesses).fill("") as _}
     <div class="row">
-      {#each $currentGuess.padEnd(WORD_LENGTH) as __}
+      {#each currentGuess.padEnd(WORD_LENGTH) as __}
         <div class="cell" />
       {/each}
     </div>

@@ -8,15 +8,15 @@
 </script>
 
 <SvelteA11yDialog
-  id={id}
+  {id}
   dialogRoot="#dialog-root"
   closeButtonPosition="first"
-  title={title}
-  titleId={titleId}
+  {title}
+  {titleId}
   role="dialog"
   on:instance
 >
-  <slot></slot>
+  <slot />
 </SvelteA11yDialog>
 
 <style>

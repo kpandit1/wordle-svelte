@@ -1,10 +1,14 @@
+// maybe have a "game" folder
+// Inside solution.js, export solution and have wrapped function that uses solution and only takes in guess
+//
+
 import { get, writable, derived } from "svelte/store";
-import { getLetterType } from "../../lib/helpers";
+// import { getLetterType } from "../../lib/helpers";
 import {
   dayNumber,
   GAME_STATES,
   NUM_GUESSES,
-  solution,
+  // solution,
 } from "../../lib/constants";
 // import statsStore, { resetStreak } from "./stats";
 
@@ -51,16 +55,19 @@ export const gameState = derived(guesses, ($guesses) => {
 
 export const currentGuess = writable("");
 
-export const guessNextWord = (word) => {
-  guesses.update((prevGuesses) => [...prevGuesses, word]);
-};
+// export const guessNextWord = (word) => {
+//   guesses.update((prevGuesses) => [...prevGuesses, word]);
+// };
 
 export const submitGuess = () => {
   // submit guess and return feedback of the game state - whether won, lost or still going
 
   guesses.update((prevGuesses) => [...prevGuesses, get(currentGuess)]);
   currentGuess.set("");
-  lastPlayedDayNumber.set(dayNumber);
+
+  // add this part to the handleSubmit event
+  // and separate this out to another store, maybe with stats?
+  // lastPlayedDayNumber.set(dayNumber);
 
   return get(gameState);
 };
@@ -104,40 +111,3 @@ export const followsHardMode = (currGuess) => {
   }
   return [true, ""];
 };
-
-export const emojifiedGuesses = derived(guesses, ($guesses) => {
-  const emojiGuessesList = $guesses.map((guess) => {
-    const emojiGuessList = guess.split("").map((letter, i) => {
-      const letterType = getLetterType(solution, guess, letter, i);
-
-      if (letterType === "correct") {
-        return "🟩";
-      } else if (letterType === "present") {
-        return "🟨";
-      } else if (letterType === "absent") {
-        return "⬛️";
-      } else {
-        console.warn("unexpected letter type");
-        return "X";
-      }
-    });
-    const emojiGuessStr = emojiGuessList.join("");
-    return emojiGuessStr;
-  });
-
-  return emojiGuessesList.join("\n");
-});
-
-function getStoredDayNumber() {
-  return JSON.parse(localStorage.getItem("lastPlayedDayNumber")) || 999999;
-}
-const lastPlayedDayNumber = writable(getStoredDayNumber());
-
-lastPlayedDayNumber.subscribe((val) => {
-  localStorage.setItem("lastPlayedDayNumber", Number(JSON.stringify(val)));
-});
-
-if (get(lastPlayedDayNumber) !== dayNumber) {
-  // this ensures that previous guesses are reset between days
-  clearState();
-}

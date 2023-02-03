@@ -1,19 +1,19 @@
-<script>
-  export let checked;
-  export let label="";
-  export let onClick;
-  export let disabled=false;
+<script lang="ts">
+  export let checked: boolean;
+  export let label: string = "";
+  export let onClick: (e: MouseEvent) => void;
+  export let disabled: boolean = false;
 </script>
 
 <button
-  aria-checked={checked.toString()}
+  aria-checked={checked}
   role="switch"
   type="button"
   aria-label={label}
   class="switch"
-  class:disabled={disabled}
+  class:disabled
   on:click={onClick}
-  disabled={disabled}
+  {disabled}
 >
   <span class="knob" />
 </button>
