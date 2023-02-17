@@ -1,12 +1,15 @@
 <script lang="ts">
-  import { LETTER_PLACEMENT } from "./global-enums";
-  import { guessPlacements } from "./domain/game";
+  import { GameStatus, LETTER_PLACEMENT } from "./global-enums";
+  import { guesses, gameStatus, guessPlacements } from "./domain/game";
   import Dialog from "./Dialog.svelte";
   import statsStore, { numPlayed, numWins } from "./store/stats";
+  import { dayNumber, NUM_GUESSES } from "../lib/constants/gameConstants";
+  import toast from "./store/toast";
+  import shareIcon from "./assets/share.svg";
 
   $: maxCount = Math.max(...Object.values($statsStore.wins));
 
-  function emojifiedGuesses(guesses: Word[]) {
+  function emojifiedGuesses(): string {
     const placementToEmoji = {
       [LETTER_PLACEMENT.CORRECT]: "🟩",
       [LETTER_PLACEMENT.PRESENT]: "🟨",
@@ -18,6 +21,21 @@
     );
 
     return res.join("\n");
+  }
+
+  function shareResults(): void {
+    let body = `Wordle ${dayNumber} `;
+
+    if ($gameStatus === GameStatus.WON) {
+      body += `${$guesses.length}/${NUM_GUESSES}`;
+    } else if ($gameStatus === GameStatus.LOST) {
+      body += `X/${NUM_GUESSES}`;
+    }
+    body += "\n";
+    body += emojifiedGuesses();
+
+    navigator.clipboard.writeText(body);
+    toast.setToast("Copied result to clipboard");
   }
 </script>
 
@@ -48,6 +66,14 @@
         {/each}
       </ul>
     </div>
+
+    <!-- Only allow share after game is over -->
+    {#if $gameStatus !== GameStatus.IN_PROGRESS}
+      <button class="button" on:click={shareResults}>
+        <span>Share</span>
+        <img src={shareIcon} class="icon" role="presentation" alt="" />
+      </button>
+    {/if}
   </div>
 </Dialog>
 
@@ -88,5 +114,23 @@
     display: flex;
     justify-content: flex-end;
     padding-right: 8px;
+  }
+  .button {
+    background-color: var(--clr-correct);
+    color: white;
+    font-weight: bold;
+    font-size: 1rem;
+    width: max-content;
+    margin-inline: auto;
+    padding: 0.7rem 1.75rem;
+    border-radius: 2.5rem;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .icon {
+    width: 24px;
+    height: 24px;
   }
 </style>
