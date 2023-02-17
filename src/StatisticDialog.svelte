@@ -1,32 +1,24 @@
-<script>
+<script lang="ts">
+  import { LETTER_PLACEMENT } from "./global-enums";
+  import { guessPlacements } from "./domain/game";
   import Dialog from "./Dialog.svelte";
   import statsStore, { numPlayed, numWins } from "./store/stats";
 
   $: maxCount = Math.max(...Object.values($statsStore.wins));
 
-  // TODO: fix
-  // export const emojifiedGuesses = derived(guesses, ($guesses) => {
-  //   const emojiGuessesList = $guesses.map((guess) => {
-  //     const emojiGuessList = guess.split("").map((letter, i) => {
-  //       const letterType = getLetterType(solution, guess, letter, i);
+  function emojifiedGuesses(guesses: Word[]) {
+    const placementToEmoji = {
+      [LETTER_PLACEMENT.CORRECT]: "🟩",
+      [LETTER_PLACEMENT.PRESENT]: "🟨",
+      [LETTER_PLACEMENT.ABSENT]: "⬛️",
+    };
 
-  //       if (letterType === "correct") {
-  //         return "🟩";
-  //       } else if (letterType === "present") {
-  //         return "🟨";
-  //       } else if (letterType === "absent") {
-  //         return "⬛️";
-  //       } else {
-  //         console.warn("unexpected letter type");
-  //         return "X";
-  //       }
-  //     });
-  //     const emojiGuessStr = emojiGuessList.join("");
-  //     return emojiGuessStr;
-  //   });
+    const res = $guessPlacements.map((wordPlacements) =>
+      wordPlacements.map((l) => placementToEmoji[l]).join("")
+    );
 
-  //   return emojiGuessesList.join("\n");
-  // });
+    return res.join("\n");
+  }
 </script>
 
 <Dialog

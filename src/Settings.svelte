@@ -1,7 +1,7 @@
 <script>
   import ToggleSwitch from "./components/ToggleSwitch.svelte";
   import Dialog from "./Dialog.svelte";
-  import { guesses } from "./store/game.js";
+  import { guesses } from "./domain/game";
   import settings from "./store/settings";
 </script>
 
@@ -18,6 +18,7 @@
           Any revealed hints must be used in subsequent guesses
         </p>
       </div>
+      <!-- Don't allow toggling mid-game -->
       <ToggleSwitch
         checked={$settings.hardMode}
         onClick={settings.toggleHardMode}

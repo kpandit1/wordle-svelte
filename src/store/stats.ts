@@ -20,7 +20,10 @@ function getStoredStats() {
   // Do this by storing some sort of a timestamp for the day that the win is registered in numWins
   // new Date().setHours(0, 0, 0, 0)
   // Compare to current date and see if there's a large gap
-  return JSON.parse(localStorage.getItem("stats")) || initialStats;
+  return (
+    (JSON.parse(localStorage.getItem("stats")) as typeof initialStats) ||
+    initialStats
+  );
 }
 
 const statsStore = writable(getStoredStats());
@@ -29,7 +32,7 @@ statsStore.subscribe((val) => {
   localStorage.setItem("stats", JSON.stringify(val));
 });
 
-export const addWin = (numGuesses) => {
+export const addWin = (numGuesses: number): void => {
   statsStore.update((prevStats) => {
     const newStats = { ...prevStats };
     newStats.wins[numGuesses] = prevStats.wins[numGuesses] + 1;
@@ -41,11 +44,11 @@ export const addWin = (numGuesses) => {
   });
 };
 
-export const resetStreak = () => {
+export const resetStreak = (): void => {
   statsStore.update((prevStats) => ({ ...prevStats, currStreak: 0 }));
 };
 
-export const addLoss = () => {
+export const addLoss = (): void => {
   statsStore.update((prevStats) => {
     const newStats = { ...prevStats };
     newStats.fails = prevStats.fails + 1;

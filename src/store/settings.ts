@@ -1,12 +1,15 @@
 import { writable } from "svelte/store";
 
+const initialSettings = {
+  darkMode: false,
+  highContrast: false,
+  hardMode: false,
+};
+
 function createStore() {
   const { subscribe, set, update } = writable(
-    JSON.parse(localStorage.getItem("settings")) || {
-      darkMode: false,
-      highContrast: false,
-      hardMode: false,
-    }
+    (JSON.parse(localStorage.getItem("settings")) as typeof initialSettings) ||
+      initialSettings
   );
 
   function toggleDarkMode() {

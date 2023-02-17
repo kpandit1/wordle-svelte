@@ -3,13 +3,13 @@ import { writable } from "svelte/store";
 const TOAST_DURATION = 1500;
 
 function toastStore() {
-  let timeoutId;
+  let timeoutId: NodeJS.Timeout;
+
   const { subscribe, set } = writable("", () => {
     return () => clearTimeout(timeoutId);
   });
 
-  const setToast = (message, duration = TOAST_DURATION) => {
-    set(message);
+  const setToast = (message: string, duration: number = TOAST_DURATION) => {
     clearTimeout(timeoutId);
     set(message);
     timeoutId = setTimeout(() => set(""), duration);

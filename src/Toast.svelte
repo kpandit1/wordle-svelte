@@ -1,6 +1,6 @@
 <script>
   import { fade } from "svelte/transition";
-  import toast from "../src/store/toast";
+  import toast from "./store/toast";
 </script>
 
 <div class="toast-container">

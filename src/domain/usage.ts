@@ -2,7 +2,6 @@ import { get, writable } from "svelte/store";
 import { dayNumber } from "../../lib/constants";
 import { clearState } from "./game";
 
-// this should be moved to a different file
 function getStoredDayNumber(): number {
   return (
     Number(JSON.parse(localStorage.getItem("lastPlayedDayNumber"))) || 999999

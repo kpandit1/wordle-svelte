@@ -10,7 +10,7 @@
   import { addWin, addLoss } from "./store/stats.js";
   import settings from "./store/settings";
 
-  import { getKeyColor, isValidWord } from "../lib/helpers";
+  import { isValidWord } from "../lib/helpers";
   import toast from "./store/toast.js";
   import { WORD_LENGTH } from "../lib/constants/gameConstants.js";
   import BackspaceSvg from "./components/BackspaceSVG.svelte";
@@ -35,28 +35,29 @@
       return;
     }
 
-    let gameStatus = GameStatus.IN_PROGRESS;
+    let status = GameStatus.IN_PROGRESS;
+    let solution: Word | undefined = undefined;
 
     if ($settings.hardMode) {
       const res = followsHardMode($guesses, currentGuess);
 
       if (res.ok) {
-        gameStatus = submitGuess(currentGuess);
+        ({ status, solution } = submitGuess(currentGuess));
       } else {
         toast.setToast(res.errorMessage);
         return;
       }
     } else {
       // no hard mode, just submit
-      gameStatus = submitGuess(currentGuess);
+      ({ status, solution } = submitGuess(currentGuess));
     }
 
-    if (gameStatus === GameStatus.WON) {
+    if (status === GameStatus.WON) {
       toast.setToast("Nice!");
       addWin($guesses.length);
     }
-    if (gameStatus === GameStatus.LOST) {
-      // toast.setToast(solution.toUpperCase(), 7200 * 1000);
+    if (status === GameStatus.LOST) {
+      toast.setToast(solution.toUpperCase(), 7200 * 1000);
       addLoss();
     }
 

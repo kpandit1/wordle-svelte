@@ -1,6 +1,7 @@
+import { LETTER_PLACEMENT } from "../src/global-enums";
 import { ALL_WORDS, SOLUTIONS } from "./constants";
 
-export function isValidWord(input) {
+export function isValidWord(input: Word): boolean {
   // needs to be a 5 letter word
   if (input.length !== 5) {
     return false;
@@ -10,31 +11,35 @@ export function isValidWord(input) {
   return [...ALL_WORDS, ...SOLUTIONS].includes(input.toLowerCase());
 }
 
-function treatAsUTC(date) {
-  var result = new Date(date);
-  result.setMinutes(result.getMinutes() - result.getTimezoneOffset());
-  return result;
+function treatAsUTC(date: Date) {
+  date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+  return date;
 }
 
-export function daysBetween(startDate, endDate) {
+export function daysBetween(startDate: Date, endDate: Date) {
   var millisecondsPerDay = 24 * 60 * 60 * 1000;
-  // TODO: verify floor is correct
   return Math.floor(
-    (treatAsUTC(endDate) - treatAsUTC(startDate)) / millisecondsPerDay
+    (treatAsUTC(endDate).getTime() - treatAsUTC(startDate).getTime()) /
+      millisecondsPerDay
   );
 }
-export function getKeyColor(letter, solution, guesses) {
+
+export function getKeyColor(
+  letter: string,
+  solution: Word,
+  guesses: Word[]
+): LETTER_PLACEMENT {
   const letterInSolution = solution.includes(letter);
   let letterInGuess = false;
 
   for (let i = 0; i < guesses.length; i++) {
     for (let j = 0; j < guesses[i].length; j++) {
       if (guesses[i][j] === letter && solution[j] === letter) {
-        return "correct";
+        return LETTER_PLACEMENT.CORRECT;
       }
       if (guesses[i][j] === letter) {
         if (solution[j] === letter) {
-          return "correct";
+          return LETTER_PLACEMENT.CORRECT;
         } else {
           letterInGuess = true;
         }
@@ -43,14 +48,14 @@ export function getKeyColor(letter, solution, guesses) {
   }
   if (letterInGuess) {
     if (letterInSolution) {
-      return "present";
+      return LETTER_PLACEMENT.PRESENT;
     }
-    return "absent";
+    return LETTER_PLACEMENT.ABSENT;
   }
-  return "not-guessed";
+  return LETTER_PLACEMENT.NOT_GUESSED;
 }
 
-export function ordinal_suffix_of(i) {
+export function ordinal_suffix_of(i: number): string {
   var j = i % 10,
     k = i % 100;
   if (j == 1 && k != 11) {

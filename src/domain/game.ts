@@ -2,6 +2,7 @@ import { derived, get, writable, type Readable } from "svelte/store";
 import { dayNumber, NUM_GUESSES, SOLUTIONS } from "../../lib/constants";
 import { getKeyColor, ordinal_suffix_of } from "../../lib/helpers";
 import { GameStatus, LETTER_PLACEMENT } from "../global-enums";
+import { getLetterPlacement, getWordPlacementsHelper } from "./placements";
 
 // use the day number to get the solution for the day
 const actualSolution = SOLUTIONS[dayNumber];
@@ -12,54 +13,6 @@ const devSolution = SOLUTIONS[dayNumber];
 // eslint-disable-next-line no-undef
 const solution =
   import.meta.env.MODE === "production" ? actualSolution : devSolution;
-
-// for functionality testing
-export function getWordPlacementsHelper(
-  solution: Word,
-  guess: Word
-): LETTER_PLACEMENT[] {
-  return guess
-    .split("")
-    .map((letter, index) => getLetterPlacement(solution, guess, index));
-}
-
-function getLetterPlacement(
-  solution: Word,
-  guess: Word,
-  index: number
-): LETTER_PLACEMENT {
-  const letter = guess[index];
-
-  if (solution[index] === letter) {
-    return LETTER_PLACEMENT.CORRECT;
-  }
-
-  const x = countLetterOccurences(solution, guess, letter);
-  const y = countLetterOccurences(guess.slice(0, index), solution, letter);
-
-  if (y < x) {
-    return LETTER_PLACEMENT.PRESENT;
-  }
-  return LETTER_PLACEMENT.ABSENT;
-}
-
-// count number of occurences of letter in word that haven't been matched yet
-function countLetterOccurences(
-  word1: Word,
-  word2: Word,
-  letter: string
-): number {
-  // const count = word
-  //   .split("")
-  //   .filter((l, i) => l === letter && other[i] !== letter).length;
-  let count = 0;
-  for (let i = 0; i < word1.length; i++) {
-    if (word1[i] === letter && word2[i] !== letter) {
-      count += 1;
-    }
-  }
-  return count;
-}
 
 function getStoredGuesses(): Word[] {
   const storedGuessesStr = localStorage.getItem("guesses");
@@ -103,23 +56,28 @@ export function clearState(): void {
   guesses.set([]);
 }
 
-// TODO: return solution if game is over {status: GameStatus, }
-// TODO: add check for isValidWord
-export const submitGuess = (word: Word): GameStatus => {
+export const submitGuess = (
+  word: Word
+): { status: GameStatus; solution?: Word } => {
   // submit guess and return feedback of the game state - whether won, lost or still going
   guesses.update((prevGuesses) => [...prevGuesses, word]);
-  return get(gameStatus);
-};
 
-type HardModeRes = {
-  ok: boolean;
-  errorMessage: string;
+  const status = get(gameStatus);
+
+  return {
+    status,
+    // return solution only if game over
+    solution: status === GameStatus.IN_PROGRESS ? undefined : solution,
+  };
 };
 
 export function followsHardMode(
   prevGuesses: Word[],
   testWord: Word
-): HardModeRes {
+): {
+  ok: boolean;
+  errorMessage: string;
+} {
   // if hard mode, there are 2 rules
   // all previous 'present' letters must be reused
   // all previous 'correct' letters must be correct again
@@ -163,30 +121,15 @@ export function followsHardMode(
   return { ok: true, errorMessage: "" };
 }
 
-export const keyboardLetterPlacements = derived(guesses, ($guesses) => {
-  // Use this till everything's in TS
-  function transformKeyColorToEnum(
-    c: "correct" | "present" | "absent" | "not-guessed"
-  ) {
-    if (c === "correct") {
-      return LETTER_PLACEMENT.CORRECT;
-    } else if (c == "present") {
-      return LETTER_PLACEMENT.PRESENT;
-    } else if (c === "absent") {
-      return LETTER_PLACEMENT.ABSENT;
-    } else {
-      return LETTER_PLACEMENT.NOT_GUESSED;
-    }
-  }
-
+export const keyboardLetterPlacements: Readable<
+  Record<string, LETTER_PLACEMENT>
+> = derived(guesses, ($guesses) => {
   const letters = "abcdefghijklmnopqrstuvwxyz".split("");
 
   return letters.reduce(
     (acc, letter) => ({
       ...acc,
-      [letter]: transformKeyColorToEnum(
-        getKeyColor(letter, solution, $guesses)
-      ),
+      [letter]: getKeyColor(letter, solution, $guesses),
     }),
     {}
   );
