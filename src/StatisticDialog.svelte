@@ -6,8 +6,11 @@
   import { dayNumber, NUM_GUESSES } from "../lib/constants/gameConstants";
   import toast from "./store/toast";
   import shareIcon from "./assets/share.svg";
+  import { secondsTillMidnight } from "./store/secondsTillMidnight";
 
-  $: maxCount = Math.max(...Object.values($statsStore.wins));
+  function zeroPad(number: number): String {
+    return String(number).padStart(2, "0");
+  }
 
   function emojifiedGuesses(): string {
     const placementToEmoji = {
@@ -21,6 +24,17 @@
     );
 
     return res.join("\n");
+  }
+
+  function formatDuration(durationInSeconds: number) {
+    const hours = Math.floor(durationInSeconds / 3600);
+    const minutes = Math.floor((durationInSeconds % 3600) / 60);
+    const seconds = durationInSeconds % 60;
+    return {
+      hours: zeroPad(hours),
+      minutes: zeroPad(minutes),
+      seconds: zeroPad(seconds),
+    };
   }
 
   function shareResults(): void {
@@ -37,6 +51,9 @@
     navigator.clipboard.writeText(body);
     toast.setToast("Copied result to clipboard");
   }
+
+  $: maxCount = Math.max(...Object.values($statsStore.wins));
+  $: formattedDuration = formatDuration($secondsTillMidnight);
 </script>
 
 <Dialog
@@ -47,6 +64,7 @@
 >
   <div class="options-list">
     <div>Played: {$numPlayed}</div>
+    <!-- TODO: add check for numPlayed = 0-->
     <div>Win %: {Math.floor(($numWins * 100) / $numPlayed)}</div>
     <!-- <div>Current streak: {$statsStore.currStreak}</div>
     <div>Max streak: {$statsStore.maxStreak}</div> -->
@@ -65,6 +83,15 @@
           </li>
         {/each}
       </ul>
+
+      {#if $gameStatus !== GameStatus.IN_PROGRESS}
+        <div>
+          <p>Next Wordle:</p>
+          <p>
+            {formattedDuration.hours}:{formattedDuration.minutes}:{formattedDuration.seconds}
+          </p>
+        </div>
+      {/if}
     </div>
 
     <!-- Only allow share after game is over -->
@@ -123,7 +150,7 @@
     width: max-content;
     margin-inline: auto;
     padding: 0.7rem 1.75rem;
-    border-radius: 2.5rem;
+    border-radius: 100vw;
     display: inline-flex;
     justify-content: center;
     align-items: center;
