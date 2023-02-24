@@ -4,10 +4,12 @@
 
   export let currentGuess: string;
 
+  // subtract an extra 1 to exclude word that is currently being entered
   $: numRemainingGuesses = Math.max(NUM_GUESSES - $guesses.length - 1, 0);
 </script>
 
 <div class="board">
+  <!-- 1. Words that have already been guessed -->
   {#each $guesses as guess, i}
     <div class="row completed">
       {#each guess as letter, j}
@@ -22,19 +24,21 @@
     </div>
   {/each}
 
+  <!-- 2. Word currently being entered -->
   {#if $guesses.length !== NUM_GUESSES}
     <div class="row">
       {#each currentGuess.padEnd(WORD_LENGTH) as letter}
-        <div class="cell">
+        <div class="cell" class:non-empty={letter !== " "}>
           {letter}
         </div>
       {/each}
     </div>
   {/if}
 
-  {#each Array(numRemainingGuesses).fill("") as _}
+  <!-- 3. Empty rows for remaining guesses -->
+  {#each { length: numRemainingGuesses } as _}
     <div class="row">
-      {#each currentGuess.padEnd(WORD_LENGTH) as __}
+      {#each { length: WORD_LENGTH } as __}
         <div class="cell" />
       {/each}
     </div>
@@ -94,5 +98,20 @@
   }
   .completed > .absent {
     background-color: var(--clr-absent);
+  }
+
+  .cell.non-empty {
+    animation: pop 200ms;
+  }
+
+  @keyframes pop {
+    0% {
+    }
+    50% {
+      transform: scale(1.1);
+    }
+    100% {
+      transform: scale(1);
+    }
   }
 </style>
