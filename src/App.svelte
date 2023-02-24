@@ -8,6 +8,10 @@
   import StatisticDialog from "./StatisticDialog.svelte";
   import { GameStatus } from "./global-enums";
 
+  import ImgSetting from "./assets/Gear.svelte";
+  import ImgHelp from "./assets/Help.svelte";
+  import ImgStats from "./assets/BarGraph.svelte";
+
   let dialogInstance: any;
 
   const assignDialogInstance = (ev: any) => {
@@ -30,16 +34,27 @@
   <header>
     <h1>Wordle #{dayNumber}</h1>
     <!-- Prevent button in focus from being clicked by keypress events  -->
-    <button
-      type="button"
-      data-a11y-dialog-show="settings-dialog"
-      on:keypress|preventDefault>⚙️</button
-    >
-    <button
-      type="button"
-      data-a11y-dialog-show="stats-dialog"
-      on:keypress|preventDefault>📊</button
-    >
+
+    <div class="buttons">
+      <button type="button" on:keypress|preventDefault>
+        <ImgHelp />
+      </button>
+      <button
+        type="button"
+        data-a11y-dialog-show="stats-dialog"
+        on:keypress|preventDefault
+      >
+        <ImgStats />
+      </button>
+      <button
+        type="button"
+        aria-label="Settings"
+        data-a11y-dialog-show="settings-dialog"
+        on:keypress|preventDefault
+      >
+        <ImgSetting />
+      </button>
+    </div>
   </header>
 
   <div id="game">
@@ -65,13 +80,23 @@
   header {
     display: flex;
     justify-content: center;
+    align-items: center;
     gap: 10px;
     border-bottom: 1px solid #e0e0e0;
+    padding-block: 5px;
   }
 
-  header > button {
-    max-width: max-content;
-    align-self: center;
+  .buttons {
+    display: flex;
+  }
+
+  .buttons > button {
+    background-color: transparent;
+    width: 35px;
+    height: 35px;
+    margin-block: auto;
+    display: grid;
+    place-items: center;
   }
 
   h1 {
