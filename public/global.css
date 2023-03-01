@@ -110,8 +110,13 @@ input:disabled {
 button {
   color: var(--clr-text);
   background-color: var(--clr-key-bg);
-  outline: none;
   border: none;
+  outline: none;
+}
+
+button:focus-visible {
+  border: 0;
+  outline: 3px solid #2671dc;
 }
 
 button:disabled {
