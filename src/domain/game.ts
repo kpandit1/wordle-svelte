@@ -1,5 +1,5 @@
 import { derived, get, writable, type Readable } from "svelte/store";
-import { dayNumber, NUM_GUESSES, SOLUTIONS } from "../../lib/constants";
+import { dayNumber, MAX_NUM_GUESSES, SOLUTIONS } from "../../lib/constants";
 import { getKeyColor, ordinal_suffix_of } from "../../lib/helpers";
 import { GameStatus, LETTER_PLACEMENT } from "../global-enums";
 import { getLetterPlacement, getWordPlacementsHelper } from "./placements";
@@ -8,7 +8,7 @@ import { getLetterPlacement, getWordPlacementsHelper } from "./placements";
 const actualSolution = SOLUTIONS[dayNumber];
 
 //  const devSolution = "slate";
-const devSolution = SOLUTIONS[dayNumber];
+const devSolution = "tough";
 
 // eslint-disable-next-line no-undef
 const solution =
@@ -43,7 +43,7 @@ export const guessPlacements = derived(guesses, ($guesses) =>
 export const gameStatus = derived(guesses, ($guesses) => {
   if ($guesses.includes(solution)) {
     return GameStatus.WON;
-  } else if ($guesses.length === NUM_GUESSES) {
+  } else if ($guesses.length === MAX_NUM_GUESSES) {
     return GameStatus.LOST;
   } else {
     return GameStatus.IN_PROGRESS;
@@ -56,9 +56,10 @@ export function clearState(): void {
   guesses.set([]);
 }
 
-export const submitGuess = (
-  word: Word
-): { status: GameStatus; solution?: Word } => {
+export function submitGuess(word: Word): {
+  status: GameStatus;
+  solution?: Word;
+} {
   // submit guess and return feedback of the game state - whether won, lost or still going
   guesses.update((prevGuesses) => [...prevGuesses, word]);
 
@@ -69,7 +70,7 @@ export const submitGuess = (
     // return solution only if game over
     solution: status === GameStatus.IN_PROGRESS ? undefined : solution,
   };
-};
+}
 
 export function followsHardMode(
   prevGuesses: Word[],
@@ -121,16 +122,16 @@ export function followsHardMode(
   return { ok: true, errorMessage: "" };
 }
 
-export const keyboardLetterPlacements: Readable<
-  Record<string, LETTER_PLACEMENT>
-> = derived(guesses, ($guesses) => {
+export function getKeyboardLetterPlacements(
+  guesses: Word[]
+): Record<string, LETTER_PLACEMENT> {
   const letters = "abcdefghijklmnopqrstuvwxyz".split("");
 
   return letters.reduce(
     (acc, letter) => ({
       ...acc,
-      [letter]: getKeyColor(letter, solution, $guesses),
+      [letter]: getKeyColor(letter, solution, guesses),
     }),
     {}
   );
-});
+}

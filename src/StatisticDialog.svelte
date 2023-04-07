@@ -3,7 +3,7 @@
   import { guesses, gameStatus, guessPlacements } from "./domain/game";
   import Dialog from "./Dialog.svelte";
   import statsStore, { numPlayed, numWins } from "./store/stats";
-  import { dayNumber, NUM_GUESSES } from "../lib/constants/gameConstants";
+  import { dayNumber, MAX_NUM_GUESSES } from "../lib/constants/";
   import toast from "./store/toast";
   import shareIcon from "./assets/share.svg";
   import { secondsTillMidnight } from "./store/secondsTillMidnight";
@@ -41,9 +41,9 @@
     let body = `Wordle ${dayNumber} `;
 
     if ($gameStatus === GameStatus.WON) {
-      body += `${$guesses.length}/${NUM_GUESSES}`;
+      body += `${$guesses.length}/${MAX_NUM_GUESSES}`;
     } else if ($gameStatus === GameStatus.LOST) {
-      body += `X/${NUM_GUESSES}`;
+      body += `X/${MAX_NUM_GUESSES}`;
     }
     body += "\n";
     body += emojifiedGuesses();

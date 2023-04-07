@@ -1,5 +1,6 @@
 import { LETTER_PLACEMENT } from "../src/global-enums";
-import { ALL_WORDS, SOLUTIONS } from "./constants";
+import { SOLUTIONS } from "./constants/solutions";
+import { ALL_WORDS } from "./constants/allWords";
 
 export function isValidWord(input: Word): boolean {
   // needs to be a 5 letter word

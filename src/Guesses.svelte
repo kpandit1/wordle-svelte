@@ -1,11 +1,13 @@
 <script lang="ts">
-  import { NUM_GUESSES, WORD_LENGTH } from "../lib/constants";
+  import { MAX_NUM_GUESSES, WORD_LENGTH } from "../lib/constants";
+  import { CELL_ANIMATION_DURATION_MS } from "../lib/constants/animation";
+  import { ANIMATION_DELAY_MS } from "../lib/constants/animation";
   import { guesses, guessPlacements } from "./domain/game";
 
   export let currentGuess: string;
 
   // subtract an extra 1 to exclude word that is currently being entered
-  $: numRemainingGuesses = Math.max(NUM_GUESSES - $guesses.length - 1, 0);
+  $: numRemainingGuesses = Math.max(MAX_NUM_GUESSES - $guesses.length - 1, 0);
 </script>
 
 <div class="board">
@@ -16,7 +18,8 @@
         {@const placements = $guessPlacements[i]}
         <div
           class={`cell ${placements[j]}`}
-          style="animation-delay: {j * 250}ms;"
+          style:animation-delay="{j * ANIMATION_DELAY_MS}ms"
+          style:animation-duration="{CELL_ANIMATION_DURATION_MS}ms"
         >
           {letter}
         </div>
@@ -25,7 +28,7 @@
   {/each}
 
   <!-- 2. Word currently being entered -->
-  {#if $guesses.length !== NUM_GUESSES}
+  {#if $guesses.length !== MAX_NUM_GUESSES}
     <div class="row">
       {#each currentGuess.padEnd(WORD_LENGTH) as letter}
         <div class="cell" class:non-empty={letter !== " "}>
@@ -87,7 +90,7 @@
   }
 
   .completed > .cell {
-    animation: tile-flip-in-out 800ms both ease-in-out;
+    animation: tile-flip-in-out both ease-in-out;
   }
 
   .completed > .correct {

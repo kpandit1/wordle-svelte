@@ -1,10 +1,11 @@
 <script lang="ts">
+  import { tick } from "svelte";
   import {
     clearState,
     followsHardMode,
     gameStatus,
+    getKeyboardLetterPlacements,
     guesses,
-    keyboardLetterPlacements,
     submitGuess,
   } from "./domain/game";
   import { addWin, addLoss } from "./store/stats.js";
@@ -17,10 +18,27 @@
   import { GameStatus } from "./global-enums";
   import { lastPlayedDayNumber } from "./domain/usage";
   import { dayNumber } from "../lib/constants";
+  import { TOTAL_ANIMATION_DURATION } from "../lib/constants/animation";
 
   export let currentGuess: Word;
+  let keyboardPlacements = getKeyboardLetterPlacements($guesses);
 
-  function handleSubmit() {
+  // Handle UI updates after user submits guess
+  function showFeedback(status: GameStatus, solution: Word) {
+    // 1. Update on-screen keyboard letter placements
+    const newKeyboardLetterPlacements = getKeyboardLetterPlacements($guesses);
+    keyboardPlacements = newKeyboardLetterPlacements;
+
+    // 2. Show win/lose feedback
+    if (status === GameStatus.WON) {
+      toast.setToast("Nice!");
+    } else if (status === GameStatus.LOST) {
+      toast.setToast(solution, 7200 * 1000);
+    }
+  }
+
+  // Submit current guess
+  async function handleSubmit() {
     if (currentGuess.length < WORD_LENGTH) {
       toast.setToast("Not enough letters");
       return;
@@ -52,19 +70,22 @@
       ({ status, solution } = submitGuess(currentGuess));
     }
 
+    await tick();
+
     if (status === GameStatus.WON) {
-      toast.setToast("Nice!");
       addWin($guesses.length);
-    }
-    if (status === GameStatus.LOST) {
-      toast.setToast(solution.toUpperCase(), 7200 * 1000);
+    } else if (status === GameStatus.LOST) {
       addLoss();
     }
-
     // Reset guess
     currentGuess = "";
     // Update usage
     lastPlayedDayNumber.set(dayNumber);
+
+    // wait for all animations to play out before feedback
+    setTimeout(() => {
+      showFeedback(status, solution);
+    }, TOTAL_ANIMATION_DURATION);
   }
 
   function handleKeydown(e: { key: string }) {
@@ -103,8 +124,8 @@
     <div class="row">
       {#each row as letter}
         <button
-          on:mousedown={(e) => handleKeydown({ ...e, key: letter })}
-          class={$keyboardLetterPlacements[letter.toLowerCase()]}
+        on:click={(e) => handleKeydown({ ...e, key: letter })}
+        class={keyboardPlacements[letter.toLowerCase()] ?? ""}
           data-key={letter}
           type="button">
             {#if letter === "Backspace"} 
@@ -119,7 +140,13 @@
   {/each}
 
   {#if isDev}
-    <button on:mousedown={clearState} type="button">CLEAR STATE</button>
+    <button
+      on:mousedown={() => {
+        keyboardPlacements = getKeyboardLetterPlacements([]);
+        clearState();
+      }}
+      type="button">CLEAR STATE</button
+    >
   {/if}
 </div>
 

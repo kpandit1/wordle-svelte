@@ -1,5 +1,5 @@
 import { isValidWord } from "../lib/helpers.js";
-import { getWordPlacementsHelper } from "../src/domain/helpers.js";
+import { getWordPlacementsHelper } from "../src/domain/placements.js";
 import { LETTER_PLACEMENT } from "../src/global-enums.js";
 import { expect, test } from "vitest";
 

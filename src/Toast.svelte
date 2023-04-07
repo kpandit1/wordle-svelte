@@ -5,7 +5,7 @@
 
 <div class="toast-container">
   {#if $toast}
-    <div class="toast" transition:fade={{ duration: 300 }}>
+    <div class="toast" transition:fade={{ duration: 150 }}>
       <span class="toast-text">{$toast}</span>
     </div>
   {/if}
@@ -22,11 +22,11 @@
   .toast {
     width: max-content;
     margin: auto;
-    padding: 8px;
+    padding: 8px 12px;
     background-color: var(--clr-text);
     color: var(--clr-background);
     border-radius: 4px;
-    font-size: 11pt;
+    font-size: 13pt;
     font-weight: bold;
   }
 </style>
