@@ -31,7 +31,15 @@
 
     // 2. Show win/lose feedback
     if (status === GameStatus.WON) {
-      toast.setToast("Nice!");
+      const numGuessesToMessageMap = {
+        1: "Genius",
+        2: "Magnificent",
+        3: "Impressive",
+        4: "Splendid",
+        5: "Great",
+        6: "Phew",
+      };
+      toast.setToast(numGuessesToMessageMap[$guesses.length]);
     } else if (status === GameStatus.LOST) {
       toast.setToast(solution, 7200 * 1000);
     }
