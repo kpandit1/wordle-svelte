@@ -63,7 +63,7 @@
     margin-bottom: 5px;
   }
   .cell {
-    border: 1px solid rgb(124, 118, 118);
+    border: 2px solid var(--clr-cell-border);
     width: 55px;
     height: 55px;
     aspect-ratio: 1;
@@ -78,6 +78,7 @@
     0% {
       transform: rotateX(0);
       background-color: unset;
+      border: 2px solid var(--clr-cell-border-highlight);
     }
     50% {
       transform: rotateX(-90deg);
@@ -104,6 +105,7 @@
   }
 
   .cell.non-empty {
+    border: 2px solid var(--clr-cell-border-highlight);
     animation: pop 200ms;
   }
 
