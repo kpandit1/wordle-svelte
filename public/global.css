@@ -79,7 +79,7 @@ body {
   --clr-background: #121213;
   --opacity-50: var(--opacity-50-dk);
   --clr-cell-border: var(--clr-cell-border-dk);
-  --clr-cell-border-highlight: var(var(--clr-cell-border-highlight-dk));
+  --clr-cell-border-highlight: var(--clr-cell-border-highlight-dk);
 }
 
 a {
