@@ -170,7 +170,7 @@
   .row > button {
     touch-action: manipulation;
     /* padding: 0.7rem; */
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     min-width: max-content;
     flex: 1;
     max-width: 45px;
@@ -181,8 +181,20 @@
     text-transform: uppercase;
   }
 
+  @media (min-width: 641px) {
+    .row > button {
+      font-size: 1rem;
+    }
+  }
+
   .row > button[data-key="Enter"] {
     font-size: 0.75rem;
+    padding: 0.7rem;
+  }
+  @media (min-width: 641px) {
+    .row > button[data-key="Enter"] {
+      font-size: 0.9rem;
+    }
   }
 
   .row > button[data-key="A"] {
