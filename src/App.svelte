@@ -11,6 +11,7 @@
   import ImgSetting from "./assets/Gear.svelte";
   import ImgHelp from "./assets/Help.svelte";
   import ImgStats from "./assets/BarGraph.svelte";
+  import { TOTAL_ANIMATION_DURATION } from "../lib/constants/animation";
 
   let dialogInstance: any;
 
@@ -23,7 +24,7 @@
       dialogInstance &&
       ($gameStatus === GameStatus.WON || $gameStatus === GameStatus.LOST)
     ) {
-      setTimeout(() => dialogInstance.show(), 3000);
+      setTimeout(() => dialogInstance.show(), TOTAL_ANIMATION_DURATION * 1.5);
     }
   }
 

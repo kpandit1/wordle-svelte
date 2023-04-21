@@ -21,6 +21,7 @@
 <style>
   .switch {
     height: 20px;
+    min-width: 32px;
     width: 32px;
     background: #565758;
     border: none;
