@@ -45,38 +45,43 @@
     }
   }
 
-  // Submit current guess
-  async function handleSubmit() {
+  function isGuessValid() {
     if (currentGuess.length < WORD_LENGTH) {
       toast.setToast("Not enough letters");
-      return;
+      return false;
     }
     if (currentGuess === "danby") {
       toast.setToast("😍");
     }
 
     // only consider valid words
-    else if (!isValidWord(currentGuess)) {
+    if (!isValidWord(currentGuess)) {
       toast.setToast("Not in word list");
+      return false;
+    }
+
+    if ($settings.hardMode) {
+      const res = followsHardMode($guesses, currentGuess);
+      if (res.ok) {
+        return true;
+      } else {
+        toast.setToast(res.errorMessage);
+        return false;
+      }
+    }
+    return true;
+  }
+
+  // Submit current guess
+  async function handleSubmit() {
+    const valid = isGuessValid();
+    if (!valid) {
       return;
     }
 
     let status = GameStatus.IN_PROGRESS;
     let solution: Word | undefined = undefined;
-
-    if ($settings.hardMode) {
-      const res = followsHardMode($guesses, currentGuess);
-
-      if (res.ok) {
-        ({ status, solution } = submitGuess(currentGuess));
-      } else {
-        toast.setToast(res.errorMessage);
-        return;
-      }
-    } else {
-      // no hard mode, just submit
-      ({ status, solution } = submitGuess(currentGuess));
-    }
+    ({ status, solution } = submitGuess(currentGuess));
 
     await tick();
 
