@@ -48,7 +48,12 @@
     body += "\n";
     body += emojifiedGuesses();
 
-    navigator.clipboard.writeText(body);
+    try {
+      navigator.clipboard.writeText(body);
+    } catch (err) {
+      console.error("Error copying to clipboard", err);
+      return;
+    }
     toast.setToast("Copied result to clipboard");
   }
 

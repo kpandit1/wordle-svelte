@@ -26,7 +26,7 @@
     background-color: var(--clr-text);
     color: var(--clr-background);
     border-radius: 4px;
-    font-size: 13pt;
+    font-size: 0.9rem;
     font-weight: bold;
   }
 </style>

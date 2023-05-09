@@ -37,11 +37,16 @@
     <!-- Prevent button in focus from being clicked by keypress events  -->
 
     <div class="buttons">
-      <button type="button" on:keypress|preventDefault>
+      <button
+        type="button"
+        on:keypress|preventDefault
+        aria-label="game instructions"
+      >
         <ImgHelp />
       </button>
       <button
         type="button"
+        aria-label="statistics"
         data-a11y-dialog-show="stats-dialog"
         on:keypress|preventDefault
       >
@@ -49,7 +54,7 @@
       </button>
       <button
         type="button"
-        aria-label="Settings"
+        aria-label="settings"
         data-a11y-dialog-show="settings-dialog"
         on:keypress|preventDefault
       >
@@ -75,7 +80,6 @@
     gap: 1.5rem;
     flex-direction: column;
     text-align: center;
-    height: 100%;
   }
 
   header {
@@ -101,7 +105,7 @@
   }
 
   h1 {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     text-transform: uppercase;
   }
 

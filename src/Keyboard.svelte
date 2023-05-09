@@ -45,7 +45,7 @@
     }
   }
 
-  function isGuessValid() {
+  function isGuessValid(): boolean {
     if (currentGuess.length < WORD_LENGTH) {
       toast.setToast("Not enough letters");
       return false;
@@ -175,7 +175,7 @@
   .row > button {
     touch-action: manipulation;
     /* padding: 0.7rem; */
-    font-size: 0.85rem;
+    font-size: 0.95rem;
     min-width: max-content;
     flex: 1;
     max-width: 45px;
@@ -194,11 +194,12 @@
 
   .row > button[data-key="Enter"] {
     font-size: 0.75rem;
-    padding: 0.7rem;
+    padding: 0.5rem;
   }
   @media (min-width: 641px) {
     .row > button[data-key="Enter"] {
       font-size: 0.9rem;
+      padding: 0.7rem;
     }
   }
 

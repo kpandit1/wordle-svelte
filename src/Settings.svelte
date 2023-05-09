@@ -59,7 +59,8 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    border-bottom: 1px solid var(--clr-key-bg);
+    border-bottom: 1px solid var(--clr-cell-border);
+
     padding-block: 12px;
   }
   .option:last-child {
