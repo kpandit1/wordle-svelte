@@ -52,6 +52,7 @@
     }
     if (currentGuess === "danby") {
       toast.setToast("😍");
+      return true;
     }
 
     // only consider valid words
@@ -74,8 +75,7 @@
 
   // Submit current guess
   async function handleSubmit() {
-    const valid = isGuessValid();
-    if (!valid) {
+    if (!isGuessValid()) {
       return;
     }
 
@@ -112,12 +112,9 @@
       currentGuess.length < WORD_LENGTH // limit to word length
     ) {
       currentGuess += e.key.toLowerCase();
-    }
-
-    if (e.key === "Backspace") {
+    } else if (e.key === "Backspace") {
       currentGuess = currentGuess.slice(0, -1);
-    }
-    if (e.key === "Enter") {
+    } else if (e.key === "Enter") {
       handleSubmit();
     }
   }
