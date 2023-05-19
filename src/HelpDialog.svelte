@@ -7,7 +7,12 @@
   export let dialogId: string;
 </script>
 
-<Dialog id={dialogId} title="How to play" titleId="help-dialog-title">
+<Dialog
+  id={dialogId}
+  title="How to play"
+  titleId="help-dialog-title"
+  on:instance
+>
   <div class="dialog-body">
     <section>
       <ul class="instructions">

@@ -1,6 +1,6 @@
 <script lang="ts">
   import HelpDialog from "./HelpDialog.svelte";
-  import { gameStatus } from "./domain/game";
+  import { gameStatus, guesses } from "./domain/game";
   import { dayNumber } from "../lib/constants";
   import Guesses from "./Guesses.svelte";
   import Keyboard from "./Keyboard.svelte";
@@ -13,8 +13,10 @@
   import ImgHelp from "./assets/Help.svelte";
   import ImgStats from "./assets/BarGraph.svelte";
   import { TOTAL_ANIMATION_DURATION } from "../lib/constants/animation";
+  import { numWins } from "./store/stats";
 
   let statsDialogInstance: any;
+  let helpDialogInstance: any;
 
   $: {
     // Show stats dialog if game is over
@@ -26,6 +28,14 @@
         () => statsDialogInstance.show(),
         TOTAL_ANIMATION_DURATION * 1.5
       );
+    }
+  }
+
+  $: {
+    // Show help dialog if user's first time playing
+    // i.e. no games won and no guesses made
+    if (helpDialogInstance && $numWins === 0 && $guesses.length === 0) {
+      helpDialogInstance.show();
     }
   }
 
@@ -71,7 +81,10 @@
   <StatisticDialog
     on:instance={(e) => (statsDialogInstance = e.detail.instance)}
   />
-  <HelpDialog dialogId={HELP_DIALOG_ID} />
+  <HelpDialog
+    dialogId={HELP_DIALOG_ID}
+    on:instance={(e) => (helpDialogInstance = e.detail.instance)}
+  />
 </main>
 
 <style lang="postcss">
