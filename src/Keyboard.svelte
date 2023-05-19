@@ -101,28 +101,36 @@
     }, TOTAL_ANIMATION_DURATION);
   }
 
-  function handleKeydown(e: { key: string }) {
+  function handleKeydown(e: UIEvent, key: string) {
     if ($gameStatus !== GameStatus.IN_PROGRESS) {
       return;
     }
 
     if (
-      e.key.length === 1 &&
-      e.key.match(/[A-Za-z]/) && // should be a letter
+      key.length === 1 &&
+      key.match(/[A-Za-z]/) && // should be a letter
       currentGuess.length < WORD_LENGTH // limit to word length
     ) {
-      currentGuess += e.key.toLowerCase();
-    } else if (e.key === "Backspace") {
+      currentGuess += key.toLowerCase();
+    } else if (key === "Backspace") {
       currentGuess = currentGuess.slice(0, -1);
-    } else if (e.key === "Enter") {
-      handleSubmit();
+    } else if (key === "Enter") {
+      // Adding checks since Enter from non-keyboard buttons shouldn't trigger a submit event
+      // This is needed since the keydown event handler is attached to the window and always activates
+      const target = e.target as HTMLElement;
+
+      // don't trigger on button focus
+      // unless the button has [data-key="*"] set (only true for keyboard)
+      if (target.tagName !== "BUTTON" || target.dataset.key) {
+        handleSubmit();
+      }
     }
   }
 
   const isDev = import.meta.env.MODE === "development";
 </script>
 
-<svelte:window on:keydown={handleKeydown} />
+<svelte:window on:keydown={(e) => handleKeydown(e, e.key)} />
 <div class="keyboard">
   <!--prettier-ignore-->
   {#each [ 
@@ -134,7 +142,7 @@
     <div class="row">
       {#each row as letter}
         <button
-        on:click={(e) => handleKeydown({ ...e, key: letter })}
+        on:click={(e) => handleKeydown(e, letter)}
         class={keyboardPlacements[letter.toLowerCase()] ?? ""}
           data-key={letter}
           type="button">

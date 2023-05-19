@@ -3,6 +3,7 @@
   import { CELL_ANIMATION_DURATION_MS } from "../lib/constants/animation";
   import { ANIMATION_DELAY_MS } from "../lib/constants/animation";
   import { guesses, guessPlacements } from "./domain/game";
+  import Tile from "./components/Tile.svelte";
 
   export let currentGuess: string;
 
@@ -13,16 +14,17 @@
 <div class="board">
   <!-- 1. Words that have already been guessed -->
   {#each $guesses as guess, i}
+    {@const placements = $guessPlacements[i]}
     <div class="row completed">
       {#each guess as letter, j}
-        {@const placements = $guessPlacements[i]}
-        <div
-          class={`cell ${placements[j]}`}
-          style:animation-delay="{j * ANIMATION_DELAY_MS}ms"
-          style:animation-duration="{CELL_ANIMATION_DURATION_MS}ms"
+        <Tile
+          placement={placements[j]}
+          animateIn={true}
+          --animation-delay="{j * ANIMATION_DELAY_MS}ms"
+          --animation-duration="{CELL_ANIMATION_DURATION_MS}ms"
         >
           {letter}
-        </div>
+        </Tile>
       {/each}
     </div>
   {/each}
@@ -31,9 +33,9 @@
   {#if $guesses.length !== MAX_NUM_GUESSES}
     <div class="row">
       {#each currentGuess.padEnd(WORD_LENGTH) as letter}
-        <div class="cell" class:non-empty={letter !== " "}>
+        <Tile class={letter !== " " ? "entered" : ""}>
           {letter}
-        </div>
+        </Tile>
       {/each}
     </div>
   {/if}
@@ -42,7 +44,7 @@
   {#each { length: numRemainingGuesses } as _}
     <div class="row">
       {#each { length: WORD_LENGTH } as __}
-        <div class="cell" />
+        <Tile />
       {/each}
     </div>
   {/each}
@@ -62,61 +64,44 @@
     gap: 5px;
     margin-bottom: 5px;
   }
-  .cell {
-    border: 2px solid var(--clr-cell-border);
-    width: 55px;
-    height: 55px;
-    aspect-ratio: 1;
-    display: grid;
-    place-items: center;
-    text-transform: uppercase;
-    font-weight: bold;
-  }
 
-  @keyframes tile-flip-in-out {
-    /* using custom props in here causes bugs in Safari */
-    0% {
-      transform: rotateX(0);
-      background-color: unset;
-      border: 2px solid var(--clr-cell-border-highlight);
-    }
-    50% {
-      transform: rotateX(-90deg);
-    }
-    100% {
-      transform: rotateX(0);
-      color: white;
-      border: 0;
-    }
-  }
-
-  .completed > .cell {
-    animation: tile-flip-in-out both ease-in-out;
-  }
-
-  .completed > .correct {
-    background-color: var(--clr-correct);
-  }
-  .completed > .present {
-    background-color: var(--clr-present);
-  }
-  .completed > .absent {
-    background-color: var(--clr-absent);
-  }
-
-  .cell.non-empty {
+  .board :global(.entered) {
     border: 2px solid var(--clr-cell-border-highlight);
     animation: pop 200ms;
   }
 
   @keyframes pop {
-    0% {
+    from {
+      transform: scale(0.8);
+      opacity: 0;
     }
-    50% {
+
+    40% {
       transform: scale(1.1);
+      opacity: 1;
     }
-    100% {
-      transform: scale(1);
+  }
+
+  @keyframes Shake {
+    10%,
+    90% {
+      transform: translateX(-1px);
+    }
+
+    20%,
+    80% {
+      transform: translateX(2px);
+    }
+
+    30%,
+    50%,
+    70% {
+      transform: translateX(-4px);
+    }
+
+    40%,
+    60% {
+      transform: translateX(4px);
     }
   }
 </style>

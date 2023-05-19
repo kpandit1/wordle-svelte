@@ -50,7 +50,6 @@
 <style>
   .options-list {
     display: flex;
-    margin-top: 1.8rem;
     /* gap: 1.2rem; */
     flex-direction: column;
     height: 100%;

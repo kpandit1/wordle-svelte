@@ -1,4 +1,5 @@
 <script lang="ts">
+  import HelpDialog from "./HelpDialog.svelte";
   import { gameStatus } from "./domain/game";
   import { dayNumber } from "../lib/constants";
   import Guesses from "./Guesses.svelte";
@@ -13,34 +14,34 @@
   import ImgStats from "./assets/BarGraph.svelte";
   import { TOTAL_ANIMATION_DURATION } from "../lib/constants/animation";
 
-  let dialogInstance: any;
-
-  const assignDialogInstance = (ev: any) => {
-    dialogInstance = ev.detail.instance;
-  };
+  let statsDialogInstance: any;
 
   $: {
+    // Show stats dialog if game is over
     if (
-      dialogInstance &&
+      statsDialogInstance &&
       ($gameStatus === GameStatus.WON || $gameStatus === GameStatus.LOST)
     ) {
-      setTimeout(() => dialogInstance.show(), TOTAL_ANIMATION_DURATION * 1.5);
+      setTimeout(
+        () => statsDialogInstance.show(),
+        TOTAL_ANIMATION_DURATION * 1.5
+      );
     }
   }
 
   let currentGuess: Word = "";
+
+  const HELP_DIALOG_ID = "help-dialog";
 </script>
 
 <main>
   <header>
     <h1>Wordle #{dayNumber}</h1>
-    <!-- Prevent button in focus from being clicked by keypress events  -->
-
     <div class="buttons">
       <button
         type="button"
-        on:keypress|preventDefault
         aria-label="game instructions"
+        data-a11y-dialog-show={HELP_DIALOG_ID}
       >
         <ImgHelp />
       </button>
@@ -48,7 +49,6 @@
         type="button"
         aria-label="statistics"
         data-a11y-dialog-show="stats-dialog"
-        on:keypress|preventDefault
       >
         <ImgStats />
       </button>
@@ -56,7 +56,6 @@
         type="button"
         aria-label="settings"
         data-a11y-dialog-show="settings-dialog"
-        on:keypress|preventDefault
       >
         <ImgSetting />
       </button>
@@ -69,7 +68,10 @@
     <Keyboard bind:currentGuess />
   </div>
   <Settings />
-  <StatisticDialog on:instance={assignDialogInstance} />
+  <StatisticDialog
+    on:instance={(e) => (statsDialogInstance = e.detail.instance)}
+  />
+  <HelpDialog dialogId={HELP_DIALOG_ID} />
 </main>
 
 <style lang="postcss">

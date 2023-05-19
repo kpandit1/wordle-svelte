@@ -90,10 +90,11 @@
       </ul>
 
       {#if $gameStatus !== GameStatus.IN_PROGRESS}
+        {@const { hours, minutes, seconds } = formattedDuration}
         <div>
           <p>Next Wordle:</p>
           <p>
-            {formattedDuration.hours}:{formattedDuration.minutes}:{formattedDuration.seconds}
+            {hours}:{minutes}:{seconds}
           </p>
         </div>
       {/if}
@@ -112,7 +113,6 @@
 <style>
   .options-list {
     display: flex;
-    margin-top: 1.8rem;
     /* gap: 1.2rem; */
     flex-direction: column;
     height: 100%;

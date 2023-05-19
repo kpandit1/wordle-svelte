@@ -21,10 +21,10 @@
 
 <style>
   :global(.dialog-container .dialog-content) {
-    width: min(100% - 2rem, 500px);
+    width: min(100% - 1.5rem, 500px);
     position: relative;
     padding-inline: 20px;
-    padding-top: 16px;
+    padding-block: 16px;
     margin-inline: auto;
     background-color: var(--clr-background);
     display: flex;
@@ -55,5 +55,8 @@
     font-size: 1.4rem;
     font-weight: 700;
     text-align: center;
+  }
+  :global(.dialog-title) {
+    margin-bottom: 1.8rem;
   }
 </style>
