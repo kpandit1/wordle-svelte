@@ -81,7 +81,7 @@
       </p>
       <p>
         <span class="value"
-          >{Math.floor(($numWins * 100) / ($numPlayed || 0))}</span
+          >{Math.round(($numWins * 100) / ($numPlayed || 0))}</span
         >
         <span class="label">Win %</span>
       </p>
@@ -94,11 +94,6 @@
         <span class="label">Max streak</span>
       </p>
     </div>
-    <!-- <div>Played: {$numPlayed}</div> -->
-    <!-- TODO: add check for numPlayed = 0-->
-    <!-- <div>Win %: {Math.floor(($numWins * 100) / $numPlayed)}</div> -->
-    <!-- <div>Current streak: {$statsStore.currStreak}</div>
-    <div>Max streak: {$statsStore.maxStreak}</div> -->
 
     <div class="guess-distribution">
       <p style="font-weight:bold">Guess distribution</p>
@@ -120,25 +115,22 @@
       </ul>
     </div>
 
-    <div class="extra">
-      {#if $gameStatus !== GameStatus.IN_PROGRESS}
-        {@const { hours, minutes, seconds } = formattedDuration}
+    {#if $gameStatus !== GameStatus.IN_PROGRESS}
+      {@const { hours, minutes, seconds } = formattedDuration}
+      <div class="extra">
         <div>
           <p>Next Wordle:</p>
           <p style="font-variant-numeric:initial">
             {hours}:{minutes}:{seconds}
           </p>
         </div>
-      {/if}
 
-      <!-- Only allow share after game is over -->
-      {#if $gameStatus !== GameStatus.IN_PROGRESS}
         <button class="button" on:click={shareResults}>
           <span>Share</span>
           <img src={shareIcon} class="icon" role="presentation" alt="" />
         </button>
-      {/if}
-    </div>
+      </div>
+    {/if}
   </div>
 </Dialog>
 
@@ -151,7 +143,7 @@
     height: 100%;
   }
   .guess-distribution {
-    margin-block: 1rem;
+    margin-block-start: 1rem;
     width: 80%;
   }
   .guess-distribution > p {
@@ -165,6 +157,7 @@
     gap: 4px;
     padding-inline: 0;
     margin-inline: auto;
+    margin-block-start: 1em;
   }
   .guesses {
     margin-right: 4px;
@@ -239,6 +232,7 @@
     justify-content: space-between;
     gap: 0.5rem;
     width: 100%;
+    margin-block-start: 1rem;
   }
   @media (min-width: 641px) {
     .extra {
