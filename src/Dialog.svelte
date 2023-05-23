@@ -30,7 +30,6 @@
     display: flex;
     flex-direction: column;
     border-radius: 8px;
-    min-height: 40%;
   }
   :global(.dialog-container .dialog-overlay) {
     opacity: 0.9;
@@ -57,6 +56,6 @@
     text-align: center;
   }
   :global(.dialog-title) {
-    margin-bottom: 1.8rem;
+    margin-bottom: 1rem;
   }
 </style>

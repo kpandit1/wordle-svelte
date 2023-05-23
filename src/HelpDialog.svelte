@@ -70,6 +70,10 @@
 </Dialog>
 
 <style>
+  .dialog-body {
+    line-height: 1.3;
+  }
+
   :global(#help-dialog-title) {
     text-transform: capitalize;
   }
@@ -105,7 +109,6 @@
 
   .instructions > li {
     margin-bottom: 0.5rem;
-    line-height: 1.2;
   }
 
   .tile-row {

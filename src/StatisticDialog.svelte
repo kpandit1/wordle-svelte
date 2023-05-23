@@ -8,6 +8,9 @@
   import shareIcon from "./assets/share.svg";
   import { secondsTillMidnight } from "./store/secondsTillMidnight";
 
+  $: maxCount = Math.max(...Object.values($statsStore.wins));
+  $: formattedDuration = formatDuration($secondsTillMidnight);
+
   function zeroPad(number: number): String {
     return String(number).padStart(2, "0");
   }
@@ -57,8 +60,11 @@
     toast.setToast("Copied result to clipboard");
   }
 
-  $: maxCount = Math.max(...Object.values($statsStore.wins));
-  $: formattedDuration = formatDuration($secondsTillMidnight);
+  // In the guess distribution chart, the number of guesses taken
+  // to win the current game should be higlighted
+  function shouldHighlightBar(numGuesses: number) {
+    return $gameStatus === GameStatus.WON && numGuesses === $guesses.length;
+  }
 </script>
 
 <Dialog
@@ -67,55 +73,86 @@
   titleId="statistic-dialog-title"
   on:instance
 >
-  <div class="options-list">
-    <div>Played: {$numPlayed}</div>
+  <div class="content">
+    <div class="stats">
+      <p>
+        <span class="value">{$numPlayed}</span>
+        <span class="label">Played</span>
+      </p>
+      <p>
+        <span class="value"
+          >{Math.floor(($numWins * 100) / ($numPlayed || 0))}</span
+        >
+        <span class="label">Win %</span>
+      </p>
+      <p>
+        <span class="value">{$statsStore.currStreak}</span>
+        <span class="label">Current streak</span>
+      </p>
+      <p>
+        <span class="value">{$statsStore.maxStreak}</span>
+        <span class="label">Max streak</span>
+      </p>
+    </div>
+    <!-- <div>Played: {$numPlayed}</div> -->
     <!-- TODO: add check for numPlayed = 0-->
-    <div>Win %: {Math.floor(($numWins * 100) / $numPlayed)}</div>
+    <!-- <div>Win %: {Math.floor(($numWins * 100) / $numPlayed)}</div> -->
     <!-- <div>Current streak: {$statsStore.currStreak}</div>
     <div>Max streak: {$statsStore.maxStreak}</div> -->
 
     <div class="guess-distribution">
-      <p>Guess distribution</p>
+      <p style="font-weight:bold">Guess distribution</p>
       <ul class="distributions">
-        {#each Object.entries($statsStore.wins) as [guesses, count]}
+        {#each Object.entries($statsStore.wins) as [numGuesses, count]}
           <li>
-            <span class="guesses">{guesses}</span>
+            <span class="guesses">{numGuesses}</span>
             <div class="bar-container">
-              <div class="bar" style={`width:${(100 * count) / maxCount}%`}>
+              <div
+                class="bar"
+                style={`width:${(100 * count) / maxCount}%`}
+                class:highlight={shouldHighlightBar(Number(numGuesses))}
+              >
                 <span class="count">{count}</span>
               </div>
             </div>
           </li>
         {/each}
       </ul>
+    </div>
 
+    <div class="extra">
       {#if $gameStatus !== GameStatus.IN_PROGRESS}
         {@const { hours, minutes, seconds } = formattedDuration}
         <div>
           <p>Next Wordle:</p>
-          <p>
+          <p style="font-variant-numeric:initial">
             {hours}:{minutes}:{seconds}
           </p>
         </div>
       {/if}
-    </div>
 
-    <!-- Only allow share after game is over -->
-    {#if $gameStatus !== GameStatus.IN_PROGRESS}
-      <button class="button" on:click={shareResults}>
-        <span>Share</span>
-        <img src={shareIcon} class="icon" role="presentation" alt="" />
-      </button>
-    {/if}
+      <!-- Only allow share after game is over -->
+      {#if $gameStatus !== GameStatus.IN_PROGRESS}
+        <button class="button" on:click={shareResults}>
+          <span>Share</span>
+          <img src={shareIcon} class="icon" role="presentation" alt="" />
+        </button>
+      {/if}
+    </div>
   </div>
 </Dialog>
 
 <style>
-  .options-list {
+  .content {
     display: flex;
     /* gap: 1.2rem; */
     flex-direction: column;
+    align-items: center;
     height: 100%;
+  }
+  .guess-distribution {
+    margin-block: 1rem;
+    width: 80%;
   }
   .guess-distribution > p {
     text-align: center;
@@ -127,6 +164,7 @@
     display: grid;
     gap: 4px;
     padding-inline: 0;
+    margin-inline: auto;
   }
   .guesses {
     margin-right: 4px;
@@ -136,10 +174,10 @@
     font-size: 0.8rem;
     font-weight: bold;
   }
-  .distributions .bar-container {
+  .bar-container {
     flex-grow: 1;
   }
-  .distributions .bar {
+  .bar {
     background-color: var(--clr-absent);
     color: white;
     min-width: 20px;
@@ -153,9 +191,8 @@
     font-weight: bold;
     font-size: 1rem;
     width: max-content;
-    margin-inline: auto;
     padding: 0.7rem 1.75rem;
-    border-radius: 100vw;
+    border-radius: 0.5rem;
     display: inline-flex;
     justify-content: center;
     align-items: center;
@@ -164,5 +201,48 @@
   .icon {
     width: 24px;
     height: 24px;
+  }
+  .highlight {
+    background-color: var(--clr-correct);
+  }
+  .stats {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+  .stats > p {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding-inline: 0.5rem;
+  }
+  .stats .label {
+    font-size: 0.8rem;
+  }
+  .stats .value {
+    font-size: 2rem;
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+  }
+  .stats .value {
+    font-size: 1.5rem;
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+  }
+  @media (min-width: 641px) {
+    .stats .value {
+      font-size: 2rem;
+    }
+  }
+  .extra {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    width: 100%;
+  }
+  @media (min-width: 641px) {
+    .extra {
+      width: 80%;
+    }
   }
 </style>
