@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import ToggleSwitch from "./components/ToggleSwitch.svelte";
   import Dialog from "./Dialog.svelte";
   import { guesses } from "./domain/game";

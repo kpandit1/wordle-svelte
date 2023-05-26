@@ -2,7 +2,7 @@
   import { guesses, gameStatus, guessPlacements } from "./domain/game";
   import Dialog from "./Dialog.svelte";
   import statsStore, { numPlayed, numWins } from "./store/stats";
-  import { dayNumber, MAX_NUM_GUESSES } from "../lib/constants/";
+  import { dayNumber, MAX_NUM_GUESSES } from "../lib/constants";
   import toast from "./store/toast";
   import shareIcon from "./assets/share.svg";
   import { secondsTillMidnight } from "./store/secondsTillMidnight";

@@ -1,10 +1,10 @@
-<script>
+<script lang="ts">
   // @ts-nocheck
-  export let id;
-  export let title;
-  export let titleId;
-
   import SvelteA11yDialog from "svelte-a11y-dialog";
+
+  export let id: string;
+  export let title: string;
+  export let titleId: string;
 </script>
 
 <SvelteA11yDialog
