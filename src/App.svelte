@@ -7,7 +7,6 @@
   import Toast from "./Toast.svelte";
   import Settings from "./Settings.svelte";
   import StatisticDialog from "./StatisticDialog.svelte";
-  import { GameStatus } from "./global-enums";
 
   import ImgSetting from "./assets/Gear.svelte";
   import ImgHelp from "./assets/Help.svelte";
@@ -22,7 +21,7 @@
     // Show stats dialog if game is over
     if (
       statsDialogInstance &&
-      ($gameStatus === GameStatus.WON || $gameStatus === GameStatus.LOST)
+      ($gameStatus === "win" || $gameStatus === "lose")
     ) {
       setTimeout(
         () => statsDialogInstance.show(),

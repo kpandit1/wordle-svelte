@@ -2,7 +2,6 @@
   import { MAX_NUM_GUESSES, WORD_LENGTH } from "../lib/constants";
   import Tile from "./components/Tile.svelte";
   import Dialog from "./Dialog.svelte";
-  import { LETTER_PLACEMENT } from "./global-enums";
 
   export let dialogId: string;
 </script>
@@ -30,31 +29,31 @@
       <ul class="examples">
         <li>
           <div class="tile-row">
-            <Tile placement={LETTER_PLACEMENT.CORRECT} animateIn={true}>W</Tile>
-            <Tile placement={LETTER_PLACEMENT.NOT_GUESSED}>E</Tile>
-            <Tile placement={LETTER_PLACEMENT.NOT_GUESSED}>A</Tile>
-            <Tile placement={LETTER_PLACEMENT.NOT_GUESSED} class="foo">R</Tile>
-            <Tile placement={LETTER_PLACEMENT.NOT_GUESSED}>Y</Tile>
+            <Tile placement="correct" animateIn={true}>W</Tile>
+            <Tile placement="not_guessed">E</Tile>
+            <Tile placement="not_guessed">A</Tile>
+            <Tile placement="not_guessed" class="foo">R</Tile>
+            <Tile placement="not_guessed">Y</Tile>
           </div>
           <p><strong>W</strong> is in the word and in the correct spot.</p>
         </li>
         <li>
           <div class="tile-row">
-            <Tile placement={LETTER_PLACEMENT.NOT_GUESSED}>P</Tile>
-            <Tile placement={LETTER_PLACEMENT.PRESENT} animateIn={true}>I</Tile>
-            <Tile placement={LETTER_PLACEMENT.NOT_GUESSED}>L</Tile>
-            <Tile placement={LETTER_PLACEMENT.NOT_GUESSED}>L</Tile>
-            <Tile placement={LETTER_PLACEMENT.NOT_GUESSED}>S</Tile>
+            <Tile placement="not_guessed">P</Tile>
+            <Tile placement="present" animateIn={true}>I</Tile>
+            <Tile placement="not_guessed">L</Tile>
+            <Tile placement="not_guessed">L</Tile>
+            <Tile placement="not_guessed">S</Tile>
           </div>
           <p><strong>I</strong> is in the word but in the wrong spot.</p>
         </li>
         <li>
           <div class="tile-row">
-            <Tile placement={LETTER_PLACEMENT.NOT_GUESSED}>V</Tile>
-            <Tile placement={LETTER_PLACEMENT.NOT_GUESSED}>A</Tile>
-            <Tile placement={LETTER_PLACEMENT.NOT_GUESSED}>G</Tile>
-            <Tile placement={LETTER_PLACEMENT.ABSENT} animateIn={true}>U</Tile>
-            <Tile placement={LETTER_PLACEMENT.NOT_GUESSED}>E</Tile>
+            <Tile placement="not_guessed">V</Tile>
+            <Tile placement="not_guessed">A</Tile>
+            <Tile placement="not_guessed">G</Tile>
+            <Tile placement="absent" animateIn={true}>U</Tile>
+            <Tile placement="not_guessed">E</Tile>
           </div>
           <p><strong>U</strong> is not in the word in any spot.</p>
         </li>

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { GameStatus, LETTER_PLACEMENT } from "./global-enums";
   import { guesses, gameStatus, guessPlacements } from "./domain/game";
   import Dialog from "./Dialog.svelte";
   import statsStore, { numPlayed, numWins } from "./store/stats";
@@ -17,9 +16,9 @@
 
   function emojifiedGuesses(): string {
     const placementToEmoji = {
-      [LETTER_PLACEMENT.CORRECT]: "🟩",
-      [LETTER_PLACEMENT.PRESENT]: "🟨",
-      [LETTER_PLACEMENT.ABSENT]: "⬛️",
+      correct: "🟩",
+      present: "🟨",
+      absent: "⬛️",
     };
 
     const res = $guessPlacements.map((wordPlacements) =>
@@ -43,9 +42,9 @@
   function shareResults(): void {
     let body = `Wordle ${dayNumber} `;
 
-    if ($gameStatus === GameStatus.WON) {
+    if ($gameStatus === "win") {
       body += `${$guesses.length}/${MAX_NUM_GUESSES}`;
-    } else if ($gameStatus === GameStatus.LOST) {
+    } else if ($gameStatus === "lose") {
       body += `X/${MAX_NUM_GUESSES}`;
     }
     body += "\n";
@@ -63,7 +62,7 @@
   // In the guess distribution chart, the number of guesses taken
   // to win the current game should be higlighted
   function shouldHighlightBar(numGuesses: number) {
-    return $gameStatus === GameStatus.WON && numGuesses === $guesses.length;
+    return $gameStatus === "win" && numGuesses === $guesses.length;
   }
 </script>
 
@@ -115,7 +114,7 @@
       </ul>
     </div>
 
-    {#if $gameStatus !== GameStatus.IN_PROGRESS}
+    {#if $gameStatus !== "in_progress"}
       {@const { hours, minutes, seconds } = formattedDuration}
       <div class="extra">
         <div>

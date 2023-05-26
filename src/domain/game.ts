@@ -1,14 +1,12 @@
 import { derived, get, writable, type Readable } from "svelte/store";
 import { dayNumber, MAX_NUM_GUESSES, SOLUTIONS } from "../../lib/constants";
 import { getKeyColor, ordinal_suffix_of } from "../../lib/helpers";
-import { GameStatus, LETTER_PLACEMENT } from "../global-enums";
 import { getLetterPlacement, getWordPlacementsHelper } from "./placements";
 
 // use the day number to get the solution for the day
 const actualSolution = SOLUTIONS[dayNumber];
 
-//  const devSolution = "slate";
-const devSolution = "tough";
+const devSolution = SOLUTIONS[dayNumber];
 
 // eslint-disable-next-line no-undef
 const solution =
@@ -30,7 +28,6 @@ function getStoredGuesses(): Word[] {
   }
 }
 
-// Reactive variables
 export const guesses = writable(getStoredGuesses());
 guesses.subscribe((val) => {
   localStorage.setItem("guesses", JSON.stringify(val));
@@ -40,18 +37,16 @@ export const guessPlacements = derived(guesses, ($guesses) =>
   $guesses.map((guess) => getWordPlacementsHelper(solution, guess))
 );
 
-export const gameStatus = derived(guesses, ($guesses) => {
+export const gameStatus: Readable<GameStatus> = derived(guesses, ($guesses) => {
   if ($guesses.includes(solution)) {
-    return GameStatus.WON;
+    return "win";
   } else if ($guesses.length === MAX_NUM_GUESSES) {
-    return GameStatus.LOST;
+    return "lose";
   } else {
-    return GameStatus.IN_PROGRESS;
+    return "in_progress";
   }
 });
-// End reactive variables
 
-// Functions
 export function clearState(): void {
   guesses.set([]);
 }
@@ -68,7 +63,7 @@ export function submitGuess(word: Word): {
   return {
     status,
     // return solution only if game over
-    solution: status === GameStatus.IN_PROGRESS ? undefined : solution,
+    solution: status === "in_progress" ? undefined : solution,
   };
 }
 
@@ -90,13 +85,9 @@ export function followsHardMode(
 
   prevGuesses.forEach((guess) => {
     guess.split("").forEach((letter, i) => {
-      if (
-        getLetterPlacement(solution, testWord, i) === LETTER_PLACEMENT.PRESENT
-      ) {
+      if (getLetterPlacement(solution, testWord, i) === "present") {
         presentLetters.add(letter);
-      } else if (
-        getLetterPlacement(solution, testWord, i) === LETTER_PLACEMENT.CORRECT
-      ) {
+      } else if (getLetterPlacement(solution, testWord, i) === "correct") {
         correctLetters.push({ letter: letter, idx: i });
       }
     });
@@ -124,7 +115,7 @@ export function followsHardMode(
 
 export function getKeyboardLetterPlacements(
   guesses: Word[]
-): Record<string, LETTER_PLACEMENT> {
+): Record<string, LetterPlacement> {
   const letters = "abcdefghijklmnopqrstuvwxyz".split("");
 
   return letters.reduce(

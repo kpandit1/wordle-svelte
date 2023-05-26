@@ -15,7 +15,6 @@
   import toast from "./store/toast.js";
   import { WORD_LENGTH } from "../lib/constants/gameConstants.js";
   import BackspaceSvg from "./components/BackspaceSVG.svelte";
-  import { GameStatus } from "./global-enums";
   import { lastPlayedDayNumber } from "./domain/usage";
   import { dayNumber } from "../lib/constants";
   import { TOTAL_ANIMATION_DURATION } from "../lib/constants/animation";
@@ -30,7 +29,7 @@
     keyboardPlacements = newKeyboardLetterPlacements;
 
     // 2. Show win/lose feedback
-    if (status === GameStatus.WON) {
+    if (status === "win") {
       const numGuessesToMessageMap = {
         1: "Genius",
         2: "Magnificent",
@@ -40,7 +39,7 @@
         6: "Phew",
       };
       toast.setToast(numGuessesToMessageMap[$guesses.length]);
-    } else if (status === GameStatus.LOST) {
+    } else if (status === "lose") {
       toast.setToast(solution, 7200 * 1000);
     }
   }
@@ -79,15 +78,15 @@
       return;
     }
 
-    let status = GameStatus.IN_PROGRESS;
+    let status: GameStatus = "in_progress";
     let solution: Word | undefined = undefined;
     ({ status, solution } = submitGuess(currentGuess));
 
     await tick();
 
-    if (status === GameStatus.WON) {
+    if (status === "win") {
       addWin($guesses.length);
-    } else if (status === GameStatus.LOST) {
+    } else if (status === "lose") {
       addLoss();
     }
     // Reset guess
@@ -102,7 +101,7 @@
   }
 
   function handleKeydown(e: UIEvent, key: string) {
-    if ($gameStatus !== GameStatus.IN_PROGRESS) {
+    if ($gameStatus !== "in_progress") {
       return;
     }
 

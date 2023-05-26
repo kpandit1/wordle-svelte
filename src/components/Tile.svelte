@@ -1,8 +1,6 @@
 <script lang="ts">
-  import { LETTER_PLACEMENT } from "../global-enums";
-
   export let animateIn = false;
-  export let placement: LETTER_PLACEMENT = LETTER_PLACEMENT.NOT_GUESSED;
+  export let placement: LetterPlacement = "not_guessed";
 </script>
 
 <div

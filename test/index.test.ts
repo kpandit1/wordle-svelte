@@ -1,11 +1,11 @@
 import { isValidWord } from "../lib/helpers.js";
 import { getWordPlacementsHelper } from "../src/domain/placements.js";
-import { LETTER_PLACEMENT } from "../src/global-enums.js";
 import { expect, test } from "vitest";
 
-const c = LETTER_PLACEMENT.CORRECT;
-const p = LETTER_PLACEMENT.PRESENT;
-const a = LETTER_PLACEMENT.ABSENT;
+// For convenience
+const c = "correct";
+const p = "present";
+const a = "absent";
 
 test("testing valid words", () => {
   expect(isValidWord("is")).toBe(false);

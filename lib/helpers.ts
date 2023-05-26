@@ -1,4 +1,3 @@
-import { LETTER_PLACEMENT } from "../src/global-enums";
 import { SOLUTIONS } from "./constants/solutions";
 import { ALL_WORDS } from "./constants/allWords";
 
@@ -29,18 +28,18 @@ export function getKeyColor(
   letter: string,
   solution: Word,
   guesses: Word[]
-): LETTER_PLACEMENT {
+): LetterPlacement {
   const letterInSolution = solution.includes(letter);
   let letterInGuess = false;
 
   for (let i = 0; i < guesses.length; i++) {
     for (let j = 0; j < guesses[i].length; j++) {
       if (guesses[i][j] === letter && solution[j] === letter) {
-        return LETTER_PLACEMENT.CORRECT;
+        return "correct";
       }
       if (guesses[i][j] === letter) {
         if (solution[j] === letter) {
-          return LETTER_PLACEMENT.CORRECT;
+          return "correct";
         } else {
           letterInGuess = true;
         }
@@ -49,11 +48,11 @@ export function getKeyColor(
   }
   if (letterInGuess) {
     if (letterInSolution) {
-      return LETTER_PLACEMENT.PRESENT;
+      return "present";
     }
-    return LETTER_PLACEMENT.ABSENT;
+    return "absent";
   }
-  return LETTER_PLACEMENT.NOT_GUESSED;
+  return "not_guessed";
 }
 
 export function ordinal_suffix_of(i: number): string {
