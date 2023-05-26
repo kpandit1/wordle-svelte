@@ -1,7 +1,6 @@
 <script lang="ts">
   import HelpDialog from "./HelpDialog.svelte";
   import { gameStatus, guesses } from "./domain/game";
-  import { dayNumber } from "../lib/constants";
   import Guesses from "./Guesses.svelte";
   import Keyboard from "./Keyboard.svelte";
   import Toast from "./Toast.svelte";
@@ -11,8 +10,9 @@
   import ImgSetting from "./assets/Gear.svelte";
   import ImgHelp from "./assets/Help.svelte";
   import ImgStats from "./assets/BarGraph.svelte";
-  import { TOTAL_ANIMATION_DURATION } from "../lib/constants/animation";
   import { numWins } from "./store/stats";
+  import { dayNumber } from "./lib/constants";
+  import { TOTAL_ANIMATION_DURATION } from "./lib/constants/animation";
 
   let statsDialogInstance: any;
   let helpDialogInstance: any;

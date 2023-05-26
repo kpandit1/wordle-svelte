@@ -1,6 +1,6 @@
 import { derived, get, writable, type Readable } from "svelte/store";
-import { dayNumber, MAX_NUM_GUESSES, SOLUTIONS } from "../../lib/constants";
-import { getKeyColor, ordinal_suffix_of } from "../../lib/helpers";
+import { dayNumber, MAX_NUM_GUESSES, SOLUTIONS } from "../lib/constants";
+import { getKeyColor, ordinal_suffix_of } from "../lib/helpers";
 import { getLetterPlacement, getWordPlacementsHelper } from "./placements";
 
 // use the day number to get the solution for the day

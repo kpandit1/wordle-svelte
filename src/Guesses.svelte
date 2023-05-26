@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { MAX_NUM_GUESSES, WORD_LENGTH } from "lib/constants";
-  import { CELL_ANIMATION_DURATION_MS } from "lib/constants/animation";
-  import { ANIMATION_DELAY_MS } from "lib/constants/animation";
-  import { guesses, guessPlacements } from "src/domain/game";
-  import Tile from "src/components/Tile.svelte";
+  import { MAX_NUM_GUESSES, WORD_LENGTH } from "./lib/constants";
+  import { CELL_ANIMATION_DURATION_MS } from "./lib/constants/animation";
+  import { ANIMATION_DELAY_MS } from "./lib/constants/animation";
+  import { guesses, guessPlacements } from "./domain/game";
+  import Tile from "./components/Tile.svelte";
 
   export let currentGuess: string;
 

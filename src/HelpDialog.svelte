@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { MAX_NUM_GUESSES, WORD_LENGTH } from "../lib/constants";
+  import { MAX_NUM_GUESSES, WORD_LENGTH } from "./lib/constants";
   import Tile from "./components/Tile.svelte";
   import Dialog from "./Dialog.svelte";
 

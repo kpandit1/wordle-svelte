@@ -11,13 +11,13 @@
   import { addWin, addLoss } from "./store/stats.js";
   import settings from "./store/settings";
 
-  import { isValidWord } from "../lib/helpers";
+  import { isValidWord } from "./lib/helpers";
   import toast from "./store/toast.js";
-  import { WORD_LENGTH } from "../lib/constants/gameConstants.js";
+  import { WORD_LENGTH } from "./lib/constants/gameConstants.js";
   import BackspaceSvg from "./components/BackspaceSVG.svelte";
   import { lastPlayedDayNumber } from "./domain/usage";
-  import { dayNumber } from "../lib/constants";
-  import { TOTAL_ANIMATION_DURATION } from "../lib/constants/animation";
+  import { dayNumber } from "./lib/constants";
+  import { TOTAL_ANIMATION_DURATION } from "./lib/constants/animation";
 
   export let currentGuess: Word;
   let keyboardPlacements = getKeyboardLetterPlacements($guesses);

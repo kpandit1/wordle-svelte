@@ -1,5 +1,5 @@
 import { get, writable } from "svelte/store";
-import { dayNumber } from "../../lib/constants";
+import { dayNumber } from "../lib/constants";
 import { clearState } from "./game";
 
 function getStoredDayNumber(): number {

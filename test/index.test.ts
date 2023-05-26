@@ -1,4 +1,4 @@
-import { isValidWord } from "../lib/helpers.js";
+import { isValidWord } from "../src/lib/helpers";
 import { getWordPlacementsHelper } from "../src/domain/placements.js";
 import { expect, test } from "vitest";
 
