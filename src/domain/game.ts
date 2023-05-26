@@ -2,10 +2,10 @@ import { derived, get, writable, type Readable } from "svelte/store";
 import { dayNumber, MAX_NUM_GUESSES, SOLUTIONS } from "../lib/constants";
 import { getKeyColor, ordinal_suffix_of } from "../lib/helpers";
 import { getLetterPlacement, getWordPlacementsHelper } from "./placements";
+import { getStoredLastPlayedDay, storeLastPlayedDay } from "./usage";
 
 // use the day number to get the solution for the day
 const actualSolution = SOLUTIONS[dayNumber];
-
 const devSolution = SOLUTIONS[dayNumber];
 
 // eslint-disable-next-line no-undef
@@ -14,13 +14,16 @@ const solution =
 
 function getStoredGuesses(): Word[] {
   const storedGuessesStr = localStorage.getItem("guesses");
-
   if (!storedGuessesStr) {
     return [];
   }
 
-  const parsed = JSON.parse(storedGuessesStr);
+  // this ensures that previous guesses are reset between days
+  if (getStoredLastPlayedDay() !== dayNumber) {
+    return [];
+  }
 
+  const parsed = JSON.parse(storedGuessesStr);
   if (Array.isArray(parsed)) {
     return parsed as Word[];
   } else {
@@ -57,6 +60,7 @@ export function submitGuess(word: Word): {
 } {
   // submit guess and return feedback of the game state - whether won, lost or still going
   guesses.update((prevGuesses) => [...prevGuesses, word]);
+  storeLastPlayedDay(dayNumber);
 
   const status = get(gameStatus);
 

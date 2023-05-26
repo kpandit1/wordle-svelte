@@ -1,19 +1,9 @@
-import { get, writable } from "svelte/store";
-import { dayNumber } from "../lib/constants";
-import { clearState } from "./game";
+const STORAGE_KEY = "lastPlayedDayNumber";
 
-function getStoredDayNumber(): number {
-  return (
-    Number(JSON.parse(localStorage.getItem("lastPlayedDayNumber"))) || 999999
-  );
+export function getStoredLastPlayedDay(): number | undefined {
+  return Number(JSON.parse(localStorage.getItem(STORAGE_KEY))) || undefined;
 }
-export const lastPlayedDayNumber = writable(getStoredDayNumber());
 
-lastPlayedDayNumber.subscribe((val) => {
-  localStorage.setItem("lastPlayedDayNumber", String(val));
-});
-
-if (get(lastPlayedDayNumber) !== dayNumber) {
-  // this ensures that previous guesses are reset between days
-  clearState();
+export function storeLastPlayedDay(newNumber: Number) {
+  localStorage.setItem(STORAGE_KEY, String(newNumber));
 }

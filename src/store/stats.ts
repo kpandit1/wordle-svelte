@@ -1,4 +1,5 @@
 import { writable, derived } from "svelte/store";
+import { dayNumber } from "../lib/constants";
 
 const initialStats = {
   wins: {
@@ -12,18 +13,20 @@ const initialStats = {
   fails: 0,
   currStreak: 0,
   maxStreak: 0,
-  lastCompletedDate: 0,
+  lastWonDayNumber: -1,
 };
 
 function getStoredStats() {
-  // TODO: add logic to update streak if day is missed.
-  // Do this by storing some sort of a timestamp for the day that the win is registered in numWins
-  // new Date().setHours(0, 0, 0, 0)
-  // Compare to current date and see if there's a large gap
-  return (
+  const storedStats =
     (JSON.parse(localStorage.getItem("stats")) as typeof initialStats) ||
-    initialStats
-  );
+    initialStats;
+
+  const previousDayNumber = dayNumber - 1;
+  if (storedStats.lastWonDayNumber !== previousDayNumber) {
+    storedStats.currStreak = 0;
+  }
+
+  return storedStats;
 }
 
 const statsStore = writable(getStoredStats());
@@ -38,7 +41,7 @@ export const addWin = (numGuesses: number): void => {
     newStats.wins[numGuesses] = prevStats.wins[numGuesses] + 1;
     newStats.currStreak = prevStats.currStreak + 1;
     newStats.maxStreak = Math.max(newStats.currStreak, newStats.maxStreak);
-    newStats.lastCompletedDate = new Date().getTime();
+    newStats.lastWonDayNumber = dayNumber;
 
     return newStats;
   });
@@ -53,7 +56,6 @@ export const addLoss = (): void => {
     const newStats = { ...prevStats };
     newStats.fails = prevStats.fails + 1;
     newStats.currStreak = 0;
-    newStats.lastCompletedDate = new Date().getTime();
 
     return newStats;
   });

@@ -15,8 +15,6 @@
   import toast from "./store/toast.js";
   import { WORD_LENGTH } from "./lib/constants/gameConstants.js";
   import BackspaceSvg from "./components/BackspaceSVG.svelte";
-  import { lastPlayedDayNumber } from "./domain/usage";
-  import { dayNumber } from "./lib/constants";
   import { TOTAL_ANIMATION_DURATION } from "./lib/constants/animation";
 
   export let currentGuess: Word;
@@ -91,8 +89,6 @@
     }
     // Reset guess
     currentGuess = "";
-    // Update usage
-    lastPlayedDayNumber.set(dayNumber);
 
     // wait for all animations to play out before feedback
     setTimeout(() => {
