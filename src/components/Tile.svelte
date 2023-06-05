@@ -1,19 +1,8 @@
 <script lang="ts">
   export let animateIn = false;
-  export let animateClass = "";
   export let placement: LetterPlacement = "not_guessed";
 
   let tileDiv: HTMLElement;
-
-  function playOtherAnimation(e: AnimationEvent) {
-    if (e.target instanceof Element) {
-      if (animateClass) {
-        e.target.classList.add(animateClass);
-      }
-    }
-  }
-
-  // $: playOtherAnimation(_, animateClass);
 </script>
 
 <div
@@ -21,7 +10,6 @@
   class={`cell ${$$props.class || ""}`}
   class:animateIn
   bind:this={tileDiv}
-  on:animationend={playOtherAnimation}
 >
   <slot />
 </div>
