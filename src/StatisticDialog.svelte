@@ -8,6 +8,8 @@
   import { secondsTillMidnight } from "./store/secondsTillMidnight";
   import { formatDuration } from "./lib/formatDuration";
 
+  export let dialogId: string;
+
   $: maxCount = Math.max(...Object.values($statsStore.wins));
   $: formattedDuration = formatDuration($secondsTillMidnight);
 
@@ -53,7 +55,7 @@
 </script>
 
 <Dialog
-  id="stats-dialog"
+  id={dialogId}
   title="Statistics"
   titleId="statistic-dialog-title"
   on:instance
@@ -66,7 +68,7 @@
       </p>
       <p>
         <span class="value"
-          >{Math.round(($numWins * 100) / ($numPlayed || 0))}</span
+          >{Math.round(($numWins * 100) / ($numPlayed || 1))}</span
         >
         <span class="label">Win %</span>
       </p>

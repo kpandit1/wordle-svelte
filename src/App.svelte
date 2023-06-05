@@ -4,7 +4,7 @@
   import Guesses from "./Guesses.svelte";
   import Keyboard from "./Keyboard.svelte";
   import Toast from "./Toast.svelte";
-  import Settings from "./Settings.svelte";
+  import SettingsDialog from "./SettingsDialog.svelte";
   import StatisticDialog from "./StatisticDialog.svelte";
 
   import ImgSetting from "./assets/Gear.svelte";
@@ -41,6 +41,10 @@
   let currentGuess: Word = "";
 
   const HELP_DIALOG_ID = "help-dialog";
+  const STATS_DIALOG_ID = "stats-dialog";
+
+  let invalidGuessFeedbackNeeded = false;
+  let showWinningAnimation = false;
 </script>
 
 <main>
@@ -57,7 +61,7 @@
       <button
         type="button"
         aria-label="statistics"
-        data-a11y-dialog-show="stats-dialog"
+        data-a11y-dialog-show={STATS_DIALOG_ID}
       >
         <ImgStats />
       </button>
@@ -73,11 +77,21 @@
 
   <div id="game">
     <Toast />
-    <Guesses {currentGuess} />
-    <Keyboard bind:currentGuess />
+    <Guesses
+      {currentGuess}
+      {invalidGuessFeedbackNeeded}
+      resolveGuessFeedback={() => (invalidGuessFeedbackNeeded = false)}
+      {showWinningAnimation}
+    />
+    <Keyboard
+      bind:currentGuess
+      on:invalid_guess={() => (invalidGuessFeedbackNeeded = true)}
+      on:win={() => (showWinningAnimation = true)}
+    />
   </div>
-  <Settings />
+  <SettingsDialog />
   <StatisticDialog
+    dialogId={STATS_DIALOG_ID}
     on:instance={(e) => (statsDialogInstance = e.detail.instance)}
   />
   <HelpDialog
