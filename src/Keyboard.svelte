@@ -16,6 +16,9 @@
   import { WORD_LENGTH } from "./lib/constants/gameConstants.js";
   import BackspaceSvg from "./components/BackspaceSVG.svelte";
   import { TOTAL_ANIMATION_DURATION } from "./lib/constants/animation";
+  import { createEventDispatcher } from "svelte";
+
+  const dispatch = createEventDispatcher();
 
   export let currentGuess: Word;
   let keyboardPlacements = getKeyboardLetterPlacements($guesses);
@@ -37,29 +40,30 @@
         6: "Phew",
       };
       toast.setToast(numGuessesToMessageMap[$guesses.length]);
+      dispatch("win");
     } else if (status === "lose") {
       toast.setToast(solution, 7200 * 1000);
     }
   }
 
-  function isGuessValid(): boolean {
-    if (currentGuess.length < WORD_LENGTH) {
+  function isGuessValid(guess: Word, prevGuesses: Word[]): boolean {
+    if (guess.length < WORD_LENGTH) {
       toast.setToast("Not enough letters");
       return false;
     }
-    if (currentGuess === "danby") {
+    if (guess === "danby") {
       toast.setToast("😍");
       return true;
     }
 
     // only consider valid words
-    if (!isValidWord(currentGuess)) {
+    if (!isValidWord(guess)) {
       toast.setToast("Not in word list");
       return false;
     }
 
     if ($settings.hardMode) {
-      const res = followsHardMode($guesses, currentGuess);
+      const res = followsHardMode(prevGuesses, guess);
       if (res.ok) {
         return true;
       } else {
@@ -72,7 +76,10 @@
 
   // Submit current guess
   async function handleSubmit() {
-    if (!isGuessValid()) {
+    const numGuesses = $guesses.length;
+
+    if (!isGuessValid(currentGuess, $guesses)) {
+      dispatch("invalid_guess");
       return;
     }
 
@@ -80,10 +87,10 @@
     let solution: Word | undefined = undefined;
     ({ status, solution } = submitGuess(currentGuess));
 
-    await tick();
+    // await tick();
 
     if (status === "win") {
-      addWin($guesses.length);
+      addWin(numGuesses);
     } else if (status === "lose") {
       addLoss();
     }
