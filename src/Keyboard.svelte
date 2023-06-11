@@ -79,6 +79,7 @@
     const numGuesses = $guesses.length;
 
     if (!isGuessValid(currentGuess, $guesses)) {
+      console.log("invalid guess handleSubmit");
       dispatch("invalid_guess");
       return;
     }
@@ -176,45 +177,47 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.375rem;
     touch-action: manipulation;
+    margin-bottom: 0.5rem;
   }
   .row > button {
     touch-action: manipulation;
-    /* padding: 0.7rem; */
-    font-size: 0.95rem;
+    font-size: 1.25rem;
     min-width: max-content;
     flex: 1;
-    max-width: 45px;
-    height: 60px;
+    height: 58px;
     cursor: pointer;
     font-weight: bold;
     color: var(--clr-text);
     text-transform: uppercase;
+    margin: 0;
   }
 
-  @media (min-width: 641px) {
+  /* @media (min-width: 641px) {
     .row > button {
       font-size: 1rem;
     }
-  }
+  } */
 
-  .row > button[data-key="Enter"] {
+  .row > button[data-key="Enter"],
+  button[data-key="Backspace"] {
     font-size: 0.75rem;
-    padding: 0.5rem;
+    flex: 1.5;
+    /* padding: 0.5rem; */
   }
-  @media (min-width: 641px) {
+  /* @media (min-width: 641px) {
     .row > button[data-key="Enter"] {
       font-size: 0.9rem;
       padding: 0.7rem;
     }
-  }
+  } */
 
   .row > button[data-key="A"] {
-    margin-left: 13px;
+    margin-left: 5%;
   }
   .row > button[data-key="L"] {
-    margin-right: 13px;
+    margin-right: 5%;
   }
 
   button.not-guessed {
