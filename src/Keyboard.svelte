@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { tick } from "svelte";
   import {
     clearState,
     followsHardMode,
@@ -15,7 +14,10 @@
   import toast from "./store/toast.js";
   import { WORD_LENGTH } from "./lib/constants/gameConstants.js";
   import BackspaceSvg from "./components/BackspaceSVG.svelte";
-  import { TOTAL_ANIMATION_DURATION } from "./lib/constants/animation";
+  import {
+    REVEAL_ANIMATION_DURATION_MS,
+    WINNING_ANIMATION_DURATION_MS,
+  } from "./lib/constants/animation";
   import { createEventDispatcher } from "svelte";
 
   const dispatch = createEventDispatcher();
@@ -43,6 +45,13 @@
       dispatch("win");
     } else if (status === "lose") {
       toast.setToast(solution, 7200 * 1000);
+    }
+    // 3. Show stats dialog if game over
+    if (status !== "in_progress") {
+      const SMALL_PADDING_MS = 300;
+      setTimeout(() => {
+        dispatch("show_stats_dialog");
+      }, WINNING_ANIMATION_DURATION_MS + SMALL_PADDING_MS);
     }
   }
 
@@ -102,7 +111,7 @@
     // would make the code more robust
     setTimeout(() => {
       showFeedback(status, solution);
-    }, TOTAL_ANIMATION_DURATION);
+    }, REVEAL_ANIMATION_DURATION_MS);
   }
 
   function handleKeydown(e: UIEvent, key: string) {

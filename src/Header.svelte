@@ -6,27 +6,40 @@
   import ImgStats from "./assets/BarGraph.svelte";
   import { numWins } from "./store/stats";
   import { dayNumber } from "./lib/constants";
-  import { TOTAL_ANIMATION_DURATION } from "./lib/constants/animation";
+  import { REVEAL_ANIMATION_DURATION_MS } from "./lib/constants/animation";
   import SettingsDialog from "./SettingsDialog.svelte";
   import StatisticDialog from "./StatisticDialog.svelte";
   import HelpDialog from "./HelpDialog.svelte";
+  import { onMount } from "svelte";
 
   let statsDialogInstance: any;
   let helpDialogInstance: any;
 
-  $: {
-    // Show stats dialog if game is over
-    if (
-      statsDialogInstance &&
-      ($gameStatus === "win" || $gameStatus === "lose")
-    ) {
-      setTimeout(
-        () => statsDialogInstance.show(),
-        TOTAL_ANIMATION_DURATION * 2.5
-      );
-    }
+  export function showStatsDialog() {
+    statsDialogInstance.show();
   }
 
+  // $: {
+  //   // Show stats dialog if game is over
+  //   if (
+  //     statsDialogInstance &&
+  //     ($gameStatus === "win" || $gameStatus === "lose")
+  //   ) {
+  //     setTimeout(
+  //       () => statsDialogInstance.show(),
+  //       TOTAL_ANIMATION_DURATION * 2.5
+  //     );
+  //   }
+  // }
+
+  onMount(() => {
+    // to check when page is visited after game finisehd
+    if ($gameStatus !== "in_progress") {
+      setTimeout(() => {
+        showStatsDialog();
+      }, REVEAL_ANIMATION_DURATION_MS);
+    }
+  });
   $: {
     // Show help dialog if user's first time playing
     // i.e. no games won and no guesses made

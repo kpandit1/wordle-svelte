@@ -8,10 +8,16 @@
 
   let invalidGuessFeedbackNeeded = false;
   let showWinningAnimation = false;
+
+  let headerRef: any;
+
+  function showStatsDialog() {
+    headerRef.showStatsDialog();
+  }
 </script>
 
 <main>
-  <Header />
+  <Header bind:this={headerRef} />
   <div id="game">
     <Toast />
     <Guesses
@@ -27,6 +33,7 @@
       bind:currentGuess
       on:invalid_guess={() => (invalidGuessFeedbackNeeded = true)}
       on:win={() => (showWinningAnimation = true)}
+      on:show_stats_dialog={showStatsDialog}
     />
   </div>
 </main>

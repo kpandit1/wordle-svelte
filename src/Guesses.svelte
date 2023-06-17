@@ -1,10 +1,13 @@
 <script lang="ts">
   import { MAX_NUM_GUESSES, WORD_LENGTH } from "./lib/constants";
-  import { CELL_ANIMATION_DURATION_MS } from "./lib/constants/animation";
+  import {
+    CELL_ANIMATION_DURATION_MS,
+    WINNING_ANIMATION_DURATION_MS,
+  } from "./lib/constants/animation";
   import { ANIMATION_DELAY_MS } from "./lib/constants/animation";
-  import { guesses, guessPlacements } from "./domain/game";
+  import { guesses, guessPlacements, gameStatus } from "./domain/game";
   import Tile from "./components/Tile.svelte";
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, onMount } from "svelte";
 
   export let currentGuess: string;
   export let invalidGuessFeedbackNeeded: boolean;
@@ -50,6 +53,7 @@
           --animation-delay="{j * ANIMATION_DELAY_MS}ms"
           --animation-duration="{CELL_ANIMATION_DURATION_MS}ms"
           --idx={j}
+          --winning-animation-duration="{WINNING_ANIMATION_DURATION_MS}ms"
           class={showWinningAnimation ? "win" : ""}
           on:animationend={(e) => handleAnimationEnd(e, i, j)}
         >
@@ -106,7 +110,7 @@
 
   [data-correct-word="true"] :global(.win) {
     animation-name: Bounce;
-    animation-duration: 1000ms;
+    animation-duration: var(--winning-animation-duration);
     animation-delay: calc(var(--idx) * 100ms);
   }
 
