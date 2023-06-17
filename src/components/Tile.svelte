@@ -10,6 +10,7 @@
   class={`cell ${$$props.class || ""}`}
   class:animateIn
   bind:this={tileDiv}
+  on:animationend
 >
   <slot />
 </div>

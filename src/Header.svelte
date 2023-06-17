@@ -22,7 +22,7 @@
     ) {
       setTimeout(
         () => statsDialogInstance.show(),
-        TOTAL_ANIMATION_DURATION * 1.5
+        TOTAL_ANIMATION_DURATION * 2.5
       );
     }
   }

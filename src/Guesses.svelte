@@ -4,14 +4,33 @@
   import { ANIMATION_DELAY_MS } from "./lib/constants/animation";
   import { guesses, guessPlacements } from "./domain/game";
   import Tile from "./components/Tile.svelte";
+  import { createEventDispatcher } from "svelte";
 
   export let currentGuess: string;
   export let invalidGuessFeedbackNeeded: boolean;
   export let resolveGuessFeedback: () => void;
   export let showWinningAnimation: boolean;
 
+  const dispatch = createEventDispatcher();
+
   // subtract an extra 1 to exclude word that is currently being entered
   $: numRemainingGuesses = Math.max(MAX_NUM_GUESSES - $guesses.length - 1, 0);
+
+  function handleAnimationEnd(e: AnimationEvent, i: number, j: number) {
+    if (j === WORD_LENGTH - 1) {
+      dispatch("last_letter_animation_end");
+    }
+  }
+
+  function handleCurrentGuessAnimationEnd(e: AnimationEvent) {
+    // Fix for this issue
+    // https://stackoverflow.com/questions/68307815/animationend-event-also-also-fires-on-end-of-animations-of-child-elements
+    const animationOriginatesFromElt = e.currentTarget === e.target;
+
+    if (animationOriginatesFromElt && invalidGuessFeedbackNeeded) {
+      resolveGuessFeedback();
+    }
+  }
 </script>
 
 <div class="board">
@@ -32,6 +51,7 @@
           --animation-duration="{CELL_ANIMATION_DURATION_MS}ms"
           --idx={j}
           class={showWinningAnimation ? "win" : ""}
+          on:animationend={(e) => handleAnimationEnd(e, i, j)}
         >
           {letter}
         </Tile>
@@ -44,11 +64,7 @@
     <div
       class="row"
       class:shake={invalidGuessFeedbackNeeded}
-      on:animationend={() => {
-        if (invalidGuessFeedbackNeeded) {
-          resolveGuessFeedback();
-        }
-      }}
+      on:animationend={handleCurrentGuessAnimationEnd}
     >
       {#each currentGuess.padEnd(WORD_LENGTH) as letter}
         <Tile class={letter !== " " ? "entered" : ""}>
@@ -92,8 +108,6 @@
     animation-name: Bounce;
     animation-duration: 1000ms;
     animation-delay: calc(var(--idx) * 100ms);
-    /* animation-delay: calc(var(--idx) * 100ms); */
-    /* animation-fill-mode: forwards; */
   }
 
   .shake {

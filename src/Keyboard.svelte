@@ -79,7 +79,6 @@
     const numGuesses = $guesses.length;
 
     if (!isGuessValid(currentGuess, $guesses)) {
-      console.log("invalid guess handleSubmit");
       dispatch("invalid_guess");
       return;
     }
@@ -99,6 +98,8 @@
     currentGuess = "";
 
     // wait for all animations to play out before feedback
+    // possibly change this so showFeedback is triggered on animationEnd rather than after the timeout
+    // would make the code more robust
     setTimeout(() => {
       showFeedback(status, solution);
     }, TOTAL_ANIMATION_DURATION);

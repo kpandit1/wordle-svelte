@@ -17,9 +17,12 @@
     <Guesses
       {currentGuess}
       {invalidGuessFeedbackNeeded}
-      resolveGuessFeedback={() => (invalidGuessFeedbackNeeded = false)}
+      resolveGuessFeedback={() => {
+        invalidGuessFeedbackNeeded = false;
+      }}
       {showWinningAnimation}
     />
+    <!-- on:last_letter_animation_end={() => console.log("ending")} -->
     <Keyboard
       bind:currentGuess
       on:invalid_guess={() => (invalidGuessFeedbackNeeded = true)}
@@ -30,7 +33,7 @@
 
 <style lang="postcss">
   main {
-    width: min(100% - 1rem, 600px);
+    width: min(100% - 1rem, 500px);
     margin-inline: auto;
     display: flex;
     gap: 1.5rem;
