@@ -14,6 +14,16 @@
   export let resolveGuessFeedback: () => void;
   export let showWinningAnimation: boolean;
 
+  let animationDuration = CELL_ANIMATION_DURATION_MS;
+  let animationDelay = ANIMATION_DELAY_MS;
+
+  onMount(() => {
+    if ($gameStatus !== "in_progress") {
+      animationDuration = CELL_ANIMATION_DURATION_MS / 1.5;
+      animationDelay = ANIMATION_DELAY_MS / 1.7;
+    }
+  });
+
   const dispatch = createEventDispatcher();
 
   // subtract an extra 1 to exclude word that is currently being entered
@@ -22,6 +32,12 @@
   function handleAnimationEnd(e: AnimationEvent, i: number, j: number) {
     if (j === WORD_LENGTH - 1) {
       dispatch("last_letter_animation_end");
+    }
+  }
+
+  function onWinAnimationEnd(e: AnimationEvent, i: number, j: number) {
+    if (j === WORD_LENGTH - 1) {
+      dispatch("winAnimationEnd");
     }
   }
 
@@ -50,12 +66,15 @@
         <Tile
           placement={placements[j]}
           animateIn={true}
-          --animation-delay="{j * ANIMATION_DELAY_MS}ms"
-          --animation-duration="{CELL_ANIMATION_DURATION_MS}ms"
+          --animation-delay="{j * animationDelay}ms"
+          --animation-duration="{animationDuration}ms"
           --idx={j}
           --winning-animation-duration="{WINNING_ANIMATION_DURATION_MS}ms"
           class={showWinningAnimation ? "win" : ""}
-          on:animationend={(e) => handleAnimationEnd(e, i, j)}
+          on:animationend={(e) =>
+            showWinningAnimation
+              ? onWinAnimationEnd(e, i, j)
+              : handleAnimationEnd(e, i, j)}
         >
           {letter}
         </Tile>

@@ -6,7 +6,6 @@
   import ImgStats from "./assets/BarGraph.svelte";
   import { numWins } from "./store/stats";
   import { dayNumber } from "./lib/constants";
-  import { REVEAL_ANIMATION_DURATION_MS } from "./lib/constants/animation";
   import SettingsDialog from "./SettingsDialog.svelte";
   import StatisticDialog from "./StatisticDialog.svelte";
   import HelpDialog from "./HelpDialog.svelte";
@@ -37,7 +36,7 @@
     if ($gameStatus !== "in_progress") {
       setTimeout(() => {
         showStatsDialog();
-      }, REVEAL_ANIMATION_DURATION_MS);
+      }, 1400);
     }
   });
   $: {
