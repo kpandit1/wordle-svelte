@@ -76,7 +76,6 @@
   .row > button {
     touch-action: manipulation;
     font-size: 1.25rem;
-    min-width: max-content;
     flex: 1;
     height: 58px;
     cursor: pointer;
@@ -84,6 +83,7 @@
     color: var(--clr-text);
     text-transform: uppercase;
     margin: 0;
+    padding: 0;
   }
 
   .row > button[data-key="Enter"],
