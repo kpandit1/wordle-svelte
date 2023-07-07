@@ -33,12 +33,12 @@
     headerRef.showStatsDialog();
   }
   function showFeedback() {
-    if (!feedback) {
-      return;
-    }
-
     if ($gameStatus === "in_progress") {
       isTypingPrevented = false;
+    }
+
+    if (!feedback) {
+      return;
     }
 
     // 1. Update on-screen keyboard letter placements
@@ -149,7 +149,6 @@
     on:winAnimationEnd={onWin}
     on:loseAnimationEnd={onLose}
   />
-  <!-- on:last_letter_animation_end={() => console.log("ending")} -->
   <div>
     <Keyboard
       bind:currentGuess
