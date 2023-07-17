@@ -83,9 +83,9 @@ export function followsHardMode(
   // all previous 'correct' letters must be correct again
 
   // get all previous 'present' and 'found' letters
-  let presentLetters = new Set<string>();
+  const presentLetters = new Set<string>();
 
-  let correctLetters = [];
+  const correctLetters = [];
 
   prevGuesses.forEach((guess) => {
     guess.split("").forEach((letter, i) => {
@@ -108,6 +108,12 @@ export function followsHardMode(
   }
 
   // check all previously 'present' letters are used in the current guess
+  for (const letter of presentLetters) {
+    if (!testWord.includes(letter)) {
+      const errorMessage = "guess must contain " + letter;
+      return { ok: false, errorMessage: errorMessage };
+    }
+  } // check all previously 'present' letters are used in the current guess
   for (const letter of presentLetters) {
     if (!testWord.includes(letter)) {
       const errorMessage = "guess must contain " + letter;
