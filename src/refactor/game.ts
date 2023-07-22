@@ -4,11 +4,15 @@ import { isValidWord } from "../lib/helpers";
 import { followsHardMode } from "./hardMode";
 import { MAX_NUM_GUESSES } from "../lib/constants";
 
-export type GuessSubmitFeedback = {
-  valid: boolean;
-  error?: string;
-  solution?: string;
-};
+export type GuessSubmitFeedback =
+  | {
+      isValid: true;
+      solution?: string;
+    }
+  | {
+      isValid: false;
+      error?: string;
+    };
 
 export type Word = string;
 export type GameStatus = "in_progress" | "win" | "lose" | "not_started";
@@ -20,7 +24,7 @@ export interface GameInterface {
   readonly placements: ReadonlyArray<WordPlacement>;
   readonly status: GameStatus;
   submitGuess(word: Word): GuessSubmitFeedback;
-  clearGuesses(): void;
+  reset(): void;
 }
 
 export default class Game implements GameInterface {
@@ -29,10 +33,9 @@ export default class Game implements GameInterface {
   private store = writable(this);
   private _guesses: Word[] = [];
 
-  status: GameStatus = "not_started";
-
-  constructor(solution: string, isHardMode = false) {
+  constructor(solution: string, initGuesses: Word[] = [], isHardMode = false) {
     this.solution = solution;
+    this._guesses = initGuesses;
     this.isHardMode = isHardMode;
   }
 
@@ -46,29 +49,29 @@ export default class Game implements GameInterface {
     );
   }
 
+  get status(): Readonly<GameStatus> {
+    if (this._guesses.length === 0) {
+      return "not_started";
+    } else if (this._guesses.includes(this.solution)) {
+      return "win";
+    } else if (this.guesses.length === MAX_NUM_GUESSES) {
+      return "lose";
+    }
+    return "in_progress";
+  }
+
   subscribe(subscriber: Subscriber<this>) {
     return this.store.subscribe(subscriber);
   }
 
-  clearGuesses(): void {
+  reset(): void {
     this._guesses = [];
-    this.status = "not_started";
-  }
-
-  private updateStatus(): void {
-    if (this._guesses.includes(this.solution)) {
-      this.status = "win";
-    } else if (this._guesses.length === MAX_NUM_GUESSES) {
-      this.status = "lose";
-    } else {
-      this.status = "in_progress";
-    }
   }
 
   submitGuess(word: string): GuessSubmitFeedback {
     if (!isValidWord(word)) {
       return {
-        valid: false,
+        isValid: false,
         error: "Not in word list",
       };
     }
@@ -80,17 +83,16 @@ export default class Game implements GameInterface {
       );
       if (!ok) {
         return {
-          valid: false,
+          isValid: false,
           error: errorMessage,
         };
       }
     }
     this._guesses = [...this._guesses, word];
-    this.updateStatus();
     this.store.set(this);
 
     return {
-      valid: true,
+      isValid: true,
       solution: this.status === "in_progress" ? undefined : this.solution,
     };
   }

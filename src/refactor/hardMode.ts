@@ -6,13 +6,12 @@ export function followsHardMode(
   testWord: Word,
   solution: Word
 ) {
-  // if hard mode, there are 2 rules
-  // all previous 'present' letters must be reused
-  // all previous 'correct' letters must be correct again
-
-  // get all previous 'present' and 'found' letters
+  /** Hard mode rules
+   * 1. all previous 'present' letters must be reused
+   * 2. all previous 'correct' letters must be correct again
+   */
+  //  get all previous 'present' and 'correct' letters
   const presentLetters = new Set<string>();
-
   const correctLetters = [];
 
   prevGuesses.forEach((guess) => {
@@ -34,4 +33,19 @@ export function followsHardMode(
       return { ok: false, errorMessage: errorMessage };
     }
   }
+
+  // check all previously 'present' letters are used in the current guess
+  for (const letter of presentLetters) {
+    if (!testWord.includes(letter)) {
+      const errorMessage = "guess must contain " + letter;
+      return { ok: false, errorMessage: errorMessage };
+    }
+  } // check all previously 'present' letters are used in the current guess
+  for (const letter of presentLetters) {
+    if (!testWord.includes(letter)) {
+      const errorMessage = "guess must contain " + letter;
+      return { ok: false, errorMessage: errorMessage };
+    }
+  }
+  return { ok: true, errorMessage: "" };
 }

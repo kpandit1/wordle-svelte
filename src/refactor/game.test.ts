@@ -1,9 +1,6 @@
 import { beforeEach, describe, expect, test } from "vitest";
-
 import type { GameStatus, GameInterface } from "./game";
 import Game from "./game";
-import { getLetterPlacement } from "../domain/placements";
-import { ordinal_suffix_of } from "../lib/helpers";
 
 describe("Game basics", () => {
   let game = new Game("crumb");
@@ -34,7 +31,7 @@ describe("Game basics", () => {
     game.submitGuess("field");
     expect(game.guesses.length).toBe(4);
 
-    game.clearGuesses();
+    game.reset();
     expect(game.guesses.length).toBe(0);
   });
 
@@ -50,7 +47,7 @@ describe("Game basics", () => {
     expect(game.guesses.length).toBe(2);
     expect(game.placements.length).toBe(2);
 
-    game.clearGuesses();
+    game.reset();
     expect(game.guesses.length).toBe(0);
     expect(game.placements.length).toBe(0);
   });
@@ -111,5 +108,56 @@ describe("Letter placements", () => {
     game.submitGuess("crumb");
     placements = game.placements[3];
     expect(placements).toEqual([c, c, c, c, c]);
+  });
+});
+
+describe("Game status", () => {
+  let game = new Game("crumb");
+
+  beforeEach(() => {
+    game = new Game("crumb");
+  });
+
+  test("status should work for won games", () => {
+    let status: GameStatus = "not_started";
+
+    expect(game.status).toBe(status);
+    game.submitGuess("roast");
+
+    status = "in_progress";
+    expect(game.status).toBe(status);
+
+    game.submitGuess("cline");
+    expect(game.status).toBe(status);
+
+    game.submitGuess("dunks");
+    expect(game.status).toBe(status);
+
+    status = "win";
+    game.submitGuess("crumb");
+    expect(game.status).toBe(status);
+  });
+
+  test("status should work for lost games", () => {
+    let status: GameStatus = "not_started";
+
+    expect(game.status).toBe(status);
+    game.submitGuess("roast");
+
+    status = "in_progress";
+    expect(game.status).toBe(status);
+
+    game.submitGuess("cline");
+    expect(game.status).toBe(status);
+
+    game.submitGuess("dunks");
+    expect(game.status).toBe(status);
+
+    game.submitGuess("roast");
+    game.submitGuess("roast");
+    game.submitGuess("roast");
+
+    status = "lose";
+    expect(game.status).toBe(status);
   });
 });
