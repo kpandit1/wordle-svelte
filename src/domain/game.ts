@@ -3,10 +3,12 @@ import { dayNumber, MAX_NUM_GUESSES, SOLUTIONS } from "../lib/constants";
 import { getKeyColor, ordinal_suffix_of } from "../lib/helpers";
 import { getLetterPlacement, getWordPlacementsHelper } from "./placements";
 import { getStoredLastPlayedDay, storeLastPlayedDay } from "./usage";
+import type { WordPlacement } from "../refactor/game";
 
 // use the day number to get the solution for the day
 const actualSolution = SOLUTIONS[dayNumber];
-const devSolution = SOLUTIONS[dayNumber];
+// const devSolution = SOLUTIONS[dayNumber];
+const devSolution = "chart";
 
 // eslint-disable-next-line no-undef
 const solution =
@@ -73,54 +75,43 @@ export function submitGuess(word: Word): {
 
 export function followsHardMode(
   prevGuesses: Word[],
+  placements: WordPlacement[],
   testWord: Word
 ): {
   ok: boolean;
   errorMessage: string;
 } {
-  // if hard mode, there are 2 rules
-  // all previous 'present' letters must be reused
-  // all previous 'correct' letters must be correct again
+  // /** Hard mode rules
+  //  * 1. all previous 'present' letters must be reused
+  //  * 2. all previous 'correct' letters must be correct again
+  //  */
 
-  // get all previous 'present' and 'found' letters
-  const presentLetters = new Set<string>();
+  for (let i = 0; i < placements.length; i++) {
+    const wordPlacement = placements[i];
+    const word = prevGuesses[i];
 
-  const correctLetters = [];
+    for (let j = 0; j < wordPlacement.length; j++) {
+      const letter = word[j];
+      const letterPlacement = wordPlacement[j];
 
-  prevGuesses.forEach((guess) => {
-    guess.split("").forEach((letter, i) => {
-      if (getLetterPlacement(solution, testWord, i) === "present") {
-        presentLetters.add(letter);
-      } else if (getLetterPlacement(solution, testWord, i) === "correct") {
-        correctLetters.push({ letter: letter, idx: i });
+      //  all previous 'present' letters must be reused
+      if (letterPlacement === "present" && !testWord.includes(letter)) {
+        const errorMessage = "guess must contain " + letter;
+        return { ok: false, errorMessage: errorMessage };
       }
-    });
-  });
-
-  // check if all previous 'correct' letters are correct
-  for (let i = 0; i < correctLetters.length; i++) {
-    const l = correctLetters[i];
-    if (testWord[l.idx] !== l.letter) {
-      const errorMessage =
-        ordinal_suffix_of(l.idx + 1) + "th letter must be " + l.letter;
-      return { ok: false, errorMessage: errorMessage };
+      //  all previous 'correct' letters must be correct again
+      if (letterPlacement === "correct" && testWord[j] !== letter) {
+        const errorMessage =
+          ordinal_suffix_of(j + 1) + " letter must be " + letter;
+        return { ok: false, errorMessage: errorMessage };
+      }
     }
   }
 
-  // check all previously 'present' letters are used in the current guess
-  for (const letter of presentLetters) {
-    if (!testWord.includes(letter)) {
-      const errorMessage = "guess must contain " + letter;
-      return { ok: false, errorMessage: errorMessage };
-    }
-  } // check all previously 'present' letters are used in the current guess
-  for (const letter of presentLetters) {
-    if (!testWord.includes(letter)) {
-      const errorMessage = "guess must contain " + letter;
-      return { ok: false, errorMessage: errorMessage };
-    }
-  }
-  return { ok: true, errorMessage: "" };
+  return {
+    ok: true,
+    errorMessage: "",
+  };
 }
 
 export function getKeyboardLetterPlacements(

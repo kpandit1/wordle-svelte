@@ -15,7 +15,8 @@
     "allowJs": true,
     "checkJs": true,
     "isolatedModules": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "strictNullChecks": true
   },
   "include": [
     "src/**/*.d.ts",

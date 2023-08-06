@@ -10656,4 +10656,5 @@ export const ALL_WORDS = [
   "zygon",
   "zymes",
   "zymic",
+  "danby",
 ];

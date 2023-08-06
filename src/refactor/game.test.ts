@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, test } from "vitest";
-import type { GameStatus, GameInterface } from "./game";
+import type { GameStatus, GameInterface, GuessSubmitFeedback } from "./game";
 import Game from "./game";
+import { MAX_NUM_GUESSES } from "../lib/constants";
 
 describe("Game basics", () => {
   let game = new Game("crumb");
@@ -54,7 +55,7 @@ describe("Game basics", () => {
 });
 
 describe("Letter placements", () => {
-  let game: GameInterface;
+  let game: Game;
   const c: LetterPlacement = "correct";
   const a: LetterPlacement = "absent";
   const p: LetterPlacement = "present";
@@ -83,7 +84,7 @@ describe("Letter placements", () => {
 });
 
 describe("Letter placements", () => {
-  let game: GameInterface;
+  let game: Game;
   const c: LetterPlacement = "correct";
   const a: LetterPlacement = "absent";
   const p: LetterPlacement = "present";
@@ -159,5 +160,100 @@ describe("Game status", () => {
 
     status = "lose";
     expect(game.status).toBe(status);
+  });
+});
+
+describe("Basic feedback from submitting guesses", () => {
+  const solution = "crumb";
+  let game = new Game(solution);
+
+  beforeEach(() => {
+    game = new Game(solution);
+  });
+
+  test("Invalid words should not increase guess length", () => {
+    game.submitGuess("x");
+    expect(game.guesses.length).toBe(0);
+  });
+
+  test("Invalid words should not increase guess length", () => {
+    const feedback = game.submitGuess("asdfs");
+    expect(feedback.isValid).toBe(false);
+    expect(game.guesses.length).toBe(0);
+  });
+
+  test("Should be able to submit solution", () => {
+    const feedback = game.submitGuess(solution);
+    expect(feedback.isValid).toBe(true);
+    expect(game.guesses.length).toBe(1);
+    if (feedback.isValid) {
+      expect(feedback.solution).toBe(solution);
+    }
+  });
+
+  test("Only after game is lost, solution should be shown", () => {
+    let feedback: GuessSubmitFeedback;
+
+    const guesses = ["flame", "brick", "shunt", "podgy", "quick"];
+    for (let i = 0; i < MAX_NUM_GUESSES - 1; i++) {
+      feedback = game.submitGuess(guesses[i]);
+      expect(feedback.isValid).toBe(true);
+      if (feedback.isValid) {
+        expect(feedback.solution).toBeUndefined();
+      }
+    }
+
+    feedback = game.submitGuess("queue");
+    expect(feedback.isValid).toBe(true);
+    if (feedback.isValid) {
+      expect(feedback.solution).toBe(solution);
+    }
+  });
+});
+
+describe("Hard mode tests", () => {
+  const solution = "curly";
+  let game = new Game(solution, [], true);
+
+  beforeEach(() => {
+    game = new Game(solution, [], true);
+  });
+
+  test("Present letters must be reused", () => {
+    game.submitGuess("roast");
+    const feedback = game.submitGuess("crime");
+
+    expect(feedback.isValid).toBe(true);
+  });
+
+  test("Returns error if present letter not reused", () => {
+    game.submitGuess("roast");
+    const feedback = game.submitGuess("cline");
+
+    expect(feedback.isValid).toBe(false);
+
+    if (feedback.isValid === false) {
+      expect(feedback.error).toBe("guess must contain r");
+    }
+  });
+
+  test("Returns error if correctly placed letter is not reused", () => {
+    game.submitGuess("roast");
+    game.submitGuess("burry");
+
+    const feedback = game.submitGuess("miner");
+
+    expect(feedback.isValid).toBe(false);
+
+    if (feedback.isValid === false) {
+      expect(feedback.error).toBe("2nd letter must be u");
+    }
+  });
+
+  test("Correctly placed letters must be reused in the same index", () => {
+    game.submitGuess("corny");
+    const feedback = game.submitGuess("curry");
+
+    expect(feedback.isValid).toBe(true);
   });
 });

@@ -28,7 +28,7 @@ export interface GameInterface {
 }
 
 export default class Game implements GameInterface {
-  private solution: Word;
+  private readonly solution: Word;
   private isHardMode: boolean;
   private store = writable(this);
   private _guesses: Word[] = [];
@@ -39,7 +39,7 @@ export default class Game implements GameInterface {
     this.isHardMode = isHardMode;
   }
 
-  get guesses(): ReadonlyArray<Word> {
+  get guesses(): Word[] {
     return this._guesses.slice();
   }
 
@@ -69,6 +69,13 @@ export default class Game implements GameInterface {
   }
 
   submitGuess(word: string): GuessSubmitFeedback {
+    if (this._guesses.length === MAX_NUM_GUESSES) {
+      return {
+        isValid: false,
+        error: "Exceeding upper guess limit",
+      };
+    }
+
     if (!isValidWord(word)) {
       return {
         isValid: false,
@@ -78,8 +85,8 @@ export default class Game implements GameInterface {
     if (this.isHardMode) {
       const { ok, errorMessage } = followsHardMode(
         this._guesses,
-        word,
-        this.solution
+        this.placements,
+        word
       );
       if (!ok) {
         return {
@@ -88,6 +95,7 @@ export default class Game implements GameInterface {
         };
       }
     }
+    // After all validity checks pass
     this._guesses = [...this._guesses, word];
     this.store.set(this);
 
@@ -97,7 +105,7 @@ export default class Game implements GameInterface {
     };
   }
 
-  setIsHardMode(value: boolean) {
+  setHardModeStatus(value: boolean) {
     if (this.status === "not_started") {
       this.isHardMode = value;
     }

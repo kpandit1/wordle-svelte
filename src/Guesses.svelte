@@ -1,33 +1,24 @@
 <script lang="ts">
   import { MAX_NUM_GUESSES, WORD_LENGTH } from "./lib/constants";
-  import {
-    CELL_ANIMATION_DURATION_MS,
-    WINNING_ANIMATION_DURATION_MS,
-  } from "./lib/constants/animation";
-  import { ANIMATION_DELAY_MS } from "./lib/constants/animation";
-  import { guesses, guessPlacements, gameStatus } from "./domain/game";
+  import { WINNING_ANIMATION_DURATION_MS } from "./lib/constants/animation";
   import Tile from "./components/Tile.svelte";
-  import { createEventDispatcher, onMount } from "svelte";
+  import { createEventDispatcher } from "svelte";
+  import type { WordPlacement } from "./refactor/game";
 
+  export let guesses: Word[];
+  export let placements: WordPlacement[];
   export let currentGuess: string;
   export let invalidGuessFeedbackNeeded: boolean;
   export let resolveGuessFeedback: () => void;
   export let showWinningAnimation: boolean;
 
-  let animationDuration = CELL_ANIMATION_DURATION_MS;
-  let animationDelay = ANIMATION_DELAY_MS;
-
-  onMount(() => {
-    if ($gameStatus !== "in_progress") {
-      animationDuration = CELL_ANIMATION_DURATION_MS / 1.5;
-      animationDelay = ANIMATION_DELAY_MS / 1.7;
-    }
-  });
+  export let animationDuration: number;
+  export let animationDelay: number;
 
   const dispatch = createEventDispatcher();
 
   // subtract an extra 1 to exclude word that is currently being entered
-  $: numRemainingGuesses = Math.max(MAX_NUM_GUESSES - $guesses.length - 1, 0);
+  $: numRemainingGuesses = Math.max(MAX_NUM_GUESSES - guesses.length - 1, 0);
 
   function handleAnimationEnd(e: AnimationEvent, i: number, j: number) {
     if (j === WORD_LENGTH - 1) {
@@ -45,7 +36,6 @@
     // Fix for this issue
     // https://stackoverflow.com/questions/68307815/animationend-event-also-also-fires-on-end-of-animations-of-child-elements
     const animationOriginatesFromElt = e.currentTarget === e.target;
-
     if (animationOriginatesFromElt && invalidGuessFeedbackNeeded) {
       resolveGuessFeedback();
     }
@@ -54,17 +44,17 @@
 
 <div class="board">
   <!-- 1. Words that have already been guessed -->
-  {#each $guesses as guess, i}
-    {@const placements = $guessPlacements[i]}
+  {#each guesses as guess, i}
+    {@const wordPlacements = placements[i]}
     <div
       class="row completed"
-      data-correct-word={placements.every((e) => e === "correct")
+      data-correct-word={wordPlacements.every((e) => e === "correct")
         ? "true"
         : "false"}
     >
       {#each guess as letter, j}
         <Tile
-          placement={placements[j]}
+          placement={wordPlacements[j]}
           animateIn={true}
           --animation-delay="{j * animationDelay}ms"
           --animation-duration="{animationDuration}ms"
@@ -83,7 +73,7 @@
   {/each}
 
   <!-- 2. Word currently being entered -->
-  {#if $guesses.length !== MAX_NUM_GUESSES}
+  {#if guesses.length !== MAX_NUM_GUESSES}
     <div
       class="row"
       class:shake={invalidGuessFeedbackNeeded}

@@ -1,10 +1,9 @@
 <script lang="ts">
-  import type { getKeyboardLetterPlacements } from "./domain/game";
   import { WORD_LENGTH } from "./lib/constants/gameConstants.js";
   import BackspaceSvg from "./components/BackspaceSVG.svelte";
 
   export let currentGuess: Word;
-  export let keyboardPlacements: ReturnType<typeof getKeyboardLetterPlacements>;
+  export let keyboardPlacements: Record<string, LetterPlacement>;
   export let onSubmit: (word: Word) => void;
   export let isTypingPrevented: boolean;
 

@@ -1,16 +1,16 @@
 <script lang="ts">
-  import { gameStatus, guesses } from "./domain/game";
+  import { gameStatus, guesses } from "../domain/game";
 
-  import ImgSetting from "./assets/Gear.svelte";
-  import ImgHelp from "./assets/Help.svelte";
-  import ImgStats from "./assets/BarGraph.svelte";
-  import { numWins } from "./store/stats";
-  import { dayNumber } from "./lib/constants";
-  import SettingsDialog from "./SettingsDialog.svelte";
-  import StatisticDialog from "./StatisticDialog.svelte";
-  import HelpDialog from "./HelpDialog.svelte";
+  import ImgSetting from "../assets/Gear.svelte";
+  import ImgHelp from "../assets/Help.svelte";
+  import ImgStats from "../assets/BarGraph.svelte";
+  import { numWins } from "../store/stats";
+  import { dayNumber } from "../lib/constants";
+  import SettingsDialog from "../SettingsDialog.svelte";
+  import StatisticDialog from "../StatisticDialog.svelte";
+  import HelpDialog from "../HelpDialog.svelte";
   import { onMount } from "svelte";
-  import Dialog2 from "./Dialog2.svelte";
+  import Dialog2 from "../Dialog2.svelte";
 
   let statsDialogInstance: any;
   let helpDialogInstance: any;
