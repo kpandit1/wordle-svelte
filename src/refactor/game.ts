@@ -2,7 +2,6 @@ import { writable, type Subscriber } from "svelte/store";
 import { getWordPlacementsHelper } from "../domain/placements";
 import { isValidWord } from "../lib/helpers";
 import { followsHardMode } from "./hardMode";
-import { MAX_NUM_GUESSES } from "../lib/constants";
 
 export type GuessSubmitFeedback =
   | {
@@ -111,3 +110,6 @@ export default class Game implements GameInterface {
     }
   }
 }
+
+export const MAX_NUM_GUESSES = 6;
+export const WORD_LENGTH = 5;

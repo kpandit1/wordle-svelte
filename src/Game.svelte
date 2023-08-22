@@ -16,13 +16,13 @@
   import { WORD_LENGTH } from "./lib/constants";
   import { isValidWord } from "./lib/helpers";
   import settings from "./store/settings";
-  import { addLoss, addWin } from "./store/stats";
+  import statsStore from "./store/stats";
   import {
     ANIMATION_DELAY_MS,
     CELL_ANIMATION_DURATION_MS,
   } from "./lib/constants/animation";
   import { onMount } from "svelte";
-  import { setupGame } from "./refactor/setupGame";
+  import setupGame from "./refactor/setupGame";
 
   let currentGuess: Word = "";
 
@@ -36,7 +36,7 @@
   let isTypingPrevented: boolean = $guesses.length > 0;
   const isDev = import.meta.env.MODE === "development";
 
-  let game = setupGame($settings.hardMode);
+  let game = setupGame();
 
   $: console.log("game", game);
 
@@ -72,7 +72,7 @@
     }
     // 3. Show stats dialog if game over
     if (feedback?.status === "lose") {
-      const SMALL_PADDING_MS = 500;
+      const SMALL_PADDING_MS = 1000;
       setTimeout(() => {
         showStatsDialog();
       }, SMALL_PADDING_MS);
@@ -80,16 +80,10 @@
   }
 
   function onWin() {
-    const SMALL_PADDING_MS = 500;
-    setTimeout(() => {
-      showStatsDialog();
-    }, SMALL_PADDING_MS);
+    showStatsDialog();
   }
   function onLose() {
-    const SMALL_PADDING_MS = 500;
-    setTimeout(() => {
-      showStatsDialog();
-    }, SMALL_PADDING_MS);
+    showStatsDialog();
   }
 
   function isGuessValid(guess: Word, prevGuesses: Word[]): boolean {
@@ -133,10 +127,11 @@
     ({ status, solution } = submitGuess(currentGuess));
 
     if (status === "win") {
-      addWin($guesses.length);
+      statsStore.addWin($guesses.length);
     } else if (status === "lose") {
-      addLoss();
+      statsStore.addLoss();
     }
+
     // Reset guess
     currentGuess = "";
 
@@ -180,11 +175,11 @@
       on:invalid_guess={() => (invalidGuessFeedbackNeeded = true)}
       {keyboardPlacements}
       onSubmit={handleSubmit}
-      {isTypingPrevented}
+      shouldPreventInput={isTypingPrevented}
     />
     {#if isDev}
       <button
-        on:mousedown={() => {
+        on:click={() => {
           keyboardPlacements = getKeyboardLetterPlacements([]);
           clearState();
           isTypingPrevented = false;

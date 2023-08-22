@@ -1,7 +1,23 @@
 import { writable, derived } from "svelte/store";
 import { dayNumber } from "../lib/constants";
+import type Game from "../refactor/game";
 
-const initialStats = {
+type Stats = {
+  wins: {
+    1: number;
+    2: number;
+    3: number;
+    4: number;
+    5: number;
+    6: number;
+  };
+  fails: number;
+  currStreak: number;
+  maxStreak: number;
+  lastWonDayNumber: number;
+};
+
+const initialStats: Stats = {
   wins: {
     1: 0,
     2: 0,
@@ -16,17 +32,37 @@ const initialStats = {
   lastWonDayNumber: -1,
 };
 
-function getStoredStats() {
-  const storedStats =
-    (JSON.parse(localStorage.getItem("stats")) as typeof initialStats) ||
-    initialStats;
-
-  const previousDayNumber = dayNumber - 1;
-  if (storedStats.lastWonDayNumber !== previousDayNumber) {
-    storedStats.currStreak = 0;
+function getStoredStats(): Stats {
+  const storedVal = localStorage.getItem("stats");
+  if (!storedVal) {
+    return initialStats;
   }
 
-  return storedStats;
+  const parsedVal = JSON.parse(storedVal) as unknown;
+  if (
+    parsedVal !== null &&
+    typeof parsedVal == "object" &&
+    "wins" in parsedVal &&
+    parsedVal.wins &&
+    typeof parsedVal.wins === "object" &&
+    "fails" in parsedVal &&
+    typeof parsedVal.fails === "number" &&
+    "currStreak" in parsedVal &&
+    typeof parsedVal.currStreak === "number" &&
+    "maxStreak" in parsedVal &&
+    typeof parsedVal.maxStreak === "number" &&
+    "lastWonDayNumber" in parsedVal &&
+    typeof parsedVal.lastWonDayNumber === "number"
+  ) {
+    const storedStats: Stats = parsedVal as Stats;
+    const previousDayNumber = dayNumber - 1;
+    if (storedStats.lastWonDayNumber !== previousDayNumber) {
+      storedStats.currStreak = 0;
+    }
+    return storedStats;
+  } else {
+    return initialStats;
+  }
 }
 
 const statsStore = writable(getStoredStats());
@@ -47,11 +83,11 @@ export const addWin = (numGuesses: number): void => {
   });
 };
 
-export const resetStreak = (): void => {
+const resetStreak = (): void => {
   statsStore.update((prevStats) => ({ ...prevStats, currStreak: 0 }));
 };
 
-export const addLoss = (): void => {
+const addLoss = (): void => {
   statsStore.update((prevStats) => {
     const newStats = { ...prevStats };
     newStats.fails = prevStats.fails + 1;
@@ -61,7 +97,7 @@ export const addLoss = (): void => {
   });
 };
 
-export const numPlayed = derived(statsStore, ($statsStore) => {
+const numPlayed = derived(statsStore, ($statsStore) => {
   const winCounts = Object.values($statsStore.wins);
   const totalWins = winCounts.reduce((acc, cnt) => acc + cnt, 0);
   const totalLosses = $statsStore.fails;
@@ -69,13 +105,27 @@ export const numPlayed = derived(statsStore, ($statsStore) => {
   return totalWins + totalLosses;
 });
 
-export const numWins = derived(statsStore, ($statsStore) => {
+const numWins = derived(statsStore, ($statsStore) => {
   const winCounts = Object.values($statsStore.wins);
   const totalWins = winCounts.reduce((acc, cnt) => acc + cnt, 0);
 
   return totalWins;
 });
 
+function updateStats(game: Game) {
+  if (game.status === "win") {
+    addWin(game.guesses.length);
+  } else {
+    addLoss();
+  }
+}
+
 export default {
   subscribe: statsStore.subscribe,
+  addLoss,
+  addWin,
+  numPlayed,
+  numWins,
+  resetStreak,
+  updateStats,
 };

@@ -6,10 +6,14 @@ const initialSettings = {
   hardMode: false,
 };
 
+export type Settings = typeof initialSettings;
+
 function createStore() {
-  const { subscribe, set, update } = writable(
-    (JSON.parse(localStorage.getItem("settings")) as typeof initialSettings) ||
-      initialSettings
+  const { subscribe, set, update } = writable<Settings>(
+    // TODO: fix
+    (JSON.parse(
+      localStorage.getItem("settings") || JSON.stringify(initialSettings)
+    ) as typeof initialSettings) || initialSettings
   );
 
   function toggleDarkMode() {

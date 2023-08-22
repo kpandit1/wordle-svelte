@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { WORD_LENGTH } from "./lib/constants/gameConstants.js";
-  import BackspaceSvg from "./components/BackspaceSVG.svelte";
+  import BackspaceSvg from "./assets/BackspaceSVG.svelte";
 
-  export let currentGuess: Word;
+  export let input: string;
+  export let maxInputLength: number;
   export let placements: Record<string, LetterPlacement>;
-  export let onSubmit: (word: Word) => void;
+  export let onSubmit: (word: string) => void;
   export let shouldPreventInput: boolean;
 
   function handleKeydown(e: UIEvent, key: string) {
@@ -15,11 +15,11 @@
     if (
       key.length === 1 &&
       key.match(/[A-Za-z]/) && // should be a letter
-      currentGuess.length < WORD_LENGTH // limit to word length
+      input.length < maxInputLength // limit to word length
     ) {
-      currentGuess += key.toLowerCase();
+      input += key.toLowerCase();
     } else if (key === "Backspace") {
-      currentGuess = currentGuess.slice(0, -1);
+      input = input.slice(0, -1);
     } else if (key === "Enter") {
       // Adding checks since Enter from non-keyboard buttons shouldn't trigger a submit event
       // This is needed since the keydown event handler is attached to the window and always activates
@@ -28,7 +28,7 @@
       // don't trigger on button focus
       // unless the button has [data-key="*"] set (only true for keyboard)
       if (target.tagName !== "BUTTON" || target.dataset.key) {
-        onSubmit(currentGuess);
+        onSubmit(input);
       }
     }
   }

@@ -1,51 +1,52 @@
 <script lang="ts">
-  import { gameStatus } from "../domain/game";
-  import Guesses from "../Guesses.svelte";
-  import Header from "../Header.svelte";
-  import Keyboard from "../Keyboard.svelte";
-  import Toast from "../Toast.svelte";
-  import { getKeyboardLetterPlacements } from "../domain/game";
+  import Guesses from "./src/Guesses.svelte";
+  import Header from "./src/Header.svelte";
+  import Keyboard from "./src/Keyboard.svelte";
+  import Toaster from "./src/Toaster.svelte";
   import toast from "../store/toast";
-  import settings from "../store/settings";
-  import { addLoss, addWin } from "../store/stats";
+  import getKeyboardLetterPlacements from "./keyboardLetterPlacements";
+  import statsStore from "../store/stats";
   import {
     ANIMATION_DELAY_MS,
     CELL_ANIMATION_DURATION_MS,
   } from "../lib/constants/animation";
-  import { onMount } from "svelte";
-  import { setupGame } from "./setupGame";
-  import type { WordPlacement } from "./game";
+  import setupGame from "./setupGame";
+  import dialogStore, { DialogId } from "./dialogs";
+  import { WORD_LENGTH } from "./game";
 
-  let game = setupGame($settings.hardMode);
+  let game = setupGame();
   let currentGuess: Word = "";
-
   let invalidGuessFeedbackNeeded = false;
   let showWinningAnimation = false;
-
-  let feedback: { status: GameStatus; solution: Word } | null = null;
-
-  let headerRef: any;
-
-  let isTypingPrevented: boolean = $game.guesses.length > 0;
+  let queuedFeedback: { status: GameStatus; solution: Word } | null = null;
+  let keyboardPlacements = getKeyboardLetterPlacements(
+    game.guesses,
+    game.placements
+  );
+  // Typing is prevented while animations play out/ feedback for guesses is displayed
+  // If there are any guesses, there will be feedback. So, prevent input
+  // Typing is also prevented when game is over
+  let shouldPreventInput: boolean = game.guesses.length > 0;
   const isDev = import.meta.env.MODE === "development";
 
-  function showStatsDialog() {
-    headerRef.showStatsDialog();
-  }
-  function showFeedback() {
-    if ($gameStatus === "in_progress") {
-      isTypingPrevented = false;
+  function showQueuedFeedback() {
+    if (game.status === "in_progress") {
+      // No further input needed if game over
+      shouldPreventInput = false;
     }
 
-    if (!feedback) {
+    if (!queuedFeedback) {
       return;
     }
 
     // 1. Update on-screen keyboard letter placements
-    keyboardPlacements = getKeyboardLetterPlacements($game.guesses);
+    keyboardPlacements = getKeyboardLetterPlacements(
+      game.guesses,
+      game.placements
+    );
 
     // 2. Show win/lose feedback
-    if (feedback.status === "win") {
+    if (queuedFeedback.status === "win") {
       const numGuessesToMessageMap = {
         1: "Genius",
         2: "Magnificent",
@@ -54,112 +55,87 @@
         5: "Great",
         6: "Phew",
       };
-      toast.setToast(numGuessesToMessageMap[$game.guesses.length]);
+      toast.setToast(numGuessesToMessageMap[game.guesses.length]);
       showWinningAnimation = true;
-    } else if (feedback.status === "lose") {
-      toast.setToast(feedback.solution.toUpperCase(), 7200 * 1000);
+    } else if (queuedFeedback.status === "lose") {
+      toast.setToast(queuedFeedback.solution.toUpperCase(), 7200 * 1000);
     }
     // 3. Show stats dialog if game over
-    if (feedback?.status === "lose") {
-      const SMALL_PADDING_MS = 500;
+    // If status is "win", then don't do anything since animation needs to play out before
+    // further action is takes
+    if (queuedFeedback?.status === "lose") {
+      const SMALL_PADDING_MS = 1000;
       setTimeout(() => {
-        showStatsDialog();
+        dialogStore.set(DialogId.Stats);
       }, SMALL_PADDING_MS);
     }
   }
 
   function onWin() {
-    const SMALL_PADDING_MS = 500;
-    setTimeout(() => {
-      showStatsDialog();
-    }, SMALL_PADDING_MS);
-  }
-  function onLose() {
-    const SMALL_PADDING_MS = 500;
-    setTimeout(() => {
-      showStatsDialog();
-    }, SMALL_PADDING_MS);
+    dialogStore.set(DialogId.Stats);
   }
 
   function handleSubmit() {
     if (currentGuess === "danby") {
       toast.setToast("😍");
     }
-    const submitFeedback = game.submitGuess(currentGuess);
+    const feedback = game.submitGuess(currentGuess);
 
-    if (!submitFeedback.isValid) {
-      const msg = submitFeedback.error;
+    if (!feedback.isValid) {
+      // Invalid guess
+      const msg = feedback.error;
       if (msg) {
         toast.setToast(msg);
       }
       invalidGuessFeedbackNeeded = true;
-      return;
     } else {
-      isTypingPrevented = true;
-
-      if (game.status === "win") {
-        addWin(game.guesses.length);
-      } else if (game.status === "lose") {
-        addLoss();
-      }
-      // Reset guess
-      currentGuess = "";
-      feedback = {
+      // Valid guess
+      // Prevent input until queued feedback is popped/resolved
+      shouldPreventInput = true;
+      queuedFeedback = {
         status: game.status as GameStatus,
-        solution: submitFeedback.solution || "",
+        solution: feedback.solution || "",
       };
+      statsStore.updateStats(game);
+      currentGuess = "";
     }
   }
-
-  let keyboardPlacements = getKeyboardLetterPlacements($game.guesses);
-
-  let animationDuration = CELL_ANIMATION_DURATION_MS;
-  let animationDelay = ANIMATION_DELAY_MS;
-
-  onMount(() => {
-    if ($gameStatus !== "in_progress") {
-      animationDuration = CELL_ANIMATION_DURATION_MS / 1.5;
-      animationDelay = ANIMATION_DELAY_MS / 1.7;
-    }
-  });
-
-  $: placements = $game.placements as WordPlacement[];
 </script>
 
-<Header bind:this={headerRef} />
+<Header {game} />
 <div id="game">
-  <Toast />
-  <!-- 1. change resolveGuessFeedback/invalidGuessFeedbackNeeded  bind:this={guessElt} and guessElt.showInvalidGuessFeedback(); -->
-  <!-- 2.  consistent animationDuration -->
+  <Toaster />
   <Guesses
     guesses={$game.guesses}
-    {placements}
+    placements={$game.placements}
     {currentGuess}
     {showWinningAnimation}
-    on:last_letter_animation_end={showFeedback}
-    on:winAnimationEnd={onWin}
-    on:loseAnimationEnd={onLose}
-    {animationDuration}
-    {animationDelay}
+    animationDuration={CELL_ANIMATION_DURATION_MS}
+    animationDelay={ANIMATION_DELAY_MS}
     {invalidGuessFeedbackNeeded}
     resolveGuessFeedback={() => {
       invalidGuessFeedbackNeeded = false;
     }}
+    on:last_letter_animation_end={showQueuedFeedback}
+    on:winAnimationEnd={onWin}
   />
   <div>
     <Keyboard
-      bind:currentGuess
-      on:invalid_guess={() => (invalidGuessFeedbackNeeded = true)}
-      {keyboardPlacements}
+      bind:input={currentGuess}
+      placements={keyboardPlacements}
       onSubmit={handleSubmit}
-      {isTypingPrevented}
+      {shouldPreventInput}
+      maxInputLength={WORD_LENGTH}
     />
     {#if isDev}
       <button
-        on:mousedown={() => {
-          keyboardPlacements = getKeyboardLetterPlacements([]);
+        on:click={() => {
           game.reset();
-          isTypingPrevented = false;
+          keyboardPlacements = getKeyboardLetterPlacements(
+            game.guesses,
+            game.placements
+          );
+          shouldPreventInput = false;
         }}
         type="button">CLEAR STATE</button
       >

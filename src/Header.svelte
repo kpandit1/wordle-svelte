@@ -4,40 +4,35 @@
   import ImgSetting from "./assets/Gear.svelte";
   import ImgHelp from "./assets/Help.svelte";
   import ImgStats from "./assets/BarGraph.svelte";
-  import { numWins } from "./store/stats";
+  import statsStore from "./store/stats";
   import { dayNumber } from "./lib/constants";
   import SettingsDialog from "./SettingsDialog.svelte";
   import StatisticDialog from "./StatisticDialog.svelte";
   import HelpDialog from "./HelpDialog.svelte";
   import { onMount } from "svelte";
-  import Dialog2 from "./Dialog2.svelte";
+  import { get } from "svelte/store";
 
   let statsDialogInstance: any;
-  let helpDialogInstance: any;
+  let shouldShowHelpDialog: boolean = false;
 
   export function showStatsDialog() {
     statsDialogInstance.show();
   }
 
   onMount(() => {
+    const numWinsStore = statsStore.numWins;
     // to check when page is visited after game finisehd
     if ($gameStatus !== "in_progress") {
       setTimeout(() => {
         showStatsDialog();
       }, 1400);
+    } else if (get(numWinsStore) === 0 && $guesses.length === 0) {
+      shouldShowHelpDialog = true;
     }
   });
-  $: {
-    // Show help dialog if user's first time playing
-    // i.e. no games won and no guesses made
-    if (helpDialogInstance && $numWins === 0 && $guesses.length === 0) {
-      helpDialogInstance.show();
-    }
-  }
 
   const HELP_DIALOG_ID = "help-dialog";
   const STATS_DIALOG_ID = "stats-dialog";
-  let open = false;
 </script>
 
 <header>
@@ -71,20 +66,11 @@
     on:instance={(e) => (statsDialogInstance = e.detail.instance)}
   />
   <HelpDialog
-    dialogId={HELP_DIALOG_ID}
-    on:instance={(e) => (helpDialogInstance = e.detail.instance)}
+    id={HELP_DIALOG_ID}
+    open={shouldShowHelpDialog}
+    onClose={() => (shouldShowHelpDialog = false)}
+    onOpen={() => (shouldShowHelpDialog = true)}
   />
-  <Dialog2
-    id="test"
-    title="foo"
-    {open}
-    onOpen={() => {}}
-    onClose={() => (open = false)}
-  >
-    <button on:click={() => (open = false)}>close</button>
-  </Dialog2>
-
-  <button on:click={() => (open = !open)}>toggle</button>
 </header>
 
 <style lang="postcss">

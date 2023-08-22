@@ -19,7 +19,7 @@ export function getStoredGuesses(): Word[] | undefined {
   }
 }
 
-export function storeGuesses(guesses: Word[]) {
+export function storeGuesses(guesses: readonly Word[]) {
   localStorage.setItem(guessesKey, JSON.stringify(guesses));
 }
 

@@ -1,14 +1,21 @@
 <script lang="ts">
-  import { guesses, gameStatus, guessPlacements } from "./domain/game";
-  import Dialog from "./Dialog.svelte";
-  import statsStore from "./store/stats";
-  import { dayNumber, MAX_NUM_GUESSES } from "./lib/constants";
-  import toast from "./store/toast";
+  import statsStore from "../../store/stats";
+  import { dayNumber, MAX_NUM_GUESSES } from "../../lib/constants";
+  import toast from "../toast";
   import shareIcon from "./assets/share.svg";
-  import { secondsTillMidnight } from "./store/secondsTillMidnight";
-  import { formatDuration } from "./lib/formatDuration";
+  import { secondsTillMidnight } from "../../store/secondsTillMidnight";
+  import { formatDuration } from "../../lib/formatDuration";
+  import type { ComponentProps } from "svelte";
+  import type Game from "../game";
+  import Dialog from "./Dialog.svelte";
 
-  export let dialogId: string;
+  type DialogProps = ComponentProps<Dialog>;
+
+  export let id: DialogProps["id"];
+  export let open: DialogProps["open"];
+  export let onOpen: DialogProps["onOpen"];
+  export let onClose: DialogProps["onClose"];
+  export let game: Game;
 
   $: maxCount = Math.max(...Object.values($statsStore.wins));
   $: formattedDuration = formatDuration($secondsTillMidnight);
@@ -20,7 +27,7 @@
       absent: "⬛️",
     };
 
-    const res = $guessPlacements.map((wordPlacements) =>
+    const res = game.placements.map((wordPlacements) =>
       wordPlacements.map((l) => placementToEmoji[l]).join("")
     );
 
@@ -30,9 +37,9 @@
   function shareResults(): void {
     let body = `Wordle ${dayNumber} `;
 
-    if ($gameStatus === "win") {
-      body += `${$guesses.length}/${MAX_NUM_GUESSES}`;
-    } else if ($gameStatus === "lose") {
+    if (game.status === "win") {
+      body += `${game.guesses.length}/${MAX_NUM_GUESSES}`;
+    } else if (game.status === "lose") {
       body += `X/${MAX_NUM_GUESSES}`;
     }
     body += "\n";
@@ -50,18 +57,20 @@
   // In the guess distribution chart, the number of guesses taken
   // to win the current game should be higlighted
   function shouldHighlightBar(numGuesses: number) {
-    return $gameStatus === "win" && numGuesses === $guesses.length;
+    return game.status === "win" && numGuesses === game.guesses.length;
   }
 
-  $: numPlayed = statsStore.numPlayed;
-  $: numWins = statsStore.numWins;
+  const numPlayed = statsStore.numPlayed;
+  const numWins = statsStore.numWins;
 </script>
 
 <Dialog
-  id={dialogId}
+  {id}
   title="Statistics"
   titleId="statistic-dialog-title"
-  on:instance
+  {open}
+  {onClose}
+  {onOpen}
 >
   <div class="content">
     <div class="stats">
@@ -105,7 +114,7 @@
       </ul>
     </div>
 
-    {#if $gameStatus !== "in_progress"}
+    {#if game.status !== "in_progress"}
       {@const { hours, minutes, seconds } = formattedDuration}
       <div class="extra">
         <div>

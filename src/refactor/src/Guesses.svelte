@@ -1,9 +1,8 @@
 <script lang="ts">
-  import { MAX_NUM_GUESSES, WORD_LENGTH } from "./lib/constants";
-  import { WINNING_ANIMATION_DURATION_MS } from "./lib/constants/animation";
-  import Tile from "./components/Tile.svelte";
   import { createEventDispatcher } from "svelte";
-  import type { WordPlacement } from "./refactor/game";
+  import { WINNING_ANIMATION_DURATION_MS } from "../animation";
+  import Tile from "./Tile.svelte";
+  import { MAX_NUM_GUESSES, WORD_LENGTH, type WordPlacement } from "../game";
 
   export let guesses: readonly Word[];
   export let placements: readonly WordPlacement[];

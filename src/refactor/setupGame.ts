@@ -1,4 +1,5 @@
 import Game from "./game";
+import { get } from "svelte/store";
 import {
   getStoredGuesses,
   getStoredSolution,
@@ -7,6 +8,7 @@ import {
 } from "./api/gameApi";
 import { numDaysBetween } from "./common/daysBetween";
 import { SOLUTIONS } from "../lib/constants";
+import settingsStore from "../store/settings";
 
 function isNewGame(solution: string): boolean {
   const prevSolution = getStoredSolution();
@@ -21,20 +23,26 @@ function generateSolution(): Word {
   return SOLUTIONS[solutionIdx];
 }
 
-export function setupGame(isHardMode: boolean): Game {
+/**
+ * Instantiate a game, and connect the game state to storage
+ * @returns A set up new game
+ */
+export default function setupGame(): Game {
+  const settings = get(settingsStore);
+
   const sol = generateSolution();
   const storedGuesses = getStoredGuesses();
-  let game: Game;
+  let guesses = storedGuesses;
 
   if (isNewGame(sol)) {
     storeSolution(sol);
-    game = new Game(sol, [], isHardMode);
-  } else {
-    game = new Game(sol, storedGuesses, isHardMode);
+    guesses = [];
   }
 
+  const game = new Game(sol, guesses, settings.hardMode);
+
   game.subscribe((val) => {
-    const guesses = val.guesses as string[];
+    const guesses = val.guesses;
     storeGuesses(guesses);
   });
 

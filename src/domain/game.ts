@@ -8,7 +8,7 @@ import type { WordPlacement } from "../refactor/game";
 // use the day number to get the solution for the day
 const actualSolution = SOLUTIONS[dayNumber];
 // const devSolution = SOLUTIONS[dayNumber];
-const devSolution = "chart";
+const devSolution = actualSolution;
 
 // eslint-disable-next-line no-undef
 const solution =

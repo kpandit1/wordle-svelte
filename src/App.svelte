@@ -1,10 +1,8 @@
 <script lang="ts">
   import Game from "./Game.svelte";
-  // import Header from "./Header.svelte";
 </script>
 
 <main>
-  <!-- <Header /> -->
   <Game />
 </main>
 

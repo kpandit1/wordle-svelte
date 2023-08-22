@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { MAX_NUM_GUESSES, WORD_LENGTH } from "./lib/constants";
-  import Tile from "./components/Tile.svelte";
-  import Dialog2 from "./Dialog2.svelte";
   import type { ComponentProps } from "svelte";
+  import Tile from "./Tile.svelte";
+  import Dialog from "./Dialog.svelte";
+  import { MAX_NUM_GUESSES, WORD_LENGTH } from "../game";
 
-  type DialogProps = ComponentProps<Dialog2>;
+  type DialogProps = ComponentProps<Dialog>;
 
   export let id: DialogProps["id"];
   export let open: DialogProps["open"];
@@ -12,7 +12,7 @@
   export let onClose: DialogProps["onClose"];
 </script>
 
-<Dialog2
+<Dialog
   title="How to play"
   titleId="help-dialog-title"
   {id}
@@ -74,7 +74,7 @@
       </p>
     </section>
   </div>
-</Dialog2>
+</Dialog>
 
 <style>
   .dialog-body {
