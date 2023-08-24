@@ -36,7 +36,7 @@ export default function getKeyboardLetterPlacements(
     "correct",
   ];
   for (let i = 0; i < guesses.length; i++) {
-    for (let j = 0; j < guesses[i].length; i++) {
+    for (let j = 0; j < guesses[i].length; j++) {
       const letter = guesses[i][j] as Letter;
       const placement = placements[i][j];
       const currPlacement = ret[letter];

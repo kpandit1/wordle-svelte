@@ -8,7 +8,7 @@
     "build": "vite build",
     "start": "vite preview",
     "test": "vitest",
-    "check": "svelte-check --tsconfig ./tsconfig.json"
+    "check": "svelte-check --tsconfig ./tsconfig.json --threshold error"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^2.0.2",

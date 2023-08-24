@@ -1,18 +1,18 @@
 <script lang="ts">
+  import { get } from "svelte/store";
   import ImgSetting from "./assets/Gear.svelte";
   import ImgHelp from "./assets/Help.svelte";
   import ImgStats from "./assets/BarGraph.svelte";
 
-  import { dayNumber } from "../../lib/constants";
   import SettingsDialog from "./SettingsDialog.svelte";
   import StatisticDialog from "./StatisticsDialog.svelte";
   import { onMount } from "svelte";
-  import stats from "../../store/stats";
+  import stats from "../stats";
 
   import dialogStore, { DialogId } from "../dialogs";
   import HelpDialog from "./HelpDialog.svelte";
   import type Game from "../game";
-  import { get } from "svelte/store";
+  import { currentDayIndex } from "../currentDayIndex";
 
   export let game: Game;
 
@@ -42,7 +42,7 @@
 </script>
 
 <header>
-  <h1>Wordle #{dayNumber}</h1>
+  <h1>Wordle #{currentDayIndex}</h1>
   <div class="buttons">
     <button
       type="button"

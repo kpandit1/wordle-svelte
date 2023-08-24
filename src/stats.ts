@@ -1,6 +1,6 @@
 import { writable, derived } from "svelte/store";
-import { dayNumber } from "../lib/constants";
-import type Game from "../refactor/game";
+import type Game from "./game";
+import { currentDayIndex } from "./currentDayIndex";
 
 type Stats = {
   wins: {
@@ -55,7 +55,7 @@ function getStoredStats(): Stats {
     typeof parsedVal.lastWonDayNumber === "number"
   ) {
     const storedStats: Stats = parsedVal as Stats;
-    const previousDayNumber = dayNumber - 1;
+    const previousDayNumber = currentDayIndex - 1;
     if (storedStats.lastWonDayNumber !== previousDayNumber) {
       storedStats.currStreak = 0;
     }
@@ -77,7 +77,7 @@ export const addWin = (numGuesses: number): void => {
     newStats.wins[numGuesses] = prevStats.wins[numGuesses] + 1;
     newStats.currStreak = prevStats.currStreak + 1;
     newStats.maxStreak = Math.max(newStats.currStreak, newStats.maxStreak);
-    newStats.lastWonDayNumber = dayNumber;
+    newStats.lastWonDayNumber = currentDayIndex;
 
     return newStats;
   });

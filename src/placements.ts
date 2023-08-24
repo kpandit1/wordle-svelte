@@ -12,16 +12,7 @@ function countLetterOccurences(
   return count;
 }
 
-export function getWordPlacementsHelper(
-  solution: Word,
-  guess: Word
-): LetterPlacement[] {
-  return guess
-    .split("")
-    .map((letter, index) => getLetterPlacement(solution, guess, index));
-}
-
-export function getLetterPlacement(
+function getLetterPlacement(
   solution: Word,
   guess: Word,
   index: number
@@ -39,4 +30,13 @@ export function getLetterPlacement(
     return "present";
   }
   return "absent";
+}
+
+export function getWordPlacements(
+  solution: Word,
+  guess: Word
+): LetterPlacement[] {
+  return guess
+    .split("")
+    .map((letter, index) => getLetterPlacement(solution, guess, index));
 }

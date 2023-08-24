@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test } from "vitest";
-import type { GameStatus, GameInterface, GuessSubmitFeedback } from "./game";
+import type { GameStatus, GuessSubmitFeedback } from "./game";
 import Game from "./game";
-import { MAX_NUM_GUESSES } from "../lib/constants";
+import { MAX_NUM_GUESSES } from "./gameConstants";
 
 describe("Game basics", () => {
   let game = new Game("crumb");

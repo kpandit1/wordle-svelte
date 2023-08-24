@@ -1,15 +1,12 @@
 <script lang="ts">
   export let animateIn = false;
   export let placement: LetterPlacement = "not_guessed";
-
-  let tileDiv: HTMLElement;
 </script>
 
 <div
   data-placement={placement}
   class={`cell ${$$props.class || ""}`}
   class:animateIn
-  bind:this={tileDiv}
   on:animationend
 >
   <slot />

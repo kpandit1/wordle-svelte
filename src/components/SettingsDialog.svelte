@@ -1,12 +1,24 @@
 <script lang="ts">
-  import ToggleSwitch from "./components/ToggleSwitch.svelte";
+  import ToggleSwitch from "./ToggleSwitch.svelte";
   import Dialog from "./Dialog.svelte";
-  import { guesses } from "./domain/game";
-  import settings from "./store/settings";
+  import settings from "../settings";
+  import type Game from "../game";
+  import type { ComponentProps } from "svelte";
+
+  type DialogProps = ComponentProps<Dialog>;
+
+  export let id: DialogProps["id"];
+  export let open: DialogProps["open"];
+  export let onOpen: DialogProps["onOpen"];
+  export let onClose: DialogProps["onClose"];
+  export let game: Game;
 </script>
 
 <Dialog
-  id="settings-dialog"
+  {id}
+  {open}
+  {onOpen}
+  {onClose}
   title="⚙️ Settings"
   titleId="settings-dialog-title"
 >
@@ -18,11 +30,11 @@
           Any revealed hints must be used in subsequent guesses
         </p>
       </div>
-      <!-- Don't allow toggling mid-game -->
+      <!-- Can't change mode mid-game -->
       <ToggleSwitch
         checked={$settings.hardMode}
         onClick={settings.toggleHardMode}
-        disabled={$guesses.length > 0}
+        disabled={game.status !== "not_started"}
       />
     </div>
     <div class="option">

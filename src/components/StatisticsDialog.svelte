@@ -1,13 +1,14 @@
 <script lang="ts">
-  import statsStore from "../../store/stats";
-  import { dayNumber, MAX_NUM_GUESSES } from "../../lib/constants";
+  import statsStore from "../stats";
   import toast from "../toast";
   import shareIcon from "./assets/share.svg";
-  import { secondsTillMidnight } from "../../store/secondsTillMidnight";
-  import { formatDuration } from "../../lib/formatDuration";
+  import { secondsTillMidnight } from "../common/timeTillMidnight";
+  import { formatDuration } from "../common/formatDuration";
   import type { ComponentProps } from "svelte";
   import type Game from "../game";
   import Dialog from "./Dialog.svelte";
+  import { currentDayIndex } from "../currentDayIndex";
+  import { MAX_NUM_GUESSES } from "../gameConstants";
 
   type DialogProps = ComponentProps<Dialog>;
 
@@ -35,7 +36,7 @@
   }
 
   function shareResults(): void {
-    let body = `Wordle ${dayNumber} `;
+    let body = `Wordle ${currentDayIndex} `;
 
     if (game.status === "win") {
       body += `${game.guesses.length}/${MAX_NUM_GUESSES}`;

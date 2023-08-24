@@ -1,7 +1,8 @@
 import { writable, type Subscriber } from "svelte/store";
-import { getWordPlacementsHelper } from "../domain/placements";
-import { isValidWord } from "../lib/helpers";
 import { followsHardMode } from "./hardMode";
+import * as consts from "./gameConstants";
+import { isValidWord } from "./validWord";
+import { getWordPlacements } from "./placements";
 
 export type GuessSubmitFeedback =
   | {
@@ -44,7 +45,7 @@ export default class Game implements GameInterface {
 
   get placements(): ReadonlyArray<WordPlacement> {
     return this._guesses.map((guess) =>
-      getWordPlacementsHelper(this.solution, guess)
+      getWordPlacements(this.solution, guess)
     );
   }
 
@@ -53,7 +54,7 @@ export default class Game implements GameInterface {
       return "not_started";
     } else if (this._guesses.includes(this.solution)) {
       return "win";
-    } else if (this.guesses.length === MAX_NUM_GUESSES) {
+    } else if (this.guesses.length === consts.MAX_NUM_GUESSES) {
       return "lose";
     }
     return "in_progress";
@@ -65,10 +66,11 @@ export default class Game implements GameInterface {
 
   reset(): void {
     this._guesses = [];
+    this.store.set(this);
   }
 
   submitGuess(word: string): GuessSubmitFeedback {
-    if (this._guesses.length === MAX_NUM_GUESSES) {
+    if (this._guesses.length === consts.MAX_NUM_GUESSES) {
       return {
         isValid: false,
         error: "Exceeding upper guess limit",
@@ -111,5 +113,4 @@ export default class Game implements GameInterface {
   }
 }
 
-export const MAX_NUM_GUESSES = 6;
-export const WORD_LENGTH = 5;
+export { consts };

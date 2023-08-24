@@ -1,18 +1,15 @@
 <script lang="ts">
-  import Guesses from "./src/Guesses.svelte";
-  import Header from "./src/Header.svelte";
-  import Keyboard from "./src/Keyboard.svelte";
-  import Toaster from "./src/Toaster.svelte";
-  import toast from "../store/toast";
-  import getKeyboardLetterPlacements from "./keyboardLetterPlacements";
-  import statsStore from "../store/stats";
-  import {
-    ANIMATION_DELAY_MS,
-    CELL_ANIMATION_DURATION_MS,
-  } from "../lib/constants/animation";
-  import setupGame from "./setupGame";
-  import dialogStore, { DialogId } from "./dialogs";
-  import { WORD_LENGTH } from "./game";
+  import Guesses from "./Guesses.svelte";
+  import Header from "./Header.svelte";
+  import Keyboard from "./Keyboard.svelte";
+  import Toaster from "./Toaster.svelte";
+  import toast from "../toast";
+  import getKeyboardLetterPlacements from "../keyboardLetterPlacements";
+  import statsStore from "../stats";
+  import { ANIMATION_DELAY_MS, CELL_ANIMATION_DURATION_MS } from "../animation";
+  import setupGame from "../setupGame";
+  import dialogStore, { DialogId } from "../dialogs";
+  import { WORD_LENGTH } from "../gameConstants";
 
   let game = setupGame();
   let currentGuess: Word = "";
@@ -136,9 +133,11 @@
             game.placements
           );
           shouldPreventInput = false;
+          game.reset();
         }}
-        type="button">CLEAR STATE</button
-      >
+        type="button"
+        >CLEAR
+      </button>
     {/if}
   </div>
 </div>

@@ -7,8 +7,8 @@ import {
   storeSolution,
 } from "./api/gameApi";
 import { numDaysBetween } from "./common/daysBetween";
-import { SOLUTIONS } from "../lib/constants";
-import settingsStore from "../store/settings";
+import { SOLUTIONS } from "./solutions";
+import settingsStore from "./settings";
 
 function isNewGame(solution: string): boolean {
   const prevSolution = getStoredSolution();

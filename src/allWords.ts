@@ -2085,6 +2085,7 @@ export const ALL_WORDS = [
   "damns",
   "damps",
   "dampy",
+  "danby",
   "dancy",
   "dangs",
   "danio",
@@ -10656,5 +10657,4 @@ export const ALL_WORDS = [
   "zygon",
   "zymes",
   "zymic",
-  "danby",
 ];
