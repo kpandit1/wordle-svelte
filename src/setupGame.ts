@@ -1,4 +1,4 @@
-import Game from "./game";
+import Game from "./game/game";
 import { get } from "svelte/store";
 import {
   getStoredGuesses,

@@ -5,10 +5,10 @@
   import { secondsTillMidnight } from "../common/timeTillMidnight";
   import { formatDuration } from "../common/formatDuration";
   import type { ComponentProps } from "svelte";
-  import type Game from "../game";
+  import type Game from "../game/game";
   import Dialog from "./Dialog.svelte";
   import { currentDayIndex } from "../currentDayIndex";
-  import { MAX_NUM_GUESSES } from "../gameConstants";
+  import { MAX_NUM_GUESSES } from "../game/gameConstants";
 
   type DialogProps = ComponentProps<Dialog>;
 

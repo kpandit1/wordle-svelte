@@ -9,7 +9,7 @@
   import { ANIMATION_DELAY_MS, CELL_ANIMATION_DURATION_MS } from "../animation";
   import setupGame from "../setupGame";
   import dialogStore, { DialogId } from "../dialogs";
-  import { WORD_LENGTH } from "../gameConstants";
+  import { WORD_LENGTH } from "../game/gameConstants";
 
   let game = setupGame();
   let currentGuess: Word = "";

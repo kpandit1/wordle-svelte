@@ -3,7 +3,7 @@
  * depending on placement feedback from previous guesses
  */
 
-import type { WordPlacement } from "./game";
+import type { WordPlacement } from "./game/game";
 
 const letters =
   /* prettier-ignore */

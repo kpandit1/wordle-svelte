@@ -112,5 +112,3 @@ export default class Game implements GameInterface {
     }
   }
 }
-
-export { consts };

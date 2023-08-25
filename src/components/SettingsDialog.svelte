@@ -2,7 +2,7 @@
   import ToggleSwitch from "./ToggleSwitch.svelte";
   import Dialog from "./Dialog.svelte";
   import settings from "../settings";
-  import type Game from "../game";
+  import type Game from "../game/game";
   import type { ComponentProps } from "svelte";
 
   type DialogProps = ComponentProps<Dialog>;

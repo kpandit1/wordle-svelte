@@ -11,7 +11,7 @@
 
   import dialogStore, { DialogId } from "../dialogs";
   import HelpDialog from "./HelpDialog.svelte";
-  import type Game from "../game";
+  import type Game from "../game/game";
   import { currentDayIndex } from "../currentDayIndex";
 
   export let game: Game;

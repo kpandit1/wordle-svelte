@@ -1,5 +1,5 @@
 import { writable, derived } from "svelte/store";
-import type Game from "./game";
+import type Game from "./game/game";
 import { currentDayIndex } from "./currentDayIndex";
 
 type Stats = {

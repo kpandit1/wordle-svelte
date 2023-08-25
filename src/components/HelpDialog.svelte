@@ -2,7 +2,7 @@
   import type { ComponentProps } from "svelte";
   import Tile from "./Tile.svelte";
   import Dialog from "./Dialog.svelte";
-  import { MAX_NUM_GUESSES, WORD_LENGTH } from "../gameConstants";
+  import { MAX_NUM_GUESSES, WORD_LENGTH } from "../game/gameConstants";
 
   type DialogProps = ComponentProps<Dialog>;
 

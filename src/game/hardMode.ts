@@ -1,4 +1,4 @@
-import { ordinal_suffix_of } from "./common/ordinalSuffix";
+import { ordinal_suffix_of } from "../common/ordinalSuffix";
 import type { WordPlacement } from "./game";
 
 export function followsHardMode(

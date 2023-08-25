@@ -2,8 +2,8 @@
   import { createEventDispatcher } from "svelte";
   import { WINNING_ANIMATION_DURATION_MS } from "../animation";
   import Tile from "./Tile.svelte";
-  import { MAX_NUM_GUESSES, WORD_LENGTH } from "../gameConstants";
-  import type { WordPlacement } from "../game";
+  import { MAX_NUM_GUESSES, WORD_LENGTH } from "../game/gameConstants";
+  import type { WordPlacement } from "../game/game";
 
   export let guesses: readonly Word[];
   export let placements: readonly WordPlacement[];
