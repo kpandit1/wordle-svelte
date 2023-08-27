@@ -63,15 +63,20 @@
     // further action is takes
     if (queuedFeedback?.status === "lose") {
       const SMALL_PADDING_MS = 1000;
-      setTimeout(() => {
-        dialogStore.set(DialogId.Stats);
-      }, SMALL_PADDING_MS);
+
+      if ($dialogStore === null) {
+        setTimeout(() => {
+          dialogStore.set(DialogId.Stats);
+        }, SMALL_PADDING_MS);
+      }
     }
     queuedFeedback = null;
   }
 
   function onWinAnimationEnd() {
-    dialogStore.set(DialogId.Stats);
+    if ($dialogStore === null) {
+      dialogStore.set(DialogId.Stats);
+    }
   }
 
   function handleSubmit() {

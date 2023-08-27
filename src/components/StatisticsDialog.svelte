@@ -7,8 +7,7 @@
   import type { ComponentProps } from "svelte";
   import type Game from "../game/game";
   import Dialog from "./Dialog.svelte";
-  import { currentDayIndex } from "../currentDayIndex";
-  import { MAX_NUM_GUESSES } from "../game/gameConstants";
+  import { shareResults } from "../shareResults";
 
   type DialogProps = ComponentProps<Dialog>;
 
@@ -21,38 +20,14 @@
   $: maxCount = Math.max(...Object.values($statsStore.wins));
   $: formattedDuration = formatDuration($secondsTillMidnight);
 
-  function emojifiedGuesses(): string {
-    const placementToEmoji = {
-      correct: "🟩",
-      present: "🟨",
-      absent: "⬛️",
-    };
-
-    const res = game.placements.map((wordPlacements) =>
-      wordPlacements.map((l) => placementToEmoji[l]).join("")
-    );
-
-    return res.join("\n");
-  }
-
-  function shareResults(): void {
-    let body = `Wordle ${currentDayIndex} `;
-
-    if (game.status === "win") {
-      body += `${game.guesses.length}/${MAX_NUM_GUESSES}`;
-    } else if (game.status === "lose") {
-      body += `X/${MAX_NUM_GUESSES}`;
-    }
-    body += "\n";
-    body += emojifiedGuesses();
-
-    try {
-      navigator.clipboard.writeText(body);
-    } catch (err) {
-      console.error("Error copying to clipboard", err);
-      return;
-    }
-    toast.setToast("Copied result to clipboard");
+  function share() {
+    shareResults(game)
+      .then(() => {
+        toast.setToast("Copied result to clipboard");
+      })
+      .catch((err) => {
+        console.error("Error copying to clipboard", err);
+      });
   }
 
   // In the guess distribution chart, the number of guesses taken
@@ -63,6 +38,13 @@
 
   const numPlayed = statsStore.numPlayed;
   const numWins = statsStore.numWins;
+
+  function calcWinPercentage(numWins: number, numPlayed: number) {
+    if (numPlayed === 0) {
+      return 0;
+    }
+    return (numWins / numPlayed) * 100;
+  }
 </script>
 
 <Dialog
@@ -81,7 +63,7 @@
       </p>
       <p>
         <span class="value"
-          >{Math.round(($numWins * 100) / ($numPlayed || 1))}</span
+          >{Math.round(calcWinPercentage($numWins, $numPlayed))}</span
         >
         <span class="label">Win %</span>
       </p>
@@ -125,7 +107,7 @@
           </p>
         </div>
 
-        <button class="button" on:click={shareResults}>
+        <button class="button" on:click={share}>
           <span>Share</span>
           <img src={shareIcon} class="icon" role="presentation" alt="" />
         </button>
