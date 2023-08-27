@@ -18,7 +18,7 @@
 
   onMount(() => {
     // to check when page is visited after game finisehd
-    if (game.status !== "in_progress") {
+    if (game.status === "win" || game.status === "lose") {
       dialogStore.set(DialogId.Stats);
       // setTimeout(() => {
       //   dialogStore.set(DialogId.Stats);
@@ -31,10 +31,10 @@
     }
   });
 
-  function generateDialogProps(id: DialogId) {
+  function generateDialogProps(id: DialogId, currDialogId: DialogId | null) {
     return {
       id: id,
-      open: $dialogStore === id,
+      open: currDialogId === id,
       onClose: () => dialogStore.set(null),
       onOpen: () => dialogStore.set(id),
     };
@@ -66,9 +66,15 @@
       <ImgSetting />
     </button>
   </div>
-  <SettingsDialog {...generateDialogProps(DialogId.Settings)} {game} />
-  <StatisticDialog {...generateDialogProps(DialogId.Stats)} {game} />
-  <HelpDialog {...generateDialogProps(DialogId.Help)} />
+  <SettingsDialog
+    {...generateDialogProps(DialogId.Settings, $dialogStore)}
+    {game}
+  />
+  <StatisticDialog
+    {...generateDialogProps(DialogId.Stats, $dialogStore)}
+    {game}
+  />
+  <HelpDialog {...generateDialogProps(DialogId.Help, $dialogStore)} />
 </header>
 
 <style lang="postcss">

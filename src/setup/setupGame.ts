@@ -1,14 +1,14 @@
-import Game from "./game/game";
+import Game from "../game/game";
 import { get } from "svelte/store";
 import {
   getStoredGuesses,
   getStoredSolution,
   storeGuesses,
   storeSolution,
-} from "./api/gameApi";
-import { numDaysBetween } from "./common/daysBetween";
+} from "./storage";
 import { SOLUTIONS } from "./solutions";
-import settingsStore from "./settings";
+import settingsStore from "../settings";
+// import { currentDayIndex } from "../currentDayIndex";
 
 function isNewGame(solution: string): boolean {
   const prevSolution = getStoredSolution();
@@ -18,8 +18,8 @@ function isNewGame(solution: string): boolean {
   return false;
 }
 
-function generateSolution(): Word {
-  const solutionIdx = numDaysBetween(new Date(2021, 6, 2), new Date());
+function generateSolution(solutionIdx: number): Word {
+  // const solutionIdx = currentDayIndex;
   return SOLUTIONS[solutionIdx];
 }
 
@@ -27,10 +27,10 @@ function generateSolution(): Word {
  * Instantiate a game, and connect the game state to storage
  * @returns A set up new game
  */
-export default function setupGame(): Game {
+export default function setupGame(solutionIndex: number): Game {
   const settings = get(settingsStore);
 
-  const sol = generateSolution();
+  const sol = generateSolution(solutionIndex);
   const storedGuesses = getStoredGuesses();
   let guesses = storedGuesses;
 

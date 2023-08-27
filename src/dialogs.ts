@@ -1,7 +1,3 @@
-/**
- * Handles which option dialog is currently open. Only one can be open at a time
- */
-
 import { writable } from "svelte/store";
 
 export enum DialogId {

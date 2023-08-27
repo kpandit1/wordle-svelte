@@ -115,7 +115,7 @@
       </ul>
     </div>
 
-    {#if game.status !== "in_progress"}
+    {#if game.status === "win" || game.status === "lose"}
       {@const { hours, minutes, seconds } = formattedDuration}
       <div class="extra">
         <div>

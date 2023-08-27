@@ -1,21 +1,8 @@
 import { writable, derived } from "svelte/store";
-import type Game from "./game/game";
-import { currentDayIndex } from "./currentDayIndex";
-
-type Stats = {
-  wins: {
-    1: number;
-    2: number;
-    3: number;
-    4: number;
-    5: number;
-    6: number;
-  };
-  fails: number;
-  currStreak: number;
-  maxStreak: number;
-  lastWonDayNumber: number;
-};
+import type Game from "../game/game";
+import { currentDayIndex } from "../currentDayIndex";
+import type { Stats } from "./types";
+import { getStoredStats, storeStats } from "./storage";
 
 const initialStats: Stats = {
   wins: {
@@ -32,46 +19,13 @@ const initialStats: Stats = {
   lastWonDayNumber: -1,
 };
 
-function getStoredStats(): Stats {
-  const storedVal = localStorage.getItem("stats");
-  if (!storedVal) {
-    return initialStats;
-  }
-
-  const parsedVal = JSON.parse(storedVal) as unknown;
-  if (
-    parsedVal !== null &&
-    typeof parsedVal == "object" &&
-    "wins" in parsedVal &&
-    parsedVal.wins &&
-    typeof parsedVal.wins === "object" &&
-    "fails" in parsedVal &&
-    typeof parsedVal.fails === "number" &&
-    "currStreak" in parsedVal &&
-    typeof parsedVal.currStreak === "number" &&
-    "maxStreak" in parsedVal &&
-    typeof parsedVal.maxStreak === "number" &&
-    "lastWonDayNumber" in parsedVal &&
-    typeof parsedVal.lastWonDayNumber === "number"
-  ) {
-    const storedStats: Stats = parsedVal as Stats;
-    const previousDayNumber = currentDayIndex - 1;
-    if (storedStats.lastWonDayNumber !== previousDayNumber) {
-      storedStats.currStreak = 0;
-    }
-    return storedStats;
-  } else {
-    return initialStats;
-  }
-}
-
-const statsStore = writable(getStoredStats());
+const statsStore = writable<Stats>(getStoredStats() || initialStats);
 
 statsStore.subscribe((val) => {
-  localStorage.setItem("stats", JSON.stringify(val));
+  storeStats(val);
 });
 
-export const addWin = (numGuesses: number): void => {
+const addWin = (numGuesses: number): void => {
   statsStore.update((prevStats) => {
     const newStats = { ...prevStats };
     newStats.wins[numGuesses] = prevStats.wins[numGuesses] + 1;
@@ -120,12 +74,12 @@ function updateStats(game: Game) {
   }
 }
 
-export default {
+const modifiedStore = {
   subscribe: statsStore.subscribe,
-  addLoss,
-  addWin,
   numPlayed,
   numWins,
-  resetStreak,
   updateStats,
+  resetStreak,
 };
+
+export default modifiedStore;

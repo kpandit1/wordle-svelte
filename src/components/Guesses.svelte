@@ -23,7 +23,7 @@
 
   function handleAnimationEnd(e: AnimationEvent, i: number, j: number) {
     if (j === WORD_LENGTH - 1) {
-      dispatch("last_letter_animation_end");
+      dispatch("lastLetterAnimationEnd");
     }
   }
 

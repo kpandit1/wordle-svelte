@@ -7,11 +7,12 @@
   import getKeyboardLetterPlacements from "../keyboardLetterPlacements";
   import statsStore from "../stats";
   import { ANIMATION_DELAY_MS, CELL_ANIMATION_DURATION_MS } from "../animation";
-  import setupGame from "../setupGame";
+  import setupGame from "../setup/setupGame";
   import dialogStore, { DialogId } from "../dialogs";
   import { WORD_LENGTH } from "../game/gameConstants";
+  import { currentDayIndex } from "../currentDayIndex";
 
-  let game = setupGame();
+  let game = setupGame(currentDayIndex);
   let currentGuess: Word = "";
   let invalidGuessFeedbackNeeded = false;
   let showWinningAnimation = false;
@@ -66,9 +67,10 @@
         dialogStore.set(DialogId.Stats);
       }, SMALL_PADDING_MS);
     }
+    queuedFeedback = null;
   }
 
-  function onWin() {
+  function onWinAnimationEnd() {
     dialogStore.set(DialogId.Stats);
   }
 
@@ -97,6 +99,15 @@
       currentGuess = "";
     }
   }
+
+  function clear() {
+    game.reset();
+    keyboardPlacements = getKeyboardLetterPlacements(
+      game.guesses,
+      game.placements
+    );
+    shouldPreventInput = false;
+  }
 </script>
 
 <Header {game} />
@@ -113,8 +124,8 @@
     resolveGuessFeedback={() => {
       invalidGuessFeedbackNeeded = false;
     }}
-    on:last_letter_animation_end={showQueuedFeedback}
-    on:winAnimationEnd={onWin}
+    on:lastLetterAnimationEnd={showQueuedFeedback}
+    on:winAnimationEnd={onWinAnimationEnd}
   />
   <div>
     <Keyboard
@@ -125,19 +136,7 @@
       maxInputLength={WORD_LENGTH}
     />
     {#if isDev}
-      <button
-        on:click={() => {
-          game.reset();
-          keyboardPlacements = getKeyboardLetterPlacements(
-            game.guesses,
-            game.placements
-          );
-          shouldPreventInput = false;
-          game.reset();
-        }}
-        type="button"
-        >CLEAR
-      </button>
+      <button on:click={clear} type="button">CLEAR </button>
     {/if}
   </div>
 </div>
