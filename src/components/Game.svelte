@@ -6,7 +6,6 @@
   import toast from "../toast";
   import getKeyboardLetterPlacements from "../keyboardLetterPlacements";
   import statsStore from "../stats";
-  import { ANIMATION_DELAY_MS, CELL_ANIMATION_DURATION_MS } from "../animation";
   import setupGame from "../setup/setupGame";
   import dialogStore, { DialogId } from "../dialogs";
   import { WORD_LENGTH } from "../game/gameConstants";
@@ -61,7 +60,7 @@
     // 3. Show stats dialog if game over
     // If status is "win", then don't do anything since animation needs to play out before
     // further action is takes
-    if (queuedFeedback?.status === "lose") {
+    if (queuedFeedback.status === "lose") {
       const SMALL_PADDING_MS = 1000;
 
       if ($dialogStore === null) {
@@ -123,8 +122,6 @@
     placements={$game.placements}
     {currentGuess}
     {showWinningAnimation}
-    animationDuration={CELL_ANIMATION_DURATION_MS}
-    animationDelay={ANIMATION_DELAY_MS}
     {invalidGuessFeedbackNeeded}
     resolveGuessFeedback={() => {
       invalidGuessFeedbackNeeded = false;

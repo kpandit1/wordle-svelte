@@ -1,6 +1,10 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
-  import { WINNING_ANIMATION_DURATION_MS } from "../animation";
+  import {
+    ANIMATION_DELAY_MS,
+    CELL_ANIMATION_DURATION_MS,
+    WINNING_ANIMATION_DURATION_MS,
+  } from "../animation";
   import Tile from "./Tile.svelte";
   import { MAX_NUM_GUESSES, WORD_LENGTH } from "../game/gameConstants";
   import type { WordPlacement } from "../game/game";
@@ -13,8 +17,6 @@
   export let resolveGuessFeedback: () => void;
 
   export let showWinningAnimation: boolean;
-  export let animationDuration: number;
-  export let animationDelay: number;
 
   const dispatch = createEventDispatcher();
 
@@ -57,8 +59,8 @@
         <Tile
           placement={wordPlacements[j]}
           animateIn={true}
-          --animation-delay="{j * animationDelay}ms"
-          --animation-duration="{animationDuration}ms"
+          --animation-delay="{j * ANIMATION_DELAY_MS}ms"
+          --animation-duration="{CELL_ANIMATION_DURATION_MS}ms"
           --winning-animation-duration="{WINNING_ANIMATION_DURATION_MS}ms"
           --idx={j}
           class={showWinningAnimation ? "win" : ""}

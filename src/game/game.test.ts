@@ -4,7 +4,7 @@ import Game from "./game";
 import { MAX_NUM_GUESSES } from "./gameConstants";
 
 describe("Game basics", () => {
-  let game = new Game("crumb");
+  let game: Game;
 
   beforeEach(() => {
     game = new Game("crumb");

@@ -27,7 +27,8 @@ export function getStoredStats(): Stats | null {
   ) {
     const storedStats = parsedVal as Stats;
 
-    if (currentDayIndex > storedStats.lastWonDayNumber) {
+    // If more than one day has been skipped, reset streak
+    if (currentDayIndex > storedStats.lastWonDayNumber + 1) {
       storedStats.currStreak = 0;
     }
     return storedStats;

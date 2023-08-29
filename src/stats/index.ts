@@ -69,7 +69,7 @@ const numWins = derived(statsStore, ($statsStore) => {
 function updateStats(game: Game) {
   if (game.status === "win") {
     addWin(game.guesses.length);
-  } else {
+  } else if (game.status === "lose") {
     addLoss();
   }
 }

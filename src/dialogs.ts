@@ -6,5 +6,5 @@ export enum DialogId {
   Settings = "settings-dialog",
 }
 
-const dialogStore = writable<DialogId | null>();
+const dialogStore = writable<DialogId | null>(null);
 export default dialogStore;
