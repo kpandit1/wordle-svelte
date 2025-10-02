@@ -7889,6 +7889,7 @@ export const ALL_WORDS = [
   "samek",
   "samel",
   "samen",
+  "samer",
   "sames",
   "samey",
   "samfu",

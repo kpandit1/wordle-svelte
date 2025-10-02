@@ -82,6 +82,11 @@
     if (currentGuess === "danby") {
       toast.setToast("😍");
     }
+
+    if (currentGuess === "samer") {
+      toast.setToast("thanks for playing sameer");
+    }
+
     const feedback = game.submitGuess(currentGuess);
 
     if (!feedback.isValid) {
